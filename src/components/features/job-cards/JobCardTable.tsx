@@ -10,7 +10,7 @@ import {
   VALID_JOB_TRANSITIONS,
   JobCardFilters 
 } from '../../../types/api.types';
-import Badge, { JobStatusBadge, PriorityBadge } from '../../shared/Badge';
+import { Badge, JobStatusBadge, PriorityBadge } from '../../shared/Badge';
 import Button from '../../shared/Button';
 import FilterDropdown from '../../shared/FilterDropdown';
 import Modal from '../../shared/Modal';
