@@ -3,31 +3,37 @@
 @tailwind utilities;
 
 :root {
-  --brand-orange: #FF8C00;
-  --text-black: #000000;
-  --bg-white: #FFFFFF;
-  --border-black: #000000;
+  --brand-orange: #F45D3D;
+  --background: #0D0D0D;
+  --background-alt: #1B1B1D;
+  --text-primary: #FFFFFF;
+  --text-secondary: #E5E5E5;
+  --border: #333333;
 }
 
 @layer base {
   body {
-    @apply bg-white text-black;
+    @apply bg-background text-text-primary;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading text-black;
+    @apply font-heading text-text-primary;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-brand-orange text-white border border-black px-6 py-3 rounded hover:opacity-90 transition-opacity;
+    @apply bg-brand-orange text-white border border-border px-6 py-3 rounded hover:opacity-90 transition-opacity;
+  }
+  
+  .card {
+    @apply bg-background-alt border border-border rounded-lg;
   }
   
   .message-user {
-    @apply bg-white border border-black text-black p-4 rounded;
+    @apply bg-background-alt border border-border text-text-primary p-4 rounded;
   }
   
   .message-ai {
-    @apply bg-white text-brand-orange p-4 rounded;
+    @apply bg-background-alt text-brand-orange p-4 rounded;
   }
 }

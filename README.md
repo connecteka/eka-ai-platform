@@ -59,12 +59,29 @@ eka-ai-platform/
 
 ---
 
-## 🎨 Design System
+## 🎨 Design System (Dark Mode)
 
-**3-Color Palette:**
-- `#FFFFFF` - Backgrounds
-- `#000000` - Text & Borders
-- `#FF8C00` - Brand (Buttons, AI text)
+**Dark Theme Palette:**
+
+| Color | Hex Code | Usage |
+|-------|----------|-------|
+| **Brand Orange** | `#F45D3D` | Accent, buttons, highlights |
+| **Background** | `#0D0D0D` | Primary background |
+| **Background Alt** | `#1B1B1D` | Cards, elevated surfaces |
+| **Text Primary** | `#FFFFFF` | Main text, headings |
+| **Text Secondary** | `#E5E5E5` | Secondary text |
+| **Border** | `#333333` | Subtle borders |
+
+### Tailwind Usage
+
+```jsx
+// Card with dark theme
+<div className="bg-background-alt border border-border rounded-lg">
+  <h2 className="text-text-primary">Title</h2>
+  <p className="text-text-secondary">Description</p>
+  <button className="bg-brand-orange text-white">Action</button>
+</div>
+```
 
 ---
 
@@ -96,7 +113,7 @@ See [.env.example](./.env.example) for complete list.
 
 ## ✅ Production Features
 
-- ✅ 3-Color Design System
+- ✅ Dark Mode Design System
 - ✅ Dual-Pane Login with Video Scroller
 - ✅ AI Chat (Automobile-only)
 - ✅ Job Card Workflow

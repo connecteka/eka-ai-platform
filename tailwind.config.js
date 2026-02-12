@@ -7,12 +7,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        'brand-orange': '#FF8C00',
-        'text-primary': '#000000',
-        'text-secondary': '#000000',
-        background: '#FFFFFF',
-        'background-alt': '#FFFFFF',
-        border: '#000000',
+        'brand-orange': '#F45D3D',
+        'background': '#0D0D0D',
+        'background-alt': '#1B1B1D',
+        'text-primary': '#FFFFFF',
+        'text-secondary': '#E5E5E5',
+        'border': '#333333',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
