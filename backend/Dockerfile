@@ -13,7 +13,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application code to the working directory
 COPY . .
 
+# Expose the port (Cloud Run sets PORT env var, default 8080)
+ENV PORT=8080
+EXPOSE $PORT
+
 # Command to run the application using Uvicorn
-# We bind to 0.0.0.0 to allow external connections.
-# The port is dynamically set by Cloud Run via the $PORT environment variable.
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "$PORT"]
+# Cloud Run provides the PORT environment variable dynamically
+CMD uvicorn main:app --host 0.0.0.0 --port ${PORT}
