@@ -4,23 +4,23 @@ const testimonials = [
   {
     quote:
       'This platform has transformed our business. We are more efficient and profitable than ever before.',
-    author: 'John Doe',
-    title: 'CEO, Example Inc.',
-    avatar: 'https://via.placeholder.com/150',
+    author: 'Rajesh Kumar',
+    title: 'Owner, Kumar Motors',
+    avatar: 'https://ui-avatars.com/api/?name=Rajesh+Kumar&background=f97316&color=fff&size=150',
   },
   {
     quote:
       'The best tool we have ever used. It is intuitive, powerful, and has all the features we need.',
-    author: 'Jane Smith',
-    title: 'Marketing Manager, Another Co.',
-    avatar: 'https://via.placeholder.com/150',
+    author: 'Priya Sharma',
+    title: 'Manager, Sharma Auto Care',
+    avatar: 'https://ui-avatars.com/api/?name=Priya+Sharma&background=0ea5e9&color=fff&size=150',
   },
   {
     quote:
       'I was skeptical at first, but this platform has exceeded all my expectations. Highly recommended!',
-    author: 'Sam Wilson',
-    title: 'Freelancer',
-    avatar: 'https://via.placeholder.com/150',
+    author: 'Amit Patel',
+    title: 'Workshop Owner',
+    avatar: 'https://ui-avatars.com/api/?name=Amit+Patel&background=10b981&color=fff&size=150',
   },
 ];
 
@@ -33,7 +33,7 @@ const Testimonials: React.FC = () => {
             What our customers are saying
           </h2>
           <p className="mt-2 text-lg text-text-secondary">
-            Real stories from real people.
+            Real stories from real workshop owners.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

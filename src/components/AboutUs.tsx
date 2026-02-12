@@ -15,7 +15,7 @@ const AboutUs: React.FC = () => {
         </div>
         <div className="flex justify-center">
           <img
-            src="https://via.placeholder.com/800x400"
+            src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=400&fit=crop"
             alt="A team of people working together"
             className="rounded-lg shadow-lg"
           />
