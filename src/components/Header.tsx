@@ -18,7 +18,7 @@ const Header: React.FC = () => {
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="text-2xl font-bold text-text-primary font-heading">
-            YourLogo
+            EKA-AI
           </div>
           <div className="hidden md:flex items-center space-x-6">
             {navLinks.map((link) => (
