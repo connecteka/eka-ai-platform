@@ -1,6 +1,13 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-brand-orange: #F45D3D;
+  --color-background: #0D0D0D;
+  --color-background-alt: #1B1B1D;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #E5E5E5;
+  --color-border: #333333;
+}
 
 :root {
   --brand-orange: #F45D3D;
@@ -11,29 +18,45 @@
   --border: #333333;
 }
 
-@layer base {
-  body {
-    @apply bg-background text-text-primary;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-heading text-text-primary;
-  }
+body {
+  background-color: var(--background);
+  color: var(--text-primary);
 }
 
-@layer components {
-  .btn-primary {
-    @apply bg-brand-orange text-white border border-border px-6 py-3 rounded hover:opacity-90 transition-opacity;
-  }
-  
-  .card {
-    @apply bg-background-alt border border-border rounded-lg;
-  }
-  
-  .message-user {
-    @apply bg-background-alt border border-border text-text-primary p-4 rounded;
-  }
-  
-  .message-ai {
-    @apply bg-background-alt text-brand-orange p-4 rounded;
-  }
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+  color: var(--text-primary);
+}
+
+.btn-primary {
+  background-color: var(--brand-orange);
+  color: white;
+  border: 1px solid var(--border);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.25rem;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.card {
+  background-color: var(--background-alt);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+}
+
+.message-user {
+  background-color: var(--background-alt);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 1rem;
+  border-radius: 0.25rem;
+}
+
+.message-ai {
+  background-color: var(--background-alt);
+  color: var(--brand-orange);
+  padding: 1rem;
+  border-radius: 0.25rem;
 }
