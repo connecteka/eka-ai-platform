@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { PDIChecklistItem, PDICategory, STANDARD_PDI_ITEMS } from '../../../types/api.types';
 import { pdiCompletionSchema, PDICompletionFormValues } from '../../../schemas/jobCardSchema';
 import Button from '../../shared/Button';
-import Badge from '../../shared/Badge';
+import { Badge } from '../../shared/Badge';
 import Modal from '../../shared/Modal';
 
 interface PDIChecklistProps {

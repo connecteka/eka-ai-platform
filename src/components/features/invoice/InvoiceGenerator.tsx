@@ -6,7 +6,7 @@ import { InvoiceFormValues } from '../../../schemas/jobCardSchema';
 import { z } from 'zod';
 import { Invoice, InvoiceItem } from '../../../types/api.types';
 import Button from '../../shared/Button';
-import Badge from '../../shared/Badge';
+import { Badge } from '../../shared/Badge';
 import Modal from '../../shared/Modal';
 
 interface InvoiceGeneratorProps {
