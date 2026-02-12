@@ -1,0 +1,21 @@
+services:
+  # 1. The React Frontend
+  web:
+    path: .
+    build:
+      command: npm install && npm run build
+      output: dist
+    route: /
+    environment:
+      VITE_API_URL: /api
+
+  # 2. The Python Backend
+  api:
+    path: backend
+    build:
+      command: pip install -r requirements.txt
+    run: gunicorn --bind 0.0.0.0:8080 server:app
+    route: /api
+    environment:
+      FLASK_ENV: production
+      # Secrets will be injected by Emergent Vault
