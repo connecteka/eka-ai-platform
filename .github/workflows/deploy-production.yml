@@ -1,0 +1,141 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  NODE_ENV: production
+  VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+  VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+  VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://eka-ai-backend-xxxxx.a.run.app' }}
+
+jobs:
+  # ==================== TEST ====================
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run tests
+        run: npm run test:run
+
+  # ==================== BUILD FRONTEND ====================
+  build-frontend:
+    name: Build Frontend
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build frontend
+        run: npm run build
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: dist/
+          retention-days: 1
+
+  # ==================== DEPLOY TO FIREBASE ====================
+  deploy-firebase:
+    name: Deploy to Firebase
+    runs-on: ubuntu-latest
+    needs: build-frontend
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: dist/
+      
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          channelId: live
+          projectId: eka-ai-platform
+
+  # ==================== DEPLOY BACKEND TO CLOUD RUN ====================
+  deploy-backend:
+    name: Deploy Backend to Cloud Run
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: named-dialect-486912-c7
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+      
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy eka-ai-backend \
+            --source ./backend \
+            --platform managed \
+            --region asia-south1 \
+            --allow-unauthenticated \
+            --set-env-vars="SUPABASE_URL=${{ secrets.SUPABASE_URL }},SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" \
+            --memory 512Mi \
+            --max-instances 10 \
+            --quiet
+      
+      - name: Get backend URL
+        run: |
+          echo "Backend URL:"
+          gcloud run services describe eka-ai-backend --region asia-south1 --format 'value(status.url)'
+
+  # ==================== NOTIFICATION ====================
+  notify:
+    name: Deployment Complete
+    runs-on: ubuntu-latest
+    needs: [deploy-firebase, deploy-backend]
+    if: always()
+    
+    steps:
+      - name: Check deployment status
+        run: |
+          if [ "${{ needs.deploy-firebase.result }}" == "success" ] && [ "${{ needs.deploy-backend.result }}" == "success" ]; then
+            echo "✅ All deployments successful!"
+            echo "Frontend: https://eka-ai-platform.web.app"
+            echo "Backend: Check Cloud Run console for URL"
+          else
+            echo "❌ Some deployments failed"
+            echo "Firebase: ${{ needs.deploy-firebase.result }}"
+            echo "Backend: ${{ needs.deploy-backend.result }}"
+            exit 1
+          fi
