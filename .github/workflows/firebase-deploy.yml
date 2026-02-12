@@ -32,7 +32,7 @@ jobs:
           NODE_ENV: production
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://eka-ai-backend-xxxxx.a.run.app' }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://eka-ai-backend-429173688791.asia-south1.run.app' }}
       
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
