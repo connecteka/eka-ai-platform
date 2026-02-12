@@ -17,8 +17,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20.11.0'
           cache: 'npm'
+      
+      - name: Check Node version
+        run: node --version && npm --version
       
       - name: Install dependencies
         run: npm ci
@@ -35,7 +38,10 @@ jobs:
           VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://named-dialect-486912-c7.el.r.appspot.com' }}
       
       - name: Install Firebase CLI
-        run: npm install -g firebase-tools
+        run: npm install -g firebase-tools@13.0.0
+      
+      - name: Check Firebase CLI
+        run: firebase --version
       
       - name: Deploy to Firebase
         run: firebase deploy --only hosting --token "${{ secrets.FIREBASE_TOKEN }}" --project eka-ai-c9d24
