@@ -32,13 +32,13 @@ jobs:
         VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
         VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         
-    # Deploy to GitHub Pages (optional)
-    - name: Deploy to GitHub Pages
-      if: github.ref == 'refs/heads/main'
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dist
+    # Deploy to GitHub Pages (DISABLED - Using Firebase instead)
+    # - name: Deploy to GitHub Pages
+    #   if: github.ref == 'refs/heads/main'
+    #   uses: peaceiris/actions-gh-pages@v3
+    #   with:
+    #     github_token: ${{ secrets.GITHUB_TOKEN }}
+    #     publish_dir: ./dist
         
     # Deploy to AWS S3 (optional - configure if needed)
     - name: Configure AWS credentials
