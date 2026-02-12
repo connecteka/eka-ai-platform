@@ -80,3 +80,7 @@ celery>=5.3.6
 
 # Vector Store Client (for DPDP Erasure)
 pinecone-client>=3.1.0
+
+# FastAPI (for Cloud Run deployment)
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
