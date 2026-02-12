@@ -18,17 +18,11 @@ const meta: Meta<typeof Badge> = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['default', 'primary', 'success', 'warning', 'error', 'info', 'blue', 'green', 'orange', 'red', 'amber', 'purple', 'gray'],
+      options: ['default', 'secondary', 'destructive', 'outline', 'success', 'warning', 'error', 'info'],
     },
     size: {
       control: 'select',
       options: ['sm', 'md', 'lg'],
-    },
-    dot: {
-      control: 'boolean',
-    },
-    pulse: {
-      control: 'boolean',
     },
   },
 };
@@ -41,6 +35,7 @@ export const Default: Story = {
   args: {
     children: 'Badge',
     variant: 'default',
+    size: 'md',
   },
 };
 
@@ -49,26 +44,13 @@ export const Variants: Story = {
   render: () => (
     <div className="flex flex-wrap gap-2">
       <Badge variant="default">Default</Badge>
-      <Badge variant="primary">Primary</Badge>
+      <Badge variant="secondary">Secondary</Badge>
+      <Badge variant="destructive">Destructive</Badge>
+      <Badge variant="outline">Outline</Badge>
       <Badge variant="success">Success</Badge>
       <Badge variant="warning">Warning</Badge>
       <Badge variant="error">Error</Badge>
       <Badge variant="info">Info</Badge>
-    </div>
-  ),
-};
-
-// Colors
-export const Colors: Story = {
-  render: () => (
-    <div className="flex flex-wrap gap-2">
-      <Badge variant="blue">Blue</Badge>
-      <Badge variant="green">Green</Badge>
-      <Badge variant="orange">Orange</Badge>
-      <Badge variant="red">Red</Badge>
-      <Badge variant="amber">Amber</Badge>
-      <Badge variant="purple">Purple</Badge>
-      <Badge variant="gray">Gray</Badge>
     </div>
   ),
 };
@@ -84,41 +66,15 @@ export const Sizes: Story = {
   ),
 };
 
-// With dot
-export const WithDot: Story = {
-  render: () => (
-    <div className="flex flex-wrap gap-2">
-      <Badge variant="success" dot>Online</Badge>
-      <Badge variant="warning" dot>Pending</Badge>
-      <Badge variant="error" dot>Offline</Badge>
-    </div>
-  ),
-};
-
-// With pulsing dot
-export const WithPulsingDot: Story = {
-  render: () => (
-    <div className="flex flex-wrap gap-2">
-      <Badge variant="success" dot pulse>Live</Badge>
-      <Badge variant="warning" dot pulse>Processing</Badge>
-    </div>
-  ),
-};
-
 // Job Status Badges
 export const JobStatuses: Story = {
   render: () => (
     <div className="flex flex-wrap gap-2">
-      <JobStatusBadge status="CREATED" />
-      <JobStatusBadge status="CONTEXT_VERIFIED" />
-      <JobStatusBadge status="DIAGNOSED" />
-      <JobStatusBadge status="ESTIMATED" />
-      <JobStatusBadge status="CUSTOMER_APPROVAL" />
-      <JobStatusBadge status="IN_PROGRESS" />
-      <JobStatusBadge status="PDI" />
-      <JobStatusBadge status="INVOICED" />
-      <JobStatusBadge status="CLOSED" />
-      <JobStatusBadge status="CANCELLED" />
+      <JobStatusBadge status="Pending" />
+      <JobStatusBadge status="In-Progress" />
+      <JobStatusBadge status="Completed" />
+      <JobStatusBadge status="Cancelled" />
+      <JobStatusBadge status="On-Hold" />
     </div>
   ),
 };
@@ -127,10 +83,10 @@ export const JobStatuses: Story = {
 export const Priorities: Story = {
   render: () => (
     <div className="flex flex-wrap gap-2">
-      <PriorityBadge priority="LOW" />
-      <PriorityBadge priority="NORMAL" />
-      <PriorityBadge priority="HIGH" />
-      <PriorityBadge priority="CRITICAL" />
+      <PriorityBadge priority="Low" />
+      <PriorityBadge priority="Medium" />
+      <PriorityBadge priority="High" />
+      <PriorityBadge priority="Urgent" />
     </div>
   ),
 };
@@ -141,15 +97,15 @@ export const ComplexExample: Story = {
     <div className="space-y-4 p-4 bg-white/5 rounded-lg">
       <div className="flex items-center justify-between">
         <span className="text-gray-300">Job Status:</span>
-        <JobStatusBadge status="IN_PROGRESS" />
+        <JobStatusBadge status="In-Progress" />
       </div>
       <div className="flex items-center justify-between">
         <span className="text-gray-300">Priority:</span>
-        <PriorityBadge priority="HIGH" />
+        <PriorityBadge priority="High" />
       </div>
       <div className="flex items-center justify-between">
         <span className="text-gray-300">AI Status:</span>
-        <Badge variant="success" dot pulse>Analyzing</Badge>
+        <Badge variant="success">Analyzing</Badge>
       </div>
     </div>
   ),
