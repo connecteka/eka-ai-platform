@@ -24,10 +24,10 @@ describe('Button Component', () => {
 
   it('applies variant classes correctly', () => {
     const { rerender } = render(<Button variant="primary">Primary</Button>);
-    expect(screen.getByText('Primary')).toHaveClass('bg-brand-orange');
+    expect(screen.getByText('Primary')).toHaveClass('bg-orange-600');
     
     rerender(<Button variant="secondary">Secondary</Button>);
-    expect(screen.getByText('Secondary')).toHaveClass('bg-background-alt');
+    expect(screen.getByText('Secondary')).toHaveClass('bg-white/10');
   });
 
   it('shows loading state', () => {

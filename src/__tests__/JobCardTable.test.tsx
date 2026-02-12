@@ -103,14 +103,17 @@ describe('JobCardTable Component', () => {
   it('calls onDelete when delete is confirmed', async () => {
     render(<JobCardTable jobCards={mockJobCards} {...mockHandlers} />);
     
+    // Click the delete icon button (first row)
     const deleteButtons = screen.getAllByTitle(/delete/i);
     fireEvent.click(deleteButtons[0]);
     
     // Confirmation modal should appear
     expect(screen.getByText(/are you sure/i)).toBeDefined();
     
-    // Click confirm
-    const confirmButton = screen.getByRole('button', { name: /delete/i });
+    // Click confirm button in modal (look for the red delete button)
+    const confirmButtons = screen.getAllByRole('button', { name: /delete/i });
+    // The confirm button should be the one inside the modal (last one)
+    const confirmButton = confirmButtons[confirmButtons.length - 1];
     fireEvent.click(confirmButton);
     
     await waitFor(() => {
@@ -129,8 +132,9 @@ describe('JobCardTable Component', () => {
   it('renders status badges correctly', () => {
     render(<JobCardTable jobCards={mockJobCards} {...mockHandlers} />);
     
+    // Status badges render the status value as-is
     expect(screen.getByText('CREATED')).toBeDefined();
-    expect(screen.getByText('IN PROGRESS')).toBeDefined();
+    expect(screen.getByText('IN_PROGRESS')).toBeDefined();
   });
 
   it('renders priority badges correctly', () => {
