@@ -5,7 +5,7 @@ import asyncio
 from playwright.async_api import async_playwright
 import os
 
-BASE_URL = "https://garage-assistant-1.preview.emergentagent.com"
+BASE_URL = "https://job-card-detail.preview.emergentagent.com"
 OUTPUT_DIR = "/app/frontend/public/videos"
 
 async def record_pdi_demo():

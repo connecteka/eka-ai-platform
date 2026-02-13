@@ -9,7 +9,7 @@ import io
 from datetime import datetime
 
 # Get base URL from environment
-BASE_URL = os.environ.get('VITE_API_URL', 'https://garage-assistant-1.preview.emergentagent.com')
+BASE_URL = os.environ.get('VITE_API_URL', 'https://job-card-detail.preview.emergentagent.com')
 API_URL = f"{BASE_URL}/api"
 
 print(f"Testing NEW FEATURES API at: {API_URL}")
