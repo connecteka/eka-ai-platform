@@ -50,17 +50,25 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 6. ✅ Dark theme implementation
 7. ✅ Responsive navigation
 
-### February 13, 2026 - Update 4
-15. ✅ Added Interactive Demo Modals with **Real Screen Recordings**:
-    - **PDI Demo**: Realistic inspection checklist UI with checkboxes, photo capture panel, progress indicator
-    - **MG Model Demo**: Plan selection cards (Basic/Premium/Elite), pricing calculator, contract preview
-    - **Job Card Demo**: Full dashboard with stats cards, job table with real data, status badges
-    - **AI Chat Demo**: Realistic chat interface with message bubbles, typing indicator, conversation flow
-    - **Brand Marketing Demo**: Multi-brand grid, campaign performance chart, brand selection
-    - **Regional Marketing Demo**: Interactive India map with city markers, regional stats, revenue display
-16. ✅ Auto-playing step-by-step walkthrough (4 sec per step)
-17. ✅ Keyboard shortcuts (Space = Play/Pause, Arrow keys = Navigate, Escape = Close)
-18. ✅ Clickable steps sidebar with progress indicators (green checkmarks for completed)
+### February 13, 2026 - Update 5
+19. ✅ Added **Real App Screen Recordings** for demos:
+    - **Chat Demo**: 3 real screenshots (empty chat, message typed, AI response with diagnostics)
+    - **Dashboard Demo**: Real screenshot showing $45K revenue, 2350 subscriptions, recent sales
+    - Both marked with **"Live Recording"** green badge
+20. ✅ **Smooth Transition Animations** between steps:
+    - Fade-out/scale-down on exit (300ms)
+    - Fade-in/scale-up on enter (500ms)
+    - Black overlay during transition
+21. ✅ **Interactive Cursor Hotspots**:
+    - Animated cursor pointer on active areas
+    - Ripple/ping effect around cursor
+    - Context labels (e.g., "Type Here", "Send")
+22. ✅ **Enhanced UI**:
+    - Progress bar with segment markers for each step
+    - "Restart" button in controls
+    - "Playing/Paused" status indicator
+    - Scan line effect on real recordings for video feel
+    - Browser chrome (red/yellow/green buttons) for authenticity
 
 ## API Endpoints
 - `GET /api/health` - Health check
