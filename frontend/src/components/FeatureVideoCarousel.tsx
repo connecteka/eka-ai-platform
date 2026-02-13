@@ -22,6 +22,7 @@ interface FeatureSlide {
   features: string[];
   gradient: string;
   accentColor: string;
+  videoUrl?: string;
 }
 
 const FEATURE_SLIDES: FeatureSlide[] = [
