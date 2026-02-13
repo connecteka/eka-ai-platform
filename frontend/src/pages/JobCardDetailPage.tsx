@@ -2087,8 +2087,36 @@ const CustomerFeedbackSection: React.FC<CustomerFeedbackSectionProps> = ({ feedb
 // SECTION 15: DOCUMENT ATTACHMENTS
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const DocumentAttachmentsSection: React.FC = () => {
-  const documents = [
+interface DocumentAttachmentsSectionProps {
+  documents: any[];
+  onUpload?: (file: File, category: string) => Promise<any>;
+}
+
+const DocumentAttachmentsSection: React.FC<DocumentAttachmentsSectionProps> = ({ documents: apiDocuments, onUpload }) => {
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !onUpload) return;
+    
+    setUploading(true);
+    try {
+      await onUpload(file, 'document');
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const documents = apiDocuments.length > 0 ? apiDocuments.map(d => ({
+    name: d.filename || d.name,
+    size: d.size ? `${Math.round(d.size / 1024)} KB` : 'N/A',
+    icon: d.filename?.endsWith('.pdf') ? '📄' : d.filename?.match(/\.(jpg|jpeg|png)$/i) ? '📸' : '📋',
+    type: d.category || 'document'
+  })) : [
     { name: 'Customer_Approval_JC2025-00847.pdf', size: '245 KB', icon: '📄', type: 'pdf' },
     { name: 'Vehicle_Front_Photo.jpg', size: '1.2 MB', icon: '📸', type: 'image' },
     { name: 'Vehicle_Scratch_LeftDoor.jpg', size: '890 KB', icon: '📸', type: 'image' },
