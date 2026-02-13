@@ -200,7 +200,22 @@ const ChatPage = () => {
            </div>
         ))}
 
-        {isLoading && (
+        {/* Streaming Response */}
+        {streamingText && (
+          <div className="flex gap-4">
+            <div className="w-8 h-8 rounded-full bg-surface border border-border flex items-center justify-center text-xs">
+              <Sparkles size={14} className="text-brand-orange animate-pulse" />
+            </div>
+            <div className="text-text-primary text-sm max-w-[85%]">
+              {streamingText.split('\n').map((line, i) => (
+                <p key={i} className="mb-1 last:mb-0">{line}</p>
+              ))}
+              <span className="inline-block w-2 h-4 bg-brand-orange animate-pulse ml-1"></span>
+            </div>
+          </div>
+        )}
+
+        {isLoading && !streamingText && (
            <div className="flex gap-4">
              <div className="w-8 h-8 rounded-full bg-surface border border-border flex items-center justify-center text-xs animate-pulse">
                <Brain size={14} className="text-brand-orange" />
