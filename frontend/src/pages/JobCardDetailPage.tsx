@@ -1878,13 +1878,45 @@ const ActivityTimelineSection: React.FC<ActivityTimelineSectionProps> = ({ timel
 // SECTION 13: CUSTOMER APPROVAL & DIGITAL SIGNATURE
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const CustomerApprovalSection: React.FC = () => {
-  const approvedItems = [
-    { service: 'General Service', amount: '₹2,800 (labour)' },
-    { service: 'Brake Pad Replacement', amount: '₹2,200 (parts) + ₹500 (labour)' },
-    { service: 'AC Gas Top-up', amount: '₹800' },
-    { service: 'Wheel Alignment', amount: '₹650' },
-  ];
+interface CustomerApprovalSectionProps {
+  approval: string;
+  signature?: any;
+  customer: JobCardDetail['customer'];
+  services: JobCardDetail['services'];
+  payment: JobCardDetail['payment'];
+  onSaveSignature?: (signatureImage: string, customerName: string, verifiedVia: string, otpVerified: boolean) => Promise<boolean>;
+}
+
+const CustomerApprovalSection: React.FC<CustomerApprovalSectionProps> = ({ 
+  approval, 
+  signature, 
+  customer, 
+  services, 
+  payment, 
+  onSaveSignature 
+}) => {
+  const [showSignaturePad, setShowSignaturePad] = useState(false);
+  const [savedSignature, setSavedSignature] = useState<string | null>(signature?.signature_image || null);
+  
+  const handleSaveSignature = async (signatureData: string) => {
+    if (onSaveSignature) {
+      const success = await onSaveSignature(signatureData, customer.name, 'manual', false);
+      if (success) {
+        setSavedSignature(signatureData);
+        setShowSignaturePad(false);
+      }
+    } else {
+      setSavedSignature(signatureData);
+      setShowSignaturePad(false);
+    }
+  };
+
+  const approvedItems = services.map(s => ({
+    service: s.service_type,
+    amount: `${formatCurrency(s.cost)} (labour)`
+  }));
+
+  const isApproved = approval === 'approved' || savedSignature || signature;
 
   return (
     <div style={{ padding: '0 32px 24px' }}>
@@ -1892,21 +1924,27 @@ const CustomerApprovalSection: React.FC = () => {
         <h3 style={{ fontSize: '16px', fontWeight: 600, color: styles.gray800, marginBottom: '20px' }}>✍️ Customer Approval</h3>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-          <Badge variant="success"><Check size={12} /> Customer Approved</Badge>
-          <span style={{ fontSize: '13px', color: styles.gray500 }}>Approved on: 15 Jan 2025, 11:00 AM via WhatsApp link</span>
+          {isApproved ? (
+            <>
+              <Badge variant="success"><Check size={12} /> Customer Approved</Badge>
+              <span style={{ fontSize: '13px', color: styles.gray500 }}>Approved via digital signature</span>
+            </>
+          ) : (
+            <Badge variant="warning">Awaiting Customer Approval</Badge>
+          )}
         </div>
 
         <div style={{ marginBottom: '20px' }}>
-          <div style={{ fontSize: '13px', fontWeight: 600, color: styles.gray700, marginBottom: '8px' }}>Approved items:</div>
+          <div style={{ fontSize: '13px', fontWeight: 600, color: styles.gray700, marginBottom: '8px' }}>Items to approve:</div>
           {approvedItems.map((item, idx) => (
             <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 0', fontSize: '13px' }}>
-              <span style={{ color: styles.success }}>✅</span>
+              <span style={{ color: isApproved ? styles.success : styles.gray400 }}>{isApproved ? '✅' : '☐'}</span>
               <span style={{ color: styles.gray700 }}>{item.service}</span>
               <span style={{ color: styles.gray500 }}>— {item.amount}</span>
             </div>
           ))}
           <div style={{ marginTop: '12px', fontWeight: 600, color: styles.gray900 }}>
-            Total Approved: {formatCurrency(10302)}
+            Total: {formatCurrency(payment.grand_total || 10302)}
           </div>
         </div>
 
