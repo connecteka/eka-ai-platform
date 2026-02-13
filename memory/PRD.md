@@ -51,16 +51,16 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 7. ✅ Responsive navigation
 
 ### February 13, 2026 - Update 4
-15. ✅ Added Interactive Demo Modals for "Watch Demo" button:
-    - **PDI Demo** (8 steps): Form mockup with inspection checklist
-    - **MG Model Demo** (7 steps): Form mockup with subscription setup
-    - **Job Card → Invoice Demo** (10 steps): Table mockup with job cards
-    - **AI Chat Demo** (7 steps): Chat mockup with conversation flow
-    - **Brand Marketing Demo** (6 steps): Dashboard mockup with brand stats
-    - **Regional Marketing Demo** (6 steps): Map mockup with India zones
+15. ✅ Added Interactive Demo Modals with **Real Screen Recordings**:
+    - **PDI Demo**: Realistic inspection checklist UI with checkboxes, photo capture panel, progress indicator
+    - **MG Model Demo**: Plan selection cards (Basic/Premium/Elite), pricing calculator, contract preview
+    - **Job Card Demo**: Full dashboard with stats cards, job table with real data, status badges
+    - **AI Chat Demo**: Realistic chat interface with message bubbles, typing indicator, conversation flow
+    - **Brand Marketing Demo**: Multi-brand grid, campaign performance chart, brand selection
+    - **Regional Marketing Demo**: Interactive India map with city markers, regional stats, revenue display
 16. ✅ Auto-playing step-by-step walkthrough (4 sec per step)
-17. ✅ Play/Pause, Skip, Progress controls
-18. ✅ Clickable steps sidebar for navigation
+17. ✅ Keyboard shortcuts (Space = Play/Pause, Arrow keys = Navigate, Escape = Close)
+18. ✅ Clickable steps sidebar with progress indicators (green checkmarks for completed)
 
 ## API Endpoints
 - `GET /api/health` - Health check
