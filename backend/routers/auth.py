@@ -9,12 +9,115 @@ from typing import Optional
 
 import httpx
 from fastapi import APIRouter, HTTPException, Response, Cookie, Request
+from pydantic import BaseModel
 
 from models.schemas import UserLogin, UserRegister, GoogleAuthSession
 from utils.database import users_collection, user_sessions_collection, serialize_doc
 from utils.security import hash_password, verify_password
 
 router = APIRouter(prefix="/api/auth", tags=["Authentication"])
+
+
+class GoogleTokenRequest(BaseModel):
+    """Request body for direct Google OAuth token verification."""
+    access_token: str
+
+
+@router.post("/google")
+async def google_oauth_login(request: GoogleTokenRequest, response: Response):
+    """
+    Direct Google OAuth login - verifies access token with Google and creates session.
+    REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
+    """
+    try:
+        # Verify the access token with Google's userinfo endpoint
+        async with httpx.AsyncClient() as client:
+            google_response = await client.get(
+                "https://www.googleapis.com/oauth2/v3/userinfo",
+                headers={"Authorization": f"Bearer {request.access_token}"},
+                timeout=10.0
+            )
+            
+            if google_response.status_code != 200:
+                raise HTTPException(status_code=401, detail="Invalid Google access token")
+            
+            user_info = google_response.json()
+        
+        email = user_info.get("email")
+        name = user_info.get("name", email.split("@")[0] if email else "User")
+        picture = user_info.get("picture", "")
+        
+        if not email:
+            raise HTTPException(status_code=400, detail="Email not provided by Google")
+        
+        # Check if user exists
+        existing_user = users_collection.find_one({"email": email}, {"_id": 0})
+        
+        if existing_user:
+            # Update existing user
+            users_collection.update_one(
+                {"email": email},
+                {"$set": {
+                    "name": name,
+                    "picture": picture,
+                    "updated_at": datetime.now(timezone.utc)
+                }}
+            )
+            user_id = existing_user.get("user_id")
+        else:
+            # Create new user
+            user_id = f"user_{uuid.uuid4().hex[:12]}"
+            users_collection.insert_one({
+                "user_id": user_id,
+                "email": email,
+                "name": name,
+                "picture": picture,
+                "role": "user",
+                "auth_provider": "google",
+                "created_at": datetime.now(timezone.utc),
+                "updated_at": datetime.now(timezone.utc)
+            })
+        
+        # Create session
+        session_token = f"google_session_{uuid.uuid4().hex}"
+        expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+        
+        # Remove old sessions for this user
+        user_sessions_collection.delete_many({"user_id": user_id})
+        
+        # Create new session
+        user_sessions_collection.insert_one({
+            "user_id": user_id,
+            "session_token": session_token,
+            "expires_at": expires_at,
+            "created_at": datetime.now(timezone.utc)
+        })
+        
+        # Set cookie
+        response.set_cookie(
+            key="session_token",
+            value=session_token,
+            httponly=True,
+            secure=True,
+            samesite="none",
+            path="/",
+            max_age=7 * 24 * 60 * 60
+        )
+        
+        # Get user doc for response
+        user_doc = users_collection.find_one({"user_id": user_id}, {"_id": 0, "password": 0})
+        
+        return {
+            "success": True,
+            "user": user_doc,
+            "token": session_token
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Google OAuth Error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Authentication failed: {str(e)}")
 
 
 @router.post("/google/session")
