@@ -53,10 +53,21 @@ export default function JobCardsPage() {
 
   const fetchStats = async () => {
     try {
-      const data = await jobCardService.getJobCardStats();
-      setStats(data);
+      const response = await jobCardService.getJobCardStats();
+      // Handle response format - stats might be in 'data' or directly
+      const statsData = response?.data || response || {};
+      setStats({
+        total: statsData.total || 0,
+        pending: statsData.pending || 0,
+        in_progress: statsData.in_progress || 0,
+        completed: statsData.completed || 0,
+        cancelled: statsData.cancelled || 0,
+        active: statsData.active || 0,
+        by_status: statsData.by_status || {}
+      });
     } catch (error) {
       console.error('Error fetching stats:', error);
+      setStats({ total: 0, pending: 0, in_progress: 0, completed: 0, cancelled: 0, active: 0, by_status: {} });
     }
   };
 
