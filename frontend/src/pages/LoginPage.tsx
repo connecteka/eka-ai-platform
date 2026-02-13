@@ -96,15 +96,49 @@ const LoginPage = () => {
   }, [displayedMain, displayedHighlight, isTypingMain, tagline]);
 
   // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
+  // Direct Google OAuth login - opens Google's consent screen directly
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setIsGoogleLoading(true);
+      setError(null);
+      
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || '';
+        
+        // Send the access token to backend to verify and create session
+        const response = await fetch(`${apiUrl}/api/auth/google`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ access_token: tokenResponse.access_token }),
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.token) {
+          localStorage.setItem('auth_token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          navigate('/app/dashboard');
+        } else {
+          setError(data.detail || 'Google login failed');
+        }
+      } catch (err) {
+        console.error('Google login error:', err);
+        setError('Failed to connect. Please try again.');
+      } finally {
+        setIsGoogleLoading(false);
+      }
+    },
+    onError: (error) => {
+      console.error('Google OAuth error:', error);
+      setError('Google login failed. Please try again.');
+      setIsGoogleLoading(false);
+    },
+  });
+
   const handleGoogleLogin = () => {
     setIsGoogleLoading(true);
     setError(null);
-    
-    // Build redirect URL dynamically from current origin
-    const redirectUrl = window.location.origin + '/app/dashboard';
-    
-    // Redirect to Emergent Auth
-    window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+    googleLogin();
   };
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
