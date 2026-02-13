@@ -283,7 +283,7 @@ export default function InvoicesPage() {
                 <div className="flex items-center gap-6">
                   <div className="text-right">
                     <p className="text-lg font-bold text-gray-900">
-                      {formatCurrency(invoice.grand_total)}
+                      {formatCurrency(getGrandTotal(invoice))}
                     </p>
                     <p className="text-xs text-gray-500">
                       {invoice.tax_type === 'CGST_SGST' ? 'CGST/SGST' : 'IGST'}
