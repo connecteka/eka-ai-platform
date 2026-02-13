@@ -312,14 +312,105 @@ Vehicle Context:
 
 
 # ==================== AI CHAT SSE STREAMING ====================
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, FileResponse
+from fastapi import File, UploadFile
 import asyncio
 import json
+import io
 
 class ChatStreamRequest(BaseModel):
     message: str
     context: Optional[Dict[str, Any]] = None
     session_id: Optional[str] = None
+
+
+class ChatSessionCreate(BaseModel):
+    title: Optional[str] = None
+    context: Optional[Dict[str, Any]] = None
+
+
+class ChatMessageSave(BaseModel):
+    session_id: str
+    role: str
+    content: str
+
+
+# ==================== CHAT SESSIONS CRUD ====================
+
+@app.post("/api/chat/sessions", status_code=201)
+def create_chat_session(session_data: ChatSessionCreate):
+    """Create a new chat session."""
+    session_id = f"chat-{uuid.uuid4().hex[:12]}"
+    doc = {
+        "session_id": session_id,
+        "title": session_data.title or "New Conversation",
+        "context": session_data.context or {},
+        "messages": [],
+        "created_at": datetime.now(timezone.utc),
+        "updated_at": datetime.now(timezone.utc)
+    }
+    result = chat_sessions_collection.insert_one(doc)
+    doc["_id"] = result.inserted_id
+    return {"success": True, "data": serialize_doc(doc), "session_id": session_id}
+
+
+@app.get("/api/chat/sessions")
+def get_chat_sessions(limit: int = Query(20, ge=1, le=100)):
+    """Get all chat sessions, ordered by most recent."""
+    cursor = chat_sessions_collection.find({}).sort("updated_at", -1).limit(limit)
+    docs = list(cursor)
+    return {"success": True, "sessions": serialize_docs(docs)}
+
+
+@app.get("/api/chat/sessions/{session_id}")
+def get_chat_session(session_id: str):
+    """Get a single chat session with all messages."""
+    doc = chat_sessions_collection.find_one({"session_id": session_id})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Chat session not found")
+    return {"success": True, "data": serialize_doc(doc)}
+
+
+@app.post("/api/chat/sessions/{session_id}/messages")
+def add_message_to_session(session_id: str, message: ChatMessageSave):
+    """Add a message to an existing chat session."""
+    msg_doc = {
+        "id": uuid.uuid4().hex[:8],
+        "role": message.role,
+        "content": message.content,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+    
+    # Update title based on first user message
+    session = chat_sessions_collection.find_one({"session_id": session_id})
+    update_data = {
+        "$push": {"messages": msg_doc},
+        "$set": {"updated_at": datetime.now(timezone.utc)}
+    }
+    
+    # Auto-generate title from first user message
+    if session and session.get("title") == "New Conversation" and message.role == "user":
+        title = message.content[:50] + "..." if len(message.content) > 50 else message.content
+        update_data["$set"]["title"] = title
+    
+    result = chat_sessions_collection.update_one(
+        {"session_id": session_id},
+        update_data
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Chat session not found")
+    
+    return {"success": True, "message": msg_doc}
+
+
+@app.delete("/api/chat/sessions/{session_id}")
+def delete_chat_session(session_id: str):
+    """Delete a chat session."""
+    result = chat_sessions_collection.delete_one({"session_id": session_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Chat session not found")
+    return {"success": True, "message": "Session deleted"}
 
 
 @app.post("/api/chat/stream")
