@@ -1,16 +1,22 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Send, Paperclip, Mic, Brain } from 'lucide-react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { Send, Paperclip, Mic, Brain, Zap, Sparkles } from 'lucide-react';
 import { geminiService } from '../services/geminiService';
 import { useJobCard } from '../hooks/useJobCard';
 import { JobStatus, IntelligenceMode, OperatingMode } from '../types';
+
+const API_URL = import.meta.env.VITE_API_URL || '';
 
 const ChatPage = () => {
   const [messages, setMessages] = useState<{role: string, parts: {text: string}[]}[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setLoading] = useState(false);
+  const [streamingText, setStreamingText] = useState('');
+  const [useStreaming, setUseStreaming] = useState(true);
   const [mode, setMode] = useState<IntelligenceMode>('FAST');
   const [status, setStatus] = useState<JobStatus>('CREATED');
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
   
   // Connect to Job Card system
   const [jobCardState, jobCardActions] = useJobCard();
@@ -19,19 +25,109 @@ const ChatPage = () => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, streamingText]);
 
-  const handleSend = async () => {
+  // SSE Streaming handler
+  const handleStreamingSend = useCallback(async () => {
     if (!input.trim()) return;
 
-    // 1. Add User Message
+    const userMsg = { role: 'user', parts: [{ text: input }] };
+    setMessages(prev => [...prev, userMsg]);
+    const userInput = input;
+    setInput('');
+    setLoading(true);
+    setStreamingText('');
+
+    // Create abort controller for cancellation
+    abortControllerRef.current = new AbortController();
+
+    try {
+      const response = await fetch(`${API_URL}/api/chat/stream`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: userInput,
+          context: jobCardState.vehicleData || undefined,
+          session_id: sessionId
+        }),
+        signal: abortControllerRef.current.signal
+      });
+
+      if (!response.ok) throw new Error('Stream request failed');
+
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error('No reader available');
+
+      const decoder = new TextDecoder();
+      let fullText = '';
+      let currentSessionId = sessionId;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value);
+        const lines = chunk.split('\n');
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            try {
+              const data = JSON.parse(line.slice(6));
+              
+              if (data.type === 'start') {
+                currentSessionId = data.session_id;
+                setSessionId(data.session_id);
+              } else if (data.type === 'chunk') {
+                fullText += data.content;
+                setStreamingText(fullText);
+              } else if (data.type === 'done') {
+                // Handle completion
+                setStreamingText('');
+                setMessages(prev => [...prev, { role: 'model', parts: [{ text: data.full_text }] }]);
+                
+                // Handle job card trigger
+                if (data.show_orange_border && !jobCardState.jobCard) {
+                  const regMatch = userInput.match(/([A-Z]{2}[\s-]?\d{1,2}[\s-]?[A-Z]{0,2}[\s-]?\d{1,4})/i);
+                  jobCardActions.initializeJobCard({
+                    vehicleType: '4W',
+                    brand: '',
+                    model: '',
+                    year: '',
+                    fuelType: '',
+                    registrationNumber: regMatch ? regMatch[1].toUpperCase() : 'NEW-VEHICLE',
+                  });
+                }
+              } else if (data.type === 'error') {
+                setMessages(prev => [...prev, { role: 'model', parts: [{ text: `Error: ${data.content}` }] }]);
+              }
+            } catch (e) {
+              // Skip invalid JSON
+            }
+          }
+        }
+      }
+    } catch (error: any) {
+      if (error.name !== 'AbortError') {
+        console.error('Streaming error:', error);
+        setMessages(prev => [...prev, { role: 'model', parts: [{ text: 'Connection error. Falling back to standard mode.' }] }]);
+      }
+    } finally {
+      setLoading(false);
+      setStreamingText('');
+      abortControllerRef.current = null;
+    }
+  }, [input, jobCardState, sessionId, jobCardActions]);
+
+  // Standard (non-streaming) handler
+  const handleStandardSend = async () => {
+    if (!input.trim()) return;
+
     const userMsg = { role: 'user', parts: [{ text: input }] };
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setLoading(true);
 
     try {
-      // 2. Call AI Service with existing history
       const response = await geminiService.sendMessage(
         [...messages, userMsg], 
         jobCardState.vehicleData || undefined,
@@ -40,14 +136,11 @@ const ChatPage = () => {
         0 as OperatingMode
       );
       
-      // 3. Add AI Response
       const aiText = response.response_content?.visual_text || "System processing...";
       const aiMsg = { role: 'model', parts: [{ text: aiText }] };
       setMessages(prev => [...prev, aiMsg]);
 
-      // 4. Handle "Side Effects" - Initialize Job Card if AI signals
       if (response.ui_triggers?.show_orange_border && !jobCardState.jobCard) {
-        // Extract registration from message or use default
         const regMatch = input.match(/([A-Z]{2}[\s-]?\d{1,2}[\s-]?[A-Z]{0,2}[\s-]?\d{1,4})/i);
         jobCardActions.initializeJobCard({
           vehicleType: '4W',
@@ -59,7 +152,6 @@ const ChatPage = () => {
         });
       }
 
-      // Update status if provided
       if (response.job_status_update) {
         setStatus(response.job_status_update);
       }
@@ -71,6 +163,8 @@ const ChatPage = () => {
       setLoading(false);
     }
   };
+
+  const handleSend = useStreaming ? handleStreamingSend : handleStandardSend;
 
   return (
     <div className="flex flex-col h-full max-w-3xl mx-auto w-full">
