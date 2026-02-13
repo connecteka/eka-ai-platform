@@ -282,14 +282,20 @@ const LoginPage = () => {
 
       {/* Mobile Video Section */}
       <div className="lg:hidden w-full h-64 sm:h-80 bg-[#1A1915] relative overflow-hidden">
+        <img 
+          src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1920&q=80"
+          alt="Team collaboration"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
         <video
           autoPlay
           muted
           loop
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
+          poster="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1920&q=80"
         >
-          <source src={videoUrl} type="video/mp4" />
+          <source src="https://cdn.coverr.co/videos/coverr-typing-on-computer-keyboard-8668/1080p.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
         <div className="absolute bottom-4 left-4 right-4">
