@@ -4,6 +4,7 @@ import {
   Send, 
   Paperclip, 
   Mic, 
+  MicOff,
   Brain, 
   Zap, 
   Sparkles, 
@@ -14,7 +15,8 @@ import {
   Car,
   Wrench,
   FileCheck,
-  Truck
+  Truck,
+  Loader2
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { geminiService } from '../services/geminiService';
