@@ -50,19 +50,18 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 6. ✅ Dark theme implementation
 7. ✅ Responsive navigation
 
-### February 13, 2026 - Update 2
-8. ✅ Redesigned Login page to match Claude.ai style
-   - Beige/cream background (#F5F1EB)
-   - Large serif tagline with **animated typing effect**
-   - **Daily rotating taglines** (7 different taglines)
-   - Google login button
-   - Two-step email login flow
-   - Video/image on right side
-   - Fully responsive (mobile, tablet, desktop)
-   - Navigation header with dropdown indicators
-   - **EKA-AI Mascot (elephant)** in header and welcome card
-   - **eka-ai brand text** with "Governed Automobile Intelligence" subtitle
-9. ✅ Landing page removed - Login now at root /
+### February 13, 2026 - Update 3
+10. ✅ Added Feature Video Carousel with 6 slides:
+    - **PDI Process** (green) - 120+ point inspection, photo documentation, digital signatures
+    - **MG Model** (blue) - Fixed monthly subscription, unlimited visits, genuine parts
+    - **Job Card → Invoice** (orange) - One-click creation, real-time tracking, auto GST
+    - **AI Chat Assistant** (purple) - Instant diagnostics, cost estimates, multi-language
+    - **Brand Marketing** (cyan) - Multi-brand dashboard, custom themes, analytics
+    - **Regional Marketing** (amber) - Geo-targeted campaigns, city-wise analytics
+11. ✅ Auto-rotation every 6 seconds with progress indicator
+12. ✅ Navigation arrows and clickable slide dots
+13. ✅ Animated gradient backgrounds with floating particles
+14. ✅ Mobile feature showcase with grid layout
 
 ## API Endpoints
 - `GET /api/health` - Health check
