@@ -612,11 +612,31 @@ const ChatPage: React.FC = () => {
                   )}
                 </button>
                 <button 
-                  className="p-2 text-text-muted hover:text-text-primary hover:bg-background-alt rounded-lg transition-colors"
-                  title="Voice input"
+                  onClick={handleVoiceButton}
+                  disabled={isTranscribing}
+                  className={clsx(
+                    "p-2 rounded-lg transition-colors relative",
+                    isRecording 
+                      ? "bg-red-500/20 text-red-400 hover:bg-red-500/30" 
+                      : isTranscribing
+                        ? "bg-brand-orange/20 text-brand-orange"
+                        : "text-text-muted hover:text-text-primary hover:bg-background-alt"
+                  )}
+                  title={isRecording ? "Stop recording" : "Voice input"}
                   data-testid="voice-input-btn"
                 >
-                  <Mic className="w-5 h-5" />
+                  {isTranscribing ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : isRecording ? (
+                    <>
+                      <MicOff className="w-5 h-5" />
+                      <span className="absolute -top-1 -right-1 text-[10px] bg-red-500 text-white px-1 rounded">
+                        {formatTime(recordingTime)}
+                      </span>
+                    </>
+                  ) : (
+                    <Mic className="w-5 h-5" />
+                  )}
                 </button>
               </div>
               
