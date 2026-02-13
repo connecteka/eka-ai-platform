@@ -247,14 +247,16 @@ export default function JobCardsPage() {
       )}
 
       {/* Job Cards Table */}
-      <JobCardTable
-        jobCards={jobCards}
-        onView={handleViewJobCard}
-        onEdit={handleEditJobCard}
-        onDelete={handleDeleteJobCard}
-        onTransition={handleTransition}
-        isLoading={loading}
-      />
+      <div data-testid="job-cards-table">
+        <JobCardTable
+          jobCards={jobCards}
+          onView={handleViewJobCard}
+          onEdit={handleEditJobCard}
+          onDelete={handleDeleteJobCard}
+          onTransition={handleTransition}
+          isLoading={loading}
+        />
+      </div>
 
       {/* New Job Card Modal */}
       <Modal
