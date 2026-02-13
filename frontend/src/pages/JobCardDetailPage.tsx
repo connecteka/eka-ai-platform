@@ -988,7 +988,7 @@ const ServiceDetailsSection: React.FC<ServiceDetailsSectionProps> = ({ services 
                   onMouseLeave={(e) => e.currentTarget.style.background = idx % 2 === 0 ? styles.white : styles.gray50}
                 >
                   <td style={{ padding: '14px 16px', fontSize: '14px', color: styles.gray700, borderBottom: `1px solid ${styles.gray100}` }}>{service.id}</td>
-                  <td style={{ padding: '14px 16px', fontSize: '14px', color: styles.gray900, fontWeight: 500, borderBottom: `1px solid ${styles.gray100}` }}>{service.type}</td>
+                  <td style={{ padding: '14px 16px', fontSize: '14px', color: styles.gray900, fontWeight: 500, borderBottom: `1px solid ${styles.gray100}` }}>{service.service_type || service.type}</td>
                   <td style={{ padding: '14px 16px', fontSize: '13px', color: styles.gray600, borderBottom: `1px solid ${styles.gray100}`, maxWidth: '300px' }}>{service.description}</td>
                   <td style={{ padding: '14px 16px', fontSize: '14px', color: styles.gray700, borderBottom: `1px solid ${styles.gray100}` }}>{service.technician}</td>
                   <td style={{ padding: '14px 16px', borderBottom: `1px solid ${styles.gray100}` }}>
@@ -998,8 +998,8 @@ const ServiceDetailsSection: React.FC<ServiceDetailsSectionProps> = ({ services 
                     </div>
                   </td>
                   <td style={{ padding: '14px 16px', borderBottom: `1px solid ${styles.gray100}` }}>{getStatusBadge(service.status)}</td>
-                  <td style={{ padding: '14px 16px', fontSize: '14px', color: styles.gray700, fontFamily: styles.fontMono, borderBottom: `1px solid ${styles.gray100}` }}>{service.estTime}</td>
-                  <td style={{ padding: '14px 16px', fontSize: '14px', color: styles.gray700, fontFamily: styles.fontMono, borderBottom: `1px solid ${styles.gray100}` }}>{service.actualTime}</td>
+                  <td style={{ padding: '14px 16px', fontSize: '14px', color: styles.gray700, fontFamily: styles.fontMono, borderBottom: `1px solid ${styles.gray100}` }}>{service.estimated_time || service.estTime}</td>
+                  <td style={{ padding: '14px 16px', fontSize: '14px', color: styles.gray700, fontFamily: styles.fontMono, borderBottom: `1px solid ${styles.gray100}` }}>{service.actual_time || service.actualTime || '—'}</td>
                   <td style={{ padding: '14px 16px', borderBottom: `1px solid ${styles.gray100}` }}>
                     <Button size="sm" variant="ghost" style={{ padding: '4px 8px' }}><Eye size={14} /> View</Button>
                   </td>
