@@ -129,6 +129,16 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
     - Error handling with user-friendly messages
     - All tests passed (11/11 backend, all frontend UI flows)
 
+### February 13, 2026 - Update 11 (Video Demo Recordings)
+39. ✅ **Feature Video Carousel with Real Recordings** (User Video Request):
+    - Created actual screen recordings of app features using Playwright
+    - Videos auto-play in the feature carousel on login page
+    - "Live Recording" badge displayed on each video
+    - Recorded demos: PDI Process, Job Cards, AI Chat, Dashboard
+    - Videos stored in `/videos/*.webm` format
+    - Each carousel slide now shows the actual app in action
+    - Videos loop continuously with muted audio
+
 ## Routes
 ### App Routes (Sidebar Navigation)
 - `/` - Login Page (default)
