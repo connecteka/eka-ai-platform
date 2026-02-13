@@ -733,9 +733,9 @@ const VehicleCustomerInfo: React.FC<VehicleCustomerInfoProps> = ({ vehicle, cust
         {/* Stats */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginBottom: '16px' }}>
           {[
-            { value: '7', label: 'Visits', color: styles.ekaOrange },
-            { value: '₹42,800', label: 'Lifetime', color: styles.g4gPurple },
-            { value: '4.8⭐', label: 'Rating', color: styles.warning },
+            { value: customer.total_visits?.toString() || '0', label: 'Visits', color: styles.ekaOrange },
+            { value: formatCurrencyValue(customer.lifetime_value || 0), label: 'Lifetime', color: styles.g4gPurple },
+            { value: `${customer.rating || 0}⭐`, label: 'Rating', color: styles.warning },
           ].map((stat, idx) => (
             <div key={idx} style={{
               background: styles.gray50,
@@ -754,7 +754,7 @@ const VehicleCustomerInfo: React.FC<VehicleCustomerInfoProps> = ({ vehicle, cust
         <div style={{ marginBottom: '16px' }}>
           <div style={{ fontSize: '11px', color: styles.gray400, textTransform: 'uppercase', marginBottom: '8px' }}>Customer Preferences (EKA-AI detected)</div>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-            {['Prefers SMS updates', 'Usually pays via UPI', 'Visits every 4 months'].map((pref, idx) => (
+            {(customer.preferences?.length ? customer.preferences : ['Prefers SMS updates', 'Usually pays via UPI']).map((pref, idx) => (
               <span key={idx} style={{
                 background: styles.ekaOrangeSuperLight,
                 color: styles.gray600,
@@ -775,7 +775,7 @@ const VehicleCustomerInfo: React.FC<VehicleCustomerInfoProps> = ({ vehicle, cust
           fontSize: '13px',
           color: styles.gray600,
         }}>
-          <span style={{ fontWeight: 600 }}>🤖 EKA-AI:</span> High retention score. Customer has referred 2 others. VIP treatment recommended.
+          <span style={{ fontWeight: 600 }}>🤖 EKA-AI:</span> {customer.total_visits > 5 ? 'High retention score. VIP treatment recommended.' : 'New customer. Focus on service quality.'}
         </div>
       </Card>
     </div>
@@ -786,8 +786,32 @@ const VehicleCustomerInfo: React.FC<VehicleCustomerInfoProps> = ({ vehicle, cust
 // SECTION 5: PRE-INSPECTION CHECKLIST + VEHICLE PHOTOS
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const PreInspectionSection: React.FC = () => {
-  const checklistData = {
+interface PreInspectionSectionProps {
+  preInspection: Record<string, any>;
+  photos: any[];
+  onUpload?: (file: File, category: string) => Promise<any>;
+}
+
+const PreInspectionSection: React.FC<PreInspectionSectionProps> = ({ preInspection, photos, onUpload }) => {
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !onUpload) return;
+    
+    setUploading(true);
+    try {
+      await onUpload(file, 'vehicle_photo');
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const checklistData = preInspection?.exterior ? preInspection : {
     exterior: [
       { item: 'Body condition', status: 'ok', note: 'No dents' },
       { item: 'Windshield', status: 'ok', note: 'No cracks' },
