@@ -1101,15 +1101,15 @@ const PartsInventorySection: React.FC<PartsInventorySectionProps> = ({ parts }) 
                   onMouseLeave={(e) => e.currentTarget.style.background = idx % 2 === 0 ? styles.white : styles.gray50}>
                   <td style={{ padding: '14px 16px', fontSize: '14px', color: styles.gray700, borderBottom: `1px solid ${styles.gray100}` }}>{part.id}</td>
                   <td style={{ padding: '14px 16px', fontSize: '14px', color: styles.gray900, fontWeight: 500, borderBottom: `1px solid ${styles.gray100}` }}>{part.name}</td>
-                  <td style={{ padding: '14px 16px', fontSize: '13px', color: styles.gray600, fontFamily: styles.fontMono, borderBottom: `1px solid ${styles.gray100}` }}>{part.partNumber}</td>
+                  <td style={{ padding: '14px 16px', fontSize: '13px', color: styles.gray600, fontFamily: styles.fontMono, borderBottom: `1px solid ${styles.gray100}` }}>{part.part_number || part.partNumber}</td>
                   <td style={{ padding: '14px 16px', fontSize: '14px', color: styles.gray700, borderBottom: `1px solid ${styles.gray100}` }}>{part.category}</td>
-                  <td style={{ padding: '14px 16px', fontSize: '14px', color: styles.gray700, borderBottom: `1px solid ${styles.gray100}` }}>{part.qty}</td>
-                  <td style={{ padding: '14px 16px', fontSize: '14px', color: styles.gray700, textAlign: 'right', fontVariantNumeric: 'tabular-nums', borderBottom: `1px solid ${styles.gray100}` }}>{formatCurrency(part.unitPrice)}</td>
+                  <td style={{ padding: '14px 16px', fontSize: '14px', color: styles.gray700, borderBottom: `1px solid ${styles.gray100}` }}>{part.quantity || part.qty}</td>
+                  <td style={{ padding: '14px 16px', fontSize: '14px', color: styles.gray700, textAlign: 'right', fontVariantNumeric: 'tabular-nums', borderBottom: `1px solid ${styles.gray100}` }}>{formatCurrency(part.unit_price || part.unitPrice || 0)}</td>
                   <td style={{ padding: '14px 16px', fontSize: '14px', color: styles.gray900, fontWeight: 600, textAlign: 'right', fontVariantNumeric: 'tabular-nums', borderBottom: `1px solid ${styles.gray100}` }}>{formatCurrency(part.total)}</td>
                   <td style={{ padding: '14px 16px', borderBottom: `1px solid ${styles.gray100}` }}>
-                    {part.warranty !== '—' ? <Badge variant="info" size="sm">{part.warranty}</Badge> : <span style={{ color: styles.gray400 }}>—</span>}
+                    {part.warranty && part.warranty !== '—' ? <Badge variant="info" size="sm">{part.warranty}</Badge> : <span style={{ color: styles.gray400 }}>—</span>}
                   </td>
-                  <td style={{ padding: '14px 16px', borderBottom: `1px solid ${styles.gray100}` }}>{getAvailabilityBadge(part.availability, part.availabilityNote)}</td>
+                  <td style={{ padding: '14px 16px', borderBottom: `1px solid ${styles.gray100}` }}>{getAvailabilityBadge(part.availability, part.availability_note || part.availabilityNote)}</td>
                 </tr>
               ))}
             </tbody>
