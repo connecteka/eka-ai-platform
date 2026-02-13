@@ -368,7 +368,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
 
         {/* User Info */}
         {!collapsed && user && (
-          <div className="flex items-center gap-3 px-3 py-2 mt-1">
+          <div className="flex items-center gap-3 px-3 py-2 mt-1" data-testid="user-profile">
             <div className="w-8 h-8 rounded-full bg-brand-orange/20 border border-brand-orange/30 flex items-center justify-center flex-shrink-0">
               <span className="text-xs font-medium text-brand-orange">
                 {user.email?.[0]?.toUpperCase() || user.name?.[0]?.toUpperCase() || 'U'}
