@@ -2158,6 +2158,32 @@ const Footer: React.FC = () => {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const JobCardDetailPage: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const { data, insights, loading, error, addNote, saveSignature, uploadPhoto } = useJobCardDetail(id);
+  
+  // Use API data or fall back to sample data
+  const jobCardData = data || defaultJobCardData;
+  const insightsData = insights || defaultInsightsData;
+
+  // Loading state
+  if (loading) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        background: styles.white,
+        fontFamily: styles.fontPrimary,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <Loader2 size={48} color={styles.ekaOrange} style={{ animation: 'spin 1s linear infinite' }} />
+          <p style={{ marginTop: '16px', color: styles.gray500 }}>Loading job card details...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -2169,53 +2195,64 @@ const JobCardDetailPage: React.FC = () => {
       
       <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         {/* Section 2 */}
-        <JobCardHeader />
+        <JobCardHeader jobCard={jobCardData} />
         
         {/* Section 3 */}
         <QuickActionsBar />
         
         {/* Section 4 */}
-        <VehicleCustomerInfo />
+        <VehicleCustomerInfo vehicle={jobCardData.vehicle} customer={jobCardData.customer} />
         
         {/* Section 5 */}
-        <PreInspectionSection />
+        <PreInspectionSection preInspection={jobCardData.pre_inspection} photos={jobCardData.photos} onUpload={uploadPhoto} />
         
         {/* Section 6 */}
-        <ServiceDetailsSection />
+        <ServiceDetailsSection services={jobCardData.services} />
         
         {/* Section 7 */}
-        <PartsInventorySection />
+        <PartsInventorySection parts={jobCardData.parts} />
         
         {/* Section 8 */}
-        <CostPaymentSection />
+        <CostPaymentSection payment={jobCardData.payment} />
       </div>
       
       {/* Section 9 - EKA-AI Hero - Full bleed within max-width */}
       <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-        <EkaAIInsightsPanel />
+        <EkaAIInsightsPanel insights={insightsData.insights} />
       </div>
       
       <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         {/* Section 10 */}
-        <VehicleHealthScore />
+        <VehicleHealthScore healthScore={insightsData.health_score} />
         
         {/* Section 11 */}
         <ServiceHistorySection />
         
         {/* Section 12 */}
-        <ActivityTimelineSection />
+        <ActivityTimelineSection 
+          timeline={jobCardData.timeline} 
+          notes={jobCardData.notes} 
+          onAddNote={addNote} 
+        />
         
         {/* Section 13 */}
-        <CustomerApprovalSection />
+        <CustomerApprovalSection 
+          approval={jobCardData.approval_status}
+          signature={jobCardData.signature}
+          customer={jobCardData.customer}
+          services={jobCardData.services}
+          payment={jobCardData.payment}
+          onSaveSignature={saveSignature}
+        />
         
         {/* Section 14 */}
-        <CustomerFeedbackSection />
+        <CustomerFeedbackSection feedback={jobCardData.feedback} />
         
         {/* Section 15 */}
-        <DocumentAttachmentsSection />
+        <DocumentAttachmentsSection documents={jobCardData.documents} onUpload={uploadPhoto} />
         
         {/* Section 16 */}
-        <RelatedJobCardsSection />
+        <RelatedJobCardsSection relatedCards={jobCardData.related_job_cards} />
       </div>
       
       {/* Section 17 - Footer Full Width */}
