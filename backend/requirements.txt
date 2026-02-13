@@ -1,27 +1,86 @@
-fastapi==0.110.1
-uvicorn==0.25.0
-boto3>=1.34.129
-requests-oauthlib>=2.0.0
-cryptography>=42.0.8
-python-dotenv>=1.0.1
-pymongo==4.5.0
-pydantic>=2.6.4
-email-validator>=2.2.0
-pyjwt>=2.10.1
-bcrypt==4.1.3
-passlib>=1.7.4
-tzdata>=2024.2
-motor==3.3.1
-pytest>=8.0.0
-black>=24.1.1
-isort>=5.13.2
-flake8>=7.0.0
-mypy>=1.8.0
-python-jose>=3.3.0
+flask>=2.3.2
+flask-cors>=4.0.0
+flask-limiter>=3.0.0
+python-dotenv>=1.0.0
+google-generativeai>=0.3.0
+supabase>=2.0.0
+PyJWT>=2.8.0
+gunicorn>=21.2.0
+werkzeug>=3.0.0
+redis>=5.0.0
+
+# AI Clients
+anthropic>=0.18.0
+openai>=1.12.0
+
+# LangChain
+langchain>=0.3.0
+langchain-core>=0.3.0
+langchain-openai>=0.2.0
+langchain-google-genai>=2.0.0
+langchain-text-splitters>=0.3.0
+
+# LlamaIndex - OPTIONAL (Heavy ML dependencies, disabled for standard deployment)
+# Uncomment if deploying with ML resources (min 2GB RAM, 1 CPU)
+# llama-index>=0.12.0
+# llama-index-embeddings-openai>=0.3.0
+# llama-index-embeddings-huggingface>=0.4.0
+# llama-index-vector-stores-supabase>=0.3.0
+# llama-index-llms-openai>=0.3.0
+
+# Vector Embeddings - OPTIONAL (Large models, disabled for standard deployment)
+# sentence-transformers>=3.0.0
+
+# Optional File Validation
+python-magic>=0.4.27
+
+# PDF Generation (WeasyPrint dependencies)
+weasyprint>=60.0
+cffi>=1.16.0
+cairocffi>=1.6.0
+
+# Communication Services
+resend>=2.0.0
 requests>=2.31.0
-pandas>=2.2.0
-numpy>=1.26.0
-python-multipart>=0.0.9
-jq>=1.6.0
-typer>=0.9.0
-emergentintegrations==0.1.0
+
+# Data Processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# PDF Parsing for RAG
+PyPDF2>=3.0.0
+
+# Phase 3: Distributed Systems
+redis>=5.0.0
+redisvl>=0.1.0
+APScheduler>=3.10.0
+Flask-Limiter>=3.5.0
+psutil>=5.9.0
+
+# Sentry for error tracking
+sentry-sdk[flask]>=1.40.0
+
+# AWS S3 / Backblaze B2 / DigitalOcean Spaces for backups
+boto3>=1.34.0
+botocore>=1.34.0
+
+# ─────────────────────────────────────────────────────────────────
+# 2026 ENTERPRISE READINESS - NEW ADDITIONS
+# ─────────────────────────────────────────────────────────────────
+
+# Observability & Structured Logging
+structlog>=24.1.0
+
+# RAG Evaluation (AI Quality)
+ragas>=0.1.0
+datasets>=2.16.0
+
+# Task Queue (RBI Pre-Debit Notifications)
+celery>=5.3.6
+
+# Vector Store Client (for DPDP Erasure)
+pinecone-client>=3.1.0
+
+# FastAPI (for Cloud Run deployment)
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
