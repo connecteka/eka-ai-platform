@@ -26,6 +26,14 @@ chat_sessions_collection = db["chat_sessions"]
 users_collection = db["users"]
 user_sessions_collection = db["user_sessions"]
 files_collection = db["files"]
+vehicles_collection = db["vehicles"]
+customers_collection = db["customers"]
+services_collection = db["services"]
+parts_collection = db["parts"]
+job_card_notes_collection = db["job_card_notes"]
+job_card_timeline_collection = db["job_card_timeline"]
+signatures_collection = db["signatures"]
+notifications_collection = db["notifications"]
 
 
 def serialize_doc(doc: dict) -> dict:
