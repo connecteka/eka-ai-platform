@@ -1545,15 +1545,19 @@ const EkaAIInsightsPanel: React.FC<EkaAIInsightsPanelProps> = ({ insights: apiIn
 // SECTION 10: VEHICLE HEALTH SCORE
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const VehicleHealthScore: React.FC = () => {
-  const overallScore = 78;
+interface VehicleHealthScoreProps {
+  healthScore: InsightsData['health_score'];
+}
+
+const VehicleHealthScore: React.FC<VehicleHealthScoreProps> = ({ healthScore }) => {
+  const overallScore = healthScore?.overall || 78;
   const subScores = [
-    { system: 'Engine', score: 92, condition: 'Great' },
-    { system: 'Brakes', score: 65, condition: 'Fair' },
-    { system: 'Tyres', score: 80, condition: 'Good' },
-    { system: 'AC', score: 55, condition: 'Needs Service' },
-    { system: 'Electrical', score: 95, condition: 'Great' },
-    { system: 'Body', score: 88, condition: 'Good' },
+    { system: 'Engine', score: healthScore?.engine || 92, condition: healthScore?.engine >= 80 ? 'Great' : 'Good' },
+    { system: 'Brakes', score: healthScore?.brakes || 65, condition: healthScore?.brakes >= 80 ? 'Great' : healthScore?.brakes >= 60 ? 'Fair' : 'Needs Service' },
+    { system: 'Tyres', score: healthScore?.tyres || 80, condition: healthScore?.tyres >= 80 ? 'Good' : 'Fair' },
+    { system: 'AC', score: healthScore?.ac || 55, condition: healthScore?.ac >= 70 ? 'Good' : 'Needs Service' },
+    { system: 'Electrical', score: healthScore?.electrical || 95, condition: healthScore?.electrical >= 80 ? 'Great' : 'Good' },
+    { system: 'Body', score: healthScore?.body || 88, condition: healthScore?.body >= 80 ? 'Good' : 'Fair' },
   ];
 
   const getScoreColor = (score: number) => {
