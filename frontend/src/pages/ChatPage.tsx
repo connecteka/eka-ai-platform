@@ -233,12 +233,26 @@ const ChatPage = () => {
       <div className="p-4 pb-6">
         {/* Mode Toggle */}
         <div className="flex items-center justify-between mb-2 px-1 max-w-3xl mx-auto">
-          <button 
-            onClick={() => setMode(mode === 'FAST' ? 'THINKING' : 'FAST')}
-            className="flex items-center gap-2 text-xs font-medium text-text-secondary bg-surface px-3 py-1.5 rounded-full hover:bg-[#333] transition-colors border border-border"
-          >
-            {mode === 'FAST' ? '⚡ FAST (Gemini)' : '🧠 THINKING (Claude)'}
-          </button>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => setMode(mode === 'FAST' ? 'THINKING' : 'FAST')}
+              className="flex items-center gap-2 text-xs font-medium text-text-secondary bg-surface px-3 py-1.5 rounded-full hover:bg-[#333] transition-colors border border-border"
+            >
+              {mode === 'FAST' ? '⚡ FAST (Gemini)' : '🧠 THINKING (Claude)'}
+            </button>
+            <button 
+              onClick={() => setUseStreaming(!useStreaming)}
+              className={`flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full transition-colors border ${
+                useStreaming 
+                  ? 'bg-brand-orange/20 text-brand-orange border-brand-orange/30' 
+                  : 'bg-surface text-text-secondary border-border hover:bg-[#333]'
+              }`}
+              title={useStreaming ? 'SSE Streaming enabled' : 'Standard mode'}
+            >
+              <Zap size={12} className={useStreaming ? 'animate-pulse' : ''} />
+              {useStreaming ? 'Streaming' : 'Standard'}
+            </button>
+          </div>
         </div>
 
         <div className="bg-surface border border-border rounded-2xl shadow-lg p-2 focus-within:ring-1 focus-within:ring-brand-orange transition-all max-w-3xl mx-auto">
