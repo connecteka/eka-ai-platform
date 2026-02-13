@@ -1,10 +1,18 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, Paperclip, Mic, Brain, Zap, Sparkles } from 'lucide-react';
+import { Send, Paperclip, Mic, Brain, Zap, Sparkles, Plus, MessageSquare, Trash2, ChevronLeft, ChevronRight, Upload, X, FileText, Image as ImageIcon } from 'lucide-react';
 import { geminiService } from '../services/geminiService';
 import { useJobCard } from '../hooks/useJobCard';
 import { JobStatus, IntelligenceMode, OperatingMode } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
+
+interface ChatSession {
+  id: string;
+  session_id: string;
+  title: string;
+  updated_at: string;
+  messages: { role: string; content: string; timestamp: string }[];
+}
 
 const ChatPage = () => {
   const [messages, setMessages] = useState<{role: string, parts: {text: string}[]}[]>([]);
@@ -15,11 +23,21 @@ const ChatPage = () => {
   const [mode, setMode] = useState<IntelligenceMode>('FAST');
   const [status, setStatus] = useState<JobStatus>('CREATED');
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [sessions, setSessions] = useState<ChatSession[]>([]);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [uploadingFile, setUploadingFile] = useState(false);
+  const [attachedFile, setAttachedFile] = useState<{ name: string; url: string } | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Connect to Job Card system
   const [jobCardState, jobCardActions] = useJobCard();
+
+  // Load chat sessions on mount
+  useEffect(() => {
+    fetchSessions();
+  }, []);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -27,18 +45,144 @@ const ChatPage = () => {
     }
   }, [messages, streamingText]);
 
+  const fetchSessions = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/chat/sessions`);
+      if (response.ok) {
+        const data = await response.json();
+        setSessions(data.sessions || []);
+      }
+    } catch (error) {
+      console.error('Error fetching sessions:', error);
+    }
+  };
+
+  const createNewSession = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/chat/sessions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: 'New Conversation' })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setSessionId(data.session_id);
+        setMessages([]);
+        fetchSessions();
+      }
+    } catch (error) {
+      console.error('Error creating session:', error);
+    }
+  };
+
+  const loadSession = async (session: ChatSession) => {
+    setSessionId(session.session_id);
+    
+    // Convert stored messages to component format
+    const loadedMessages = session.messages?.map(msg => ({
+      role: msg.role,
+      parts: [{ text: msg.content }]
+    })) || [];
+    
+    setMessages(loadedMessages);
+  };
+
+  const deleteSession = async (sessionIdToDelete: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await fetch(`${API_URL}/api/chat/sessions/${sessionIdToDelete}`, {
+        method: 'DELETE'
+      });
+      
+      if (sessionId === sessionIdToDelete) {
+        setSessionId(null);
+        setMessages([]);
+      }
+      fetchSessions();
+    } catch (error) {
+      console.error('Error deleting session:', error);
+    }
+  };
+
+  const saveMessageToSession = async (role: string, content: string) => {
+    if (!sessionId) return;
+    
+    try {
+      await fetch(`${API_URL}/api/chat/sessions/${sessionId}/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: sessionId, role, content })
+      });
+      fetchSessions(); // Refresh to get updated title
+    } catch (error) {
+      console.error('Error saving message:', error);
+    }
+  };
+
+  // File upload handler
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingFile(true);
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('category', 'chat-attachment');
+
+    try {
+      const response = await fetch(`${API_URL}/api/files/upload`, {
+        method: 'POST',
+        body: formData
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setAttachedFile({ name: file.name, url: data.url });
+      }
+    } catch (error) {
+      console.error('Upload failed:', error);
+    } finally {
+      setUploadingFile(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
   // SSE Streaming handler
   const handleStreamingSend = useCallback(async () => {
-    if (!input.trim()) return;
+    if (!input.trim() && !attachedFile) return;
 
-    const userMsg = { role: 'user', parts: [{ text: input }] };
+    // Create session if not exists
+    if (!sessionId) {
+      const response = await fetch(`${API_URL}/api/chat/sessions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: input.slice(0, 50) })
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setSessionId(data.session_id);
+        fetchSessions();
+      }
+    }
+
+    const messageText = attachedFile 
+      ? `${input}\n\n[Attached: ${attachedFile.name}]`
+      : input;
+
+    const userMsg = { role: 'user', parts: [{ text: messageText }] };
     setMessages(prev => [...prev, userMsg]);
     const userInput = input;
     setInput('');
+    setAttachedFile(null);
     setLoading(true);
     setStreamingText('');
 
-    // Create abort controller for cancellation
+    // Save user message to session
+    if (sessionId) {
+      saveMessageToSession('user', messageText);
+    }
+
     abortControllerRef.current = new AbortController();
 
     try {
@@ -60,7 +204,6 @@ const ChatPage = () => {
 
       const decoder = new TextDecoder();
       let fullText = '';
-      let currentSessionId = sessionId;
 
       while (true) {
         const { done, value } = await reader.read();
@@ -75,17 +218,19 @@ const ChatPage = () => {
               const data = JSON.parse(line.slice(6));
               
               if (data.type === 'start') {
-                currentSessionId = data.session_id;
-                setSessionId(data.session_id);
+                if (!sessionId) setSessionId(data.session_id);
               } else if (data.type === 'chunk') {
                 fullText += data.content;
                 setStreamingText(fullText);
               } else if (data.type === 'done') {
-                // Handle completion
                 setStreamingText('');
                 setMessages(prev => [...prev, { role: 'model', parts: [{ text: data.full_text }] }]);
                 
-                // Handle job card trigger
+                // Save AI response to session
+                if (sessionId) {
+                  saveMessageToSession('model', data.full_text);
+                }
+                
                 if (data.show_orange_border && !jobCardState.jobCard) {
                   const regMatch = userInput.match(/([A-Z]{2}[\s-]?\d{1,2}[\s-]?[A-Z]{0,2}[\s-]?\d{1,4})/i);
                   jobCardActions.initializeJobCard({
@@ -116,7 +261,7 @@ const ChatPage = () => {
       setStreamingText('');
       abortControllerRef.current = null;
     }
-  }, [input, jobCardState, sessionId, jobCardActions]);
+  }, [input, jobCardState, sessionId, jobCardActions, attachedFile]);
 
   // Standard (non-streaming) handler
   const handleStandardSend = async () => {
