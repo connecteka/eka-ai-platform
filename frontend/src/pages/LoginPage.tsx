@@ -304,35 +304,77 @@ const LoginPage = () => {
         <FeatureVideoCarousel />
       </div>
 
-      {/* Mobile Video Section */}
-      <div className="lg:hidden w-full h-64 sm:h-80 bg-[#1A1915] relative overflow-hidden">
-        <img 
-          src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1920&q=80"
-          alt="Team collaboration"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          poster="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1920&q=80"
+      {/* Mobile Feature Showcase Section */}
+      <div className="lg:hidden w-full bg-[#0A0A0B] relative overflow-hidden">
+        <MobileFeatureShowcase />
+      </div>
+    </div>
+  );
+};
+
+// Mobile Feature Showcase Component
+const MobileFeatureShowcase: React.FC = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  
+  const features = [
+    { title: "PDI Process", desc: "120+ point digital inspection", icon: "📋", color: "#10B981" },
+    { title: "MG Model", desc: "Fixed monthly subscription", icon: "🚗", color: "#3B82F6" },
+    { title: "Job Card → Invoice", desc: "Complete workflow automation", icon: "📄", color: "#F97316" },
+    { title: "AI Chat", desc: "Instant vehicle diagnostics", icon: "💬", color: "#A855F7" },
+    { title: "Brand Marketing", desc: "Multi-brand campaigns", icon: "🎯", color: "#06B6D4" },
+    { title: "Regional Targeting", desc: "City-wise marketing", icon: "📍", color: "#F59E0B" },
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide(prev => (prev + 1) % features.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="py-8 px-4">
+      {/* Current Feature */}
+      <div className="text-center mb-6">
+        <div 
+          className="inline-flex items-center justify-center w-16 h-16 rounded-2xl text-3xl mb-3"
+          style={{ backgroundColor: `${features[currentSlide].color}20` }}
         >
-          <source src="https://cdn.coverr.co/videos/coverr-typing-on-computer-keyboard-8668/1080p.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-        <div className="absolute bottom-4 left-4 right-4 flex items-center gap-3">
-          <img 
-            src={mascotUrl} 
-            alt="EKA-AI Mascot" 
-            className="w-10 h-10 rounded-full object-cover border-2 border-[#E65C2E]"
-          />
-          <div>
-            <h3 className="text-white font-semibold">Intelligent Workshop Management</h3>
-            <p className="text-gray-300 text-sm">AI-powered diagnostics for your garage</p>
-          </div>
+          {features[currentSlide].icon}
         </div>
+        <h3 className="text-white text-xl font-bold">{features[currentSlide].title}</h3>
+        <p className="text-gray-400 text-sm mt-1">{features[currentSlide].desc}</p>
+      </div>
+
+      {/* Feature Dots */}
+      <div className="flex justify-center gap-2 mb-4">
+        {features.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentSlide(index)}
+            className={`h-2 rounded-full transition-all ${
+              index === currentSlide ? 'w-6 bg-[#E65C2E]' : 'w-2 bg-white/30'
+            }`}
+          />
+        ))}
+      </div>
+
+      {/* Feature Grid Preview */}
+      <div className="grid grid-cols-3 gap-2 mt-4">
+        {features.map((feature, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentSlide(index)}
+            className={`p-3 rounded-lg text-center transition-all ${
+              index === currentSlide 
+                ? 'bg-white/10 border border-white/20' 
+                : 'bg-white/5'
+            }`}
+          >
+            <span className="text-xl">{feature.icon}</span>
+            <p className="text-[10px] text-white/70 mt-1 truncate">{feature.title}</p>
+          </button>
+        ))}
       </div>
     </div>
   );
