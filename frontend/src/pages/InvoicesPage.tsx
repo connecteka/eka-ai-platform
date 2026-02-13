@@ -77,15 +77,11 @@ export default function InvoicesPage() {
       if (statusFilter) params.append('status', statusFilter);
       params.append('limit', '50');
       
-      const response = await fetch(`/api/invoices?${params}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
+      const response = await fetch(`${API_URL}/api/invoices?${params}`);
       
       if (response.ok) {
         const data = await response.json();
-        setInvoices(data.invoices || []);
+        setInvoices(data.data || data.invoices || []);
       }
     } catch (error) {
       console.error('Error fetching invoices:', error);
@@ -96,11 +92,7 @@ export default function InvoicesPage() {
 
   const downloadPDF = async (invoiceId: string) => {
     try {
-      const response = await fetch(`/api/invoices/${invoiceId}/pdf`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
+      const response = await fetch(`${API_URL}/api/invoices/${invoiceId}/pdf`);
       
       if (response.ok) {
         const blob = await response.blob();
@@ -120,11 +112,8 @@ export default function InvoicesPage() {
 
   const finalizeInvoice = async (invoiceId: string) => {
     try {
-      const response = await fetch(`/api/invoices/${invoiceId}/finalize`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+      const response = await fetch(`${API_URL}/api/invoices/${invoiceId}/finalize`, {
+        method: 'POST'
       });
 
       if (response.ok) {
@@ -137,11 +126,8 @@ export default function InvoicesPage() {
 
   const markAsPaid = async (invoiceId: string) => {
     try {
-      const response = await fetch(`/api/invoices/${invoiceId}/mark-paid`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+      const response = await fetch(`${API_URL}/api/invoices/${invoiceId}/mark-paid`, {
+        method: 'POST'
       });
 
       if (response.ok) {
