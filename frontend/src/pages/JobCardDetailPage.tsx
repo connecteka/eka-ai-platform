@@ -1030,7 +1030,12 @@ const ServiceDetailsSection: React.FC<ServiceDetailsSectionProps> = ({ services 
 // SECTION 7: PARTS & INVENTORY
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const PartsInventorySection: React.FC = () => {
+interface PartsInventorySectionProps {
+  parts: JobCardDetail['parts'];
+}
+
+const PartsInventorySection: React.FC<PartsInventorySectionProps> = ({ parts }) => {
+  const sampleParts = parts.length > 0 ? parts : [
   const getAvailabilityBadge = (availability: string, note?: string) => {
     switch (availability) {
       case 'in-stock': return <span style={{ color: styles.success, fontSize: '13px' }}>🟢 In Stock</span>;
