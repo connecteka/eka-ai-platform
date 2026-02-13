@@ -278,3 +278,9 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 1. Refactor backend server.py into separate routers using FastAPI APIRouter
 2. Add password hashing for production security
 3. Implement guided product tour for first-time users
+4. WhatsApp integration for notifications
+5. Voice input transcription (OpenAI Whisper)
+
+## Test Credentials
+- **Working**: `testuser@test.com` / `test123456`
+- **Previous (invalid)**: `test@test.com` / `password123`
