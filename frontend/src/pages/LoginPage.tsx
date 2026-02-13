@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Loader2, ChevronDown, Menu, X, Mail, Eye, EyeOff } from 'lucide-react';
+import { useGoogleLogin } from '@react-oauth/google';
 import FeatureVideoCarousel from '../components/FeatureVideoCarousel';
 
 // Daily rotating taglines
