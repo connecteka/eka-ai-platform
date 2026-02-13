@@ -794,15 +794,38 @@ interface PreInspectionSectionProps {
 
 const PreInspectionSection: React.FC<PreInspectionSectionProps> = ({ preInspection, photos, onUpload }) => {
   const [uploading, setUploading] = useState(false);
+  const [uploadedPhotos, setUploadedPhotos] = useState<any[]>(photos || []);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
   
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !onUpload) return;
     
+    // Check file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size must be less than 5MB');
+      return;
+    }
+    
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file');
+      return;
+    }
+    
     setUploading(true);
     try {
-      await onUpload(file, 'vehicle_photo');
+      const result = await onUpload(file, 'vehicle_photo');
+      if (result) {
+        setUploadedPhotos(prev => [...prev, result]);
+      }
+    } catch (error) {
+      console.error('Upload failed:', error);
+      alert('Upload failed. Please try again.');
     } finally {
       setUploading(false);
       if (fileInputRef.current) {
