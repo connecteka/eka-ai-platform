@@ -2,6 +2,7 @@ import React, { useState, createContext, useContext } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import TopBar from './TopBar';
+import { ProductTour } from '../features/ProductTour';
 import { IntelligenceMode } from '../../types';
 
 // Context for sharing state across the app shell
