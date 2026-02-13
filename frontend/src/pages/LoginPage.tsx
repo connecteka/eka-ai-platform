@@ -12,8 +12,8 @@ const LoginPage = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Sample video URL - using a royalty-free video
-  const videoUrl = "https://videos.pexels.com/video-files/3129671/3129671-uhd_2560_1440_30fps.mp4";
+  // Real working video URL from Pexels
+  const videoUrl = "https://videos.pexels.com/video-files/5752729/5752729-uhd_2732_1440_24fps.mp4";
 
   const handleGoogleLogin = () => {
     // Placeholder for Google OAuth
