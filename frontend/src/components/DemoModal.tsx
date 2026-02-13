@@ -32,13 +32,13 @@ const FEATURE_DEMOS: Record<string, FeatureDemo> = {
     hasRealRecording: true,
     steps: [
       { title: 'Access PDI Tools', description: 'Open the Artifacts page to access PDI checklist tools', action: 'Navigate', highlight: 'Artifacts', screenshot: '/recordings/pdi-1.png' },
-      { title: 'Select PDI Template', description: 'Choose PDI Checklist Generator from available tools', action: 'Select', highlight: 'Checklist', screenshot: '/recordings/pdi-1.png', hotspot: { x: 50, y: 50, label: 'PDI Checklist' } },
-      { title: 'Vehicle Details', description: 'Enter registration number - system auto-fetches vehicle data', action: 'Type', highlight: 'MH01AB1234', screenshot: '/recordings/pdi-1.png' },
-      { title: 'Exterior Check', description: 'Complete 45-point exterior inspection with photo capture', action: 'Checklist', highlight: '45 items', screenshot: '/recordings/pdi-1.png' },
-      { title: 'Interior Check', description: 'Verify dashboard, seats, AC, and electronics', action: 'Checklist', highlight: '35 items', screenshot: '/recordings/pdi-1.png' },
-      { title: 'Engine Bay', description: 'Check fluid levels, battery, and engine components', action: 'Checklist', highlight: '25 items', screenshot: '/recordings/pdi-1.png' },
-      { title: 'Digital Signature', description: 'Customer signs on tablet for delivery acceptance', action: 'Sign', highlight: 'Touch signature', screenshot: '/recordings/pdi-1.png' },
-      { title: 'Generate Report', description: 'Instant PDF report with photos sent to customer', action: 'Export', highlight: 'PDF + Email', screenshot: '/recordings/pdi-1.png' },
+      { title: 'Select PDI Template', description: 'Choose PDI Checklist Generator from available tools', action: 'Select', highlight: 'Checklist', screenshot: '/recordings/pdi-1.png', hotspot: { x: 35, y: 55, label: 'PDI Checklist' }, zoom: { scale: 1.2, x: 35, y: 55 } },
+      { title: 'Open PDI Modal', description: 'Click to open the comprehensive inspection form', action: 'Click', highlight: 'Open Form', screenshot: '/recordings/pdi-modal-empty.png' },
+      { title: 'Vehicle Details', description: 'Enter vehicle registration and technician name', action: 'Type', highlight: 'MH01AB1234', screenshot: '/recordings/pdi-modal-empty.png', hotspot: { x: 38, y: 22, label: 'Enter Registration' }, zoom: { scale: 1.3, x: 50, y: 25 } },
+      { title: 'Exterior Check', description: 'Complete exterior inspection items - Body, Paint, Windows', action: 'Checklist', highlight: '3 items', screenshot: '/recordings/pdi-modal-progress.png', highlightArea: { x: 30, y: 35, width: 40, height: 35 } },
+      { title: 'Track Progress', description: 'Progress bar shows 3/10 items checked', action: 'Progress', highlight: '30% done', screenshot: '/recordings/pdi-modal-progress.png', hotspot: { x: 50, y: 30, label: 'Progress: 30%' } },
+      { title: 'Continue Inspection', description: 'Complete remaining mechanical, electrical, interior checks', action: 'Checklist', highlight: '10 items', screenshot: '/recordings/pdi-modal-progress.png' },
+      { title: 'Complete PDI', description: 'Click Complete PDI to finalize the inspection', action: 'Submit', highlight: 'Complete', screenshot: '/recordings/pdi-modal-progress.png', hotspot: { x: 82, y: 92, label: 'Complete PDI' }, zoom: { scale: 1.2, x: 82, y: 85 } },
     ]
   },
   mg: {
@@ -50,12 +50,12 @@ const FEATURE_DEMOS: Record<string, FeatureDemo> = {
     hasRealRecording: true,
     steps: [
       { title: 'Access MG Fleet', description: 'Open the MG Fleet management dashboard', action: 'Navigate', highlight: 'MG Fleet', screenshot: '/recordings/mg-1.png' },
-      { title: 'View Contracts', description: 'See all active MG contracts and their status', action: 'View', highlight: 'Active Contracts', screenshot: '/recordings/mg-1.png' },
-      { title: 'Create Contract', description: 'Click "New Contract" to start a new MG subscription', action: 'Click', highlight: '+ New Contract', screenshot: '/recordings/mg-1.png', hotspot: { x: 92, y: 12, label: 'New Contract' } },
+      { title: 'View Contracts', description: 'See all active MG contracts and their status', action: 'View', highlight: 'Active Contracts', screenshot: '/recordings/mg-1.png', zoom: { scale: 1.1, x: 50, y: 50 } },
+      { title: 'Create Contract', description: 'Click "New Contract" to start a new MG subscription', action: 'Click', highlight: '+ New Contract', screenshot: '/recordings/mg-1.png', hotspot: { x: 92, y: 12, label: 'New Contract' }, zoom: { scale: 1.3, x: 85, y: 15 } },
       { title: 'Fleet Details', description: 'Enter fleet name and contract period', action: 'Form', highlight: 'Fleet Name', screenshot: '/recordings/mg-2.png', hotspot: { x: 50, y: 20, label: 'Enter Details' } },
-      { title: 'Set KM Limit', description: 'Define assured KM per year and excess rates', action: 'Configure', highlight: 'KM Limits', screenshot: '/recordings/mg-2.png', hotspot: { x: 50, y: 45, label: 'Set Limits' } },
+      { title: 'Set KM Limit', description: 'Define assured KM per year and excess rates', action: 'Configure', highlight: 'KM Limits', screenshot: '/recordings/mg-2.png', hotspot: { x: 50, y: 45, label: 'Set Limits' }, highlightArea: { x: 30, y: 35, width: 40, height: 20 } },
       { title: 'Set Billing', description: 'Choose billing cycle and rate per KM', action: 'Configure', highlight: 'Billing Cycle', screenshot: '/recordings/mg-2.png', hotspot: { x: 50, y: 65, label: 'Set Billing' } },
-      { title: 'Generate Contract', description: 'Create the MG contract with all terms', action: 'Generate', highlight: 'Digital contract', screenshot: '/recordings/mg-2.png', hotspot: { x: 75, y: 85, label: 'Create Contract' } },
+      { title: 'Generate Contract', description: 'Create the MG contract with all terms', action: 'Generate', highlight: 'Digital contract', screenshot: '/recordings/mg-2.png', hotspot: { x: 75, y: 85, label: 'Create Contract' }, zoom: { scale: 1.2, x: 75, y: 85 } },
     ]
   },
   jobcard: {
@@ -67,15 +67,15 @@ const FEATURE_DEMOS: Record<string, FeatureDemo> = {
     hasRealRecording: true,
     steps: [
       { title: 'View Job Cards', description: 'Access the job cards dashboard with all active jobs', action: 'Open', highlight: 'Dashboard', screenshot: '/recordings/jobcard-1.png' },
-      { title: 'Create Job Card', description: 'Click "New Job Card" to start a new service order', action: 'Click', highlight: '+ New Job', screenshot: '/recordings/jobcard-1.png', hotspot: { x: 92, y: 12, label: 'Click Here' } },
-      { title: 'Enter Details', description: 'Fill registration number, customer info, and symptoms', action: 'Form', highlight: 'Auto-fill', screenshot: '/recordings/jobcard-2.png', hotspot: { x: 50, y: 25, label: 'Enter Registration' } },
-      { title: 'Add Symptoms', description: 'Record customer complaints and observations', action: 'Type', highlight: 'Voice input', screenshot: '/recordings/jobcard-2.png', hotspot: { x: 50, y: 60, label: 'Add Symptoms' } },
-      { title: 'AI Diagnosis', description: 'EKA-AI suggests probable issues and parts', action: 'AI', highlight: 'Smart suggestions', screenshot: '/recordings/jobcard-2.png' },
-      { title: 'Create Estimate', description: 'Build estimate with labor and parts', action: 'Build', highlight: 'Real-time pricing', screenshot: '/recordings/jobcard-2.png' },
-      { title: 'Customer Approval', description: 'Send WhatsApp link for customer approval', action: 'Send', highlight: 'One-tap approve', screenshot: '/recordings/jobcard-1.png' },
-      { title: 'Track Progress', description: 'Update status as work progresses', action: 'Update', highlight: 'Live tracking', screenshot: '/recordings/jobcard-1.png' },
-      { title: 'Generate Invoice', description: 'Convert to GST invoice with one click', action: 'Convert', highlight: 'Auto GST', screenshot: '/recordings/invoice-1.png' },
-      { title: 'Payment & Delivery', description: 'Collect payment and complete delivery', action: 'Complete', highlight: 'UPI/Card/Cash', screenshot: '/recordings/invoice-1.png' },
+      { title: 'View Statistics', description: 'See Total Jobs, Active, Completed counts at a glance', action: 'Stats', highlight: 'Overview', screenshot: '/recordings/jobcard-1.png', zoom: { scale: 1.2, x: 50, y: 25 }, highlightArea: { x: 2, y: 18, width: 96, height: 15 } },
+      { title: 'Create Job Card', description: 'Click "New Job Card" to start a new service order', action: 'Click', highlight: '+ New Job', screenshot: '/recordings/jobcard-1.png', hotspot: { x: 92, y: 12, label: 'Click Here' }, zoom: { scale: 1.3, x: 88, y: 15 } },
+      { title: 'Empty Form', description: 'Job card form opens with all required fields', action: 'Form', highlight: 'New Form', screenshot: '/recordings/jobcard-form-empty.png' },
+      { title: 'Enter Vehicle', description: 'Fill registration number - system validates format', action: 'Type', highlight: 'MH05XY9876', screenshot: '/recordings/jobcard-form-filled.png', hotspot: { x: 40, y: 22, label: 'Enter Registration' }, zoom: { scale: 1.2, x: 50, y: 25 } },
+      { title: 'Customer Details', description: 'Enter customer name and phone number', action: 'Fill', highlight: 'Rajesh Patel', screenshot: '/recordings/jobcard-form-filled.png', hotspot: { x: 40, y: 35, label: 'Customer Info' }, highlightArea: { x: 33, y: 28, width: 35, height: 25 } },
+      { title: 'Add Symptoms', description: 'Record customer complaints and observations', action: 'Type', highlight: 'Voice input', screenshot: '/recordings/jobcard-form-filled.png', hotspot: { x: 40, y: 55, label: 'Add Symptoms' } },
+      { title: 'Submit Job Card', description: 'Click Create Job Card to save', action: 'Submit', highlight: 'Create', screenshot: '/recordings/jobcard-form-filled.png', hotspot: { x: 68, y: 85, label: 'Create Job Card' }, zoom: { scale: 1.2, x: 65, y: 82 } },
+      { title: 'Job Created', description: 'New job card appears in the list with Pending status', action: 'Success', highlight: 'Success!', screenshot: '/recordings/jobcard-1.png', zoom: { scale: 1.1, x: 50, y: 60 } },
+      { title: 'Generate Invoice', description: 'Convert completed job to GST invoice with one click', action: 'Convert', highlight: 'Auto GST', screenshot: '/recordings/invoice-1.png' },
     ]
   },
   chat: {
@@ -86,13 +86,13 @@ const FEATURE_DEMOS: Record<string, FeatureDemo> = {
     color: '#A855F7',
     hasRealRecording: true,
     steps: [
-      { title: 'Open Chat', description: 'Access EKA-AI chat from any screen in the app', action: 'Open', highlight: 'Always available', screenshot: '/recordings/chat-1.png', hotspot: { x: 50, y: 85, label: 'Type Here' } },
-      { title: 'Describe Issue', description: 'Type your vehicle problem - "Engine warning light on"', action: 'Type', highlight: 'Natural language', screenshot: '/recordings/chat-2.png', hotspot: { x: 85, y: 85, label: 'Send' } },
-      { title: 'AI Response', description: 'EKA-AI provides instant diagnostic analysis', action: 'AI', highlight: 'Smart analysis', screenshot: '/recordings/chat-3.png' },
-      { title: 'Get Diagnosis', description: 'View probable causes ranked by likelihood', action: 'Results', highlight: '95% accuracy', screenshot: '/recordings/chat-3.png' },
-      { title: 'Cost Estimate', description: 'Instant repair cost estimate with breakdown', action: 'Calculate', highlight: '₹ breakdown', screenshot: '/recordings/chat-3.png' },
-      { title: 'Book Service', description: 'Schedule appointment directly from chat', action: 'Book', highlight: 'Calendar sync', screenshot: '/recordings/chat-3.png' },
-      { title: 'Create Job Card', description: 'Auto-create job card from conversation', action: 'Create', highlight: 'One-click', screenshot: '/recordings/chat-3.png' },
+      { title: 'Open Chat', description: 'Access EKA-AI chat from any screen in the app', action: 'Open', highlight: 'Always available', screenshot: '/recordings/chat-1.png' },
+      { title: 'Chat Interface', description: 'Clean interface with message history and input', action: 'View', highlight: 'Ready', screenshot: '/recordings/chat-1.png', zoom: { scale: 1.1, x: 50, y: 50 } },
+      { title: 'Describe Issue', description: 'Type your vehicle problem - "Engine warning light on"', action: 'Type', highlight: 'Natural language', screenshot: '/recordings/chat-2.png', hotspot: { x: 50, y: 85, label: 'Type Here' }, zoom: { scale: 1.2, x: 50, y: 80 } },
+      { title: 'Send Message', description: 'Click send or press Enter to submit', action: 'Send', highlight: 'Submit', screenshot: '/recordings/chat-2.png', hotspot: { x: 85, y: 85, label: 'Send' } },
+      { title: 'AI Analysis', description: 'EKA-AI processes your query using advanced AI', action: 'Processing', highlight: 'Analyzing...', screenshot: '/recordings/chat-3.png', zoom: { scale: 1.15, x: 50, y: 40 } },
+      { title: 'Get Diagnosis', description: 'View probable causes ranked by likelihood with costs', action: 'Results', highlight: '95% accuracy', screenshot: '/recordings/chat-3.png', highlightArea: { x: 10, y: 20, width: 80, height: 50 } },
+      { title: 'Take Action', description: 'Book service or create job card directly from chat', action: 'Action', highlight: 'One-click', screenshot: '/recordings/chat-3.png', hotspot: { x: 50, y: 75, label: 'Create Job Card' } },
     ]
   },
   brand: {
@@ -104,11 +104,11 @@ const FEATURE_DEMOS: Record<string, FeatureDemo> = {
     hasRealRecording: true,
     steps: [
       { title: 'View Dashboard', description: 'Access the brand marketing dashboard', action: 'Open', highlight: 'Overview', screenshot: '/recordings/dashboard-1.png' },
-      { title: 'Select Brand', description: 'Choose from authorized brand partners', action: 'Select', highlight: '20+ brands', screenshot: '/recordings/dashboard-1.png' },
-      { title: 'View Metrics', description: 'Check revenue, subscriptions, and sales data', action: 'View', highlight: 'Real-time data', screenshot: '/recordings/dashboard-1.png' },
+      { title: 'Dashboard Metrics', description: 'View key metrics - revenue, subscriptions, sales', action: 'View', highlight: 'Real-time', screenshot: '/recordings/dashboard-1.png', zoom: { scale: 1.15, x: 50, y: 30 } },
+      { title: 'Select Brand', description: 'Choose from authorized brand partners', action: 'Select', highlight: '20+ brands', screenshot: '/recordings/dashboard-1.png', hotspot: { x: 30, y: 50, label: 'Select Brand' } },
+      { title: 'View Metrics', description: 'Check revenue, subscriptions, and sales data', action: 'View', highlight: 'Real-time data', screenshot: '/recordings/dashboard-1.png', highlightArea: { x: 5, y: 20, width: 90, height: 30 } },
       { title: 'Create Campaign', description: 'Design promotional campaign with AI help', action: 'Create', highlight: 'AI copywriting', screenshot: '/recordings/dashboard-1.png' },
-      { title: 'Target Audience', description: 'Select customer segments for targeting', action: 'Target', highlight: 'Precision targeting', screenshot: '/recordings/dashboard-1.png' },
-      { title: 'Launch & Track', description: 'Go live and monitor performance', action: 'Launch', highlight: 'Real-time metrics', screenshot: '/recordings/dashboard-1.png' },
+      { title: 'Launch & Track', description: 'Go live and monitor performance', action: 'Launch', highlight: 'Real-time metrics', screenshot: '/recordings/dashboard-1.png', zoom: { scale: 1.1, x: 50, y: 70 } },
     ]
   },
   regional: {
