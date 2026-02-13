@@ -85,6 +85,7 @@ const JobCardTable: React.FC<JobCardTableProps> = ({
 
   // Apply filters
   const filteredJobCards = useMemo(() => {
+    if (!jobCards || !Array.isArray(jobCards)) return [];
     return jobCards.filter(job => {
       // Search filter
       const searchLower = searchQuery.toLowerCase();
