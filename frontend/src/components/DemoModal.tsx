@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { X, Play, Pause, SkipForward, SkipBack, Volume2, VolumeX, Maximize2 } from 'lucide-react';
+import { X, Play, Pause, SkipForward, SkipBack, Volume2, VolumeX, Maximize2, MessageSquare, Send, ChevronRight, Check, FileText, Car, MapPin, BarChart3 } from 'lucide-react';
 
 interface DemoStep {
   title: string;
@@ -15,7 +15,6 @@ interface FeatureDemo {
   duration: string;
   steps: DemoStep[];
   color: string;
-  mockupType: 'chat' | 'dashboard' | 'form' | 'table' | 'map';
 }
 
 const FEATURE_DEMOS: Record<string, FeatureDemo> = {
@@ -25,9 +24,8 @@ const FEATURE_DEMOS: Record<string, FeatureDemo> = {
     subtitle: 'Pre-Delivery Inspection Workflow',
     duration: '2:30',
     color: '#10B981',
-    mockupType: 'form',
     steps: [
-      { title: 'Create New PDI', description: 'Click "New Inspection" to start a fresh PDI checklist', action: 'Click Button', highlight: 'New Inspection' },
+      { title: 'Create New PDI', description: 'Click "New Inspection" to start a fresh PDI checklist', action: 'Click', highlight: 'New Inspection' },
       { title: 'Vehicle Details', description: 'Enter registration number - system auto-fetches vehicle data', action: 'Type', highlight: 'MH01AB1234' },
       { title: 'Exterior Check', description: 'Complete 45-point exterior inspection with photo capture', action: 'Checklist', highlight: '45 items' },
       { title: 'Interior Check', description: 'Verify dashboard, seats, AC, and electronics', action: 'Checklist', highlight: '35 items' },
@@ -43,7 +41,6 @@ const FEATURE_DEMOS: Record<string, FeatureDemo> = {
     subtitle: 'Maintenance Guarantee Setup',
     duration: '1:45',
     color: '#3B82F6',
-    mockupType: 'form',
     steps: [
       { title: 'Select Plan', description: 'Choose from Basic, Premium, or Elite MG packages', action: 'Select', highlight: '3 Plans' },
       { title: 'Vehicle Selection', description: 'Add vehicles to the MG contract', action: 'Add', highlight: 'Multi-vehicle' },
@@ -60,10 +57,9 @@ const FEATURE_DEMOS: Record<string, FeatureDemo> = {
     subtitle: 'Complete Service Workflow',
     duration: '3:00',
     color: '#F97316',
-    mockupType: 'table',
     steps: [
       { title: 'Create Job Card', description: 'Customer arrives - create new job card instantly', action: 'Click', highlight: '+ New Job' },
-      { title: 'Scan Registration', description: 'Scan number plate or enter manually', action: 'Scan/Type', highlight: 'Auto-fill' },
+      { title: 'Scan Registration', description: 'Scan number plate or enter manually', action: 'Scan', highlight: 'Auto-fill' },
       { title: 'Add Complaints', description: 'Record customer complaints and observations', action: 'Type', highlight: 'Voice input' },
       { title: 'AI Diagnosis', description: 'EKA-AI suggests probable issues and parts', action: 'AI', highlight: 'Smart suggestions' },
       { title: 'Create Estimate', description: 'Build estimate with labor and parts', action: 'Build', highlight: 'Real-time pricing' },
@@ -80,10 +76,9 @@ const FEATURE_DEMOS: Record<string, FeatureDemo> = {
     subtitle: 'EKA-AI Powered Diagnostics',
     duration: '2:00',
     color: '#A855F7',
-    mockupType: 'chat',
     steps: [
       { title: 'Start Conversation', description: 'Open EKA-AI chat from any screen', action: 'Open', highlight: 'Always available' },
-      { title: 'Describe Issue', description: 'Type or speak: "Engine warning light on"', action: 'Type/Voice', highlight: 'Natural language' },
+      { title: 'Describe Issue', description: 'Type or speak: "Engine warning light on"', action: 'Type', highlight: 'Natural language' },
       { title: 'AI Analysis', description: 'EKA-AI analyzes and asks clarifying questions', action: 'AI', highlight: 'Smart follow-up' },
       { title: 'Diagnostic Results', description: 'Get probable causes ranked by likelihood', action: 'Results', highlight: '95% accuracy' },
       { title: 'Cost Estimate', description: 'Instant repair cost estimate with breakdown', action: 'Calculate', highlight: '₹ breakdown' },
@@ -97,7 +92,6 @@ const FEATURE_DEMOS: Record<string, FeatureDemo> = {
     subtitle: 'Multi-Brand Campaign Management',
     duration: '1:30',
     color: '#06B6D4',
-    mockupType: 'dashboard',
     steps: [
       { title: 'Select Brand', description: 'Choose from authorized brand partners', action: 'Select', highlight: '20+ brands' },
       { title: 'Upload Assets', description: 'Add brand logos, banners, and templates', action: 'Upload', highlight: 'Drag & drop' },
@@ -113,7 +107,6 @@ const FEATURE_DEMOS: Record<string, FeatureDemo> = {
     subtitle: 'City & Zone Targeting',
     duration: '1:45',
     color: '#F59E0B',
-    mockupType: 'map',
     steps: [
       { title: 'Select Region', description: 'Choose state, city, or custom zones', action: 'Select', highlight: 'India map' },
       { title: 'Draw Zones', description: 'Define custom service areas on map', action: 'Draw', highlight: 'Polygon tool' },
@@ -158,7 +151,7 @@ const DemoModal: React.FC<DemoModalProps> = ({ featureId, isOpen, onClose }) => 
   useEffect(() => {
     if (!isPlaying || !demo) return;
 
-    const stepDuration = 4000; // 4 seconds per step
+    const stepDuration = 4000;
     const progressInterval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 100) {
@@ -180,15 +173,41 @@ const DemoModal: React.FC<DemoModalProps> = ({ featureId, isOpen, onClose }) => 
     }
   }, [isOpen, featureId]);
 
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const handleKeyDown = (e: KeyboardEvent) => {
+      switch (e.key) {
+        case ' ':
+          e.preventDefault();
+          setIsPlaying(p => !p);
+          break;
+        case 'ArrowRight':
+          nextStep();
+          break;
+        case 'ArrowLeft':
+          prevStep();
+          break;
+        case 'Escape':
+          onClose();
+          break;
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, nextStep, prevStep, onClose]);
+
   if (!isOpen || !demo) return null;
 
   const step = demo.steps[currentStep];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <div className="relative w-full max-w-5xl bg-[#0A0A0B] rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
+      <div className="relative w-full max-w-6xl bg-[#0A0A0B] rounded-2xl overflow-hidden shadow-2xl border border-white/10">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#0D0D0F]">
           <div className="flex items-center gap-4">
             <div 
               className="w-10 h-10 rounded-lg flex items-center justify-center"
@@ -201,50 +220,36 @@ const DemoModal: React.FC<DemoModalProps> = ({ featureId, isOpen, onClose }) => 
               <p className="text-gray-400 text-sm">{demo.subtitle}</p>
             </div>
           </div>
-          <button 
-            onClick={onClose}
-            className="p-2 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-3">
+            <span className="text-gray-400 text-xs">Press Space to pause • Arrow keys to navigate</span>
+            <button 
+              onClick={onClose}
+              className="p-2 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Main Content */}
-        <div className="flex">
-          {/* Video/Animation Area */}
-          <div className="flex-1 aspect-video bg-[#141416] relative">
-            {/* Mockup Display */}
-            <div className="absolute inset-0 flex items-center justify-center p-8">
-              <MockupDisplay 
-                type={demo.mockupType} 
-                step={step} 
-                color={demo.color}
-                stepIndex={currentStep}
-              />
-            </div>
-
-            {/* Step Indicator Overlay */}
-            <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-sm rounded-lg px-3 py-2">
-              <span className="text-white text-sm font-medium">
-                Step {currentStep + 1} of {demo.steps.length}
-              </span>
-            </div>
-
-            {/* Action Badge */}
-            {step.action && (
-              <div 
-                className="absolute top-4 right-4 px-3 py-1 rounded-full text-white text-xs font-medium"
-                style={{ backgroundColor: demo.color }}
-              >
-                {step.action}
-              </div>
-            )}
+        <div className="flex h-[500px]">
+          {/* Screen Recording Area */}
+          <div className="flex-1 bg-[#111113] relative overflow-hidden">
+            <ScreenRecording 
+              featureId={featureId}
+              step={step}
+              stepIndex={currentStep}
+              color={demo.color}
+              isPlaying={isPlaying}
+            />
           </div>
 
           {/* Steps Sidebar */}
-          <div className="w-72 border-l border-white/10 bg-[#0D0D0F] overflow-y-auto max-h-[500px]">
+          <div className="w-80 border-l border-white/10 bg-[#0D0D0F] overflow-y-auto">
             <div className="p-4">
-              <h4 className="text-gray-400 text-xs uppercase tracking-wider mb-3">Steps</h4>
+              <h4 className="text-gray-400 text-xs uppercase tracking-wider mb-3">
+                Walkthrough Steps ({demo.steps.length})
+              </h4>
               <div className="space-y-2">
                 {demo.steps.map((s, index) => (
                   <button
@@ -272,7 +277,7 @@ const DemoModal: React.FC<DemoModalProps> = ({ featureId, isOpen, onClose }) => 
                         }`}
                         style={index === currentStep ? { backgroundColor: demo.color } : {}}
                       >
-                        {index < currentStep ? '✓' : index + 1}
+                        {index < currentStep ? <Check className="w-3 h-3" /> : index + 1}
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className={`text-sm font-medium truncate ${
@@ -296,29 +301,28 @@ const DemoModal: React.FC<DemoModalProps> = ({ featureId, isOpen, onClose }) => 
 
         {/* Controls Bar */}
         <div className="px-6 py-4 border-t border-white/10 bg-[#0D0D0F]">
-          {/* Progress Bar */}
-          <div className="flex items-center gap-4 mb-4">
-            <span className="text-xs text-gray-400 w-12">
-              {Math.floor((currentStep / demo.steps.length) * 100)}%
+          <div className="flex items-center gap-4 mb-3">
+            <span className="text-xs text-gray-400 w-16">
+              Step {currentStep + 1}/{demo.steps.length}
             </span>
-            <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
+            <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
               <div 
-                className="h-full rounded-full transition-all"
+                className="h-full rounded-full transition-all duration-100"
                 style={{ 
                   width: `${((currentStep + progress / 100) / demo.steps.length) * 100}%`,
                   backgroundColor: demo.color 
                 }}
               />
             </div>
-            <span className="text-xs text-gray-400 w-12 text-right">{demo.duration}</span>
+            <span className="text-xs text-gray-400 w-16 text-right">{demo.duration}</span>
           </div>
 
-          {/* Control Buttons */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <button 
                 onClick={() => setIsMuted(!isMuted)}
                 className="p-2 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+                title={isMuted ? "Unmute" : "Mute"}
               >
                 {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
               </button>
@@ -328,21 +332,24 @@ const DemoModal: React.FC<DemoModalProps> = ({ featureId, isOpen, onClose }) => 
               <button 
                 onClick={prevStep}
                 disabled={currentStep === 0}
-                className="p-2 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors disabled:opacity-30"
+                className="p-2 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                title="Previous step (←)"
               >
                 <SkipBack className="w-5 h-5" />
               </button>
               <button 
                 onClick={() => setIsPlaying(!isPlaying)}
-                className="p-3 rounded-full text-white transition-colors"
+                className="p-4 rounded-full text-white transition-colors"
                 style={{ backgroundColor: demo.color }}
+                title={isPlaying ? "Pause (Space)" : "Play (Space)"}
               >
-                {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" fill="white" />}
+                {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" fill="white" />}
               </button>
               <button 
                 onClick={nextStep}
                 disabled={currentStep === demo.steps.length - 1}
-                className="p-2 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors disabled:opacity-30"
+                className="p-2 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                title="Next step (→)"
               >
                 <SkipForward className="w-5 h-5" />
               </button>
@@ -351,6 +358,7 @@ const DemoModal: React.FC<DemoModalProps> = ({ featureId, isOpen, onClose }) => 
             <div className="flex items-center gap-2">
               <button 
                 className="p-2 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+                title="Fullscreen"
               >
                 <Maximize2 className="w-5 h-5" />
               </button>
@@ -362,320 +370,645 @@ const DemoModal: React.FC<DemoModalProps> = ({ featureId, isOpen, onClose }) => 
   );
 };
 
-// Mockup Display Component
-interface MockupDisplayProps {
-  type: 'chat' | 'dashboard' | 'form' | 'table' | 'map';
+// Real Screen Recording Component
+interface ScreenRecordingProps {
+  featureId: string;
   step: DemoStep;
-  color: string;
   stepIndex: number;
+  color: string;
+  isPlaying: boolean;
 }
 
-const MockupDisplay: React.FC<MockupDisplayProps> = ({ type, step, color, stepIndex }) => {
-  const renderMockup = () => {
-    switch (type) {
-      case 'chat':
-        return <ChatMockup step={step} color={color} stepIndex={stepIndex} />;
-      case 'dashboard':
-        return <DashboardMockup step={step} color={color} stepIndex={stepIndex} />;
-      case 'form':
-        return <FormMockup step={step} color={color} stepIndex={stepIndex} />;
-      case 'table':
-        return <TableMockup step={step} color={color} stepIndex={stepIndex} />;
-      case 'map':
-        return <MapMockup step={step} color={color} stepIndex={stepIndex} />;
-      default:
-        return <FormMockup step={step} color={color} stepIndex={stepIndex} />;
+const ScreenRecording: React.FC<ScreenRecordingProps> = ({ featureId, step, stepIndex, color, isPlaying }) => {
+  switch (featureId) {
+    case 'chat':
+      return <ChatScreenRecording step={step} stepIndex={stepIndex} color={color} isPlaying={isPlaying} />;
+    case 'jobcard':
+      return <JobCardScreenRecording step={step} stepIndex={stepIndex} color={color} isPlaying={isPlaying} />;
+    case 'pdi':
+      return <PDIScreenRecording step={step} stepIndex={stepIndex} color={color} isPlaying={isPlaying} />;
+    case 'mg':
+      return <MGScreenRecording step={step} stepIndex={stepIndex} color={color} isPlaying={isPlaying} />;
+    case 'brand':
+      return <BrandScreenRecording step={step} stepIndex={stepIndex} color={color} isPlaying={isPlaying} />;
+    case 'regional':
+      return <RegionalScreenRecording step={step} stepIndex={stepIndex} color={color} isPlaying={isPlaying} />;
+    default:
+      return null;
+  }
+};
+
+// Chat Screen Recording - Realistic EKA-AI Chat Interface
+const ChatScreenRecording: React.FC<{ step: DemoStep; stepIndex: number; color: string; isPlaying: boolean }> = ({ stepIndex, color, isPlaying }) => {
+  const [typingText, setTypingText] = useState('');
+  const [showResponse, setShowResponse] = useState(false);
+  
+  const messages = [
+    { role: 'system', text: 'Welcome to EKA-AI. How can I help you today?' },
+    { role: 'user', text: 'My car has engine warning light on' },
+    { role: 'ai', text: 'I understand you\'re seeing an engine warning light. To help diagnose this:\n\n1. What is your vehicle make and model?\n2. When did the light first appear?\n3. Any unusual sounds or performance issues?' },
+    { role: 'user', text: 'Maruti Swift 2020, started yesterday, slight rough idle' },
+    { role: 'ai', text: '**Diagnostic Analysis for Maruti Swift 2020**\n\nBased on your symptoms, probable causes:\n\n🔴 **High Priority (65%)**\n• Oxygen Sensor malfunction\n• Estimated cost: ₹3,500 - ₹5,000\n\n🟡 **Medium Priority (25%)**\n• Mass Airflow Sensor issue\n• Estimated cost: ₹2,500 - ₹4,000\n\n🟢 **Low Priority (10%)**\n• Loose fuel cap\n• Fix: Free (tighten cap)\n\n**Recommended Action:** Schedule a diagnostic scan at your nearest Go4Garage center.' },
+    { role: 'user', text: 'Book service for tomorrow' },
+    { role: 'ai', text: '✅ **Appointment Confirmed**\n\n📅 Date: Tomorrow, 10:00 AM\n📍 Location: Go4Garage Andheri\n🚗 Vehicle: Maruti Swift (MH01AB1234)\n\n📋 Job Card #JC-2024-0892 created automatically.\n\nYou\'ll receive a WhatsApp confirmation shortly.' },
+  ];
+
+  const visibleMessages = messages.slice(0, Math.min((stepIndex + 1) * 2, messages.length));
+
+  useEffect(() => {
+    if (stepIndex === 1 && isPlaying) {
+      const text = 'My car has engine warning light on';
+      let i = 0;
+      const interval = setInterval(() => {
+        setTypingText(text.slice(0, i + 1));
+        i++;
+        if (i >= text.length) clearInterval(interval);
+      }, 50);
+      return () => clearInterval(interval);
     }
-  };
+  }, [stepIndex, isPlaying]);
 
   return (
-    <div className="w-full h-full flex flex-col">
-      {/* Step Info */}
-      <div className="text-center mb-6">
-        <h3 className="text-2xl font-bold text-white mb-2">{step.title}</h3>
-        <p className="text-gray-400">{step.description}</p>
-        {step.highlight && (
-          <span 
-            className="inline-block mt-2 px-3 py-1 rounded-full text-sm font-medium text-white"
-            style={{ backgroundColor: color }}
-          >
-            {step.highlight}
-          </span>
+    <div className="h-full flex flex-col bg-[#1A1A1C]">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-[#141416]">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+            <MessageSquare className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h3 className="text-white font-medium">EKA-AI Assistant</h3>
+            <p className="text-green-400 text-xs flex items-center gap-1">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+              Online • Ready to help
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <button className="p-2 rounded-lg hover:bg-white/10 text-gray-400">
+            <span className="text-xs">🎤</span>
+          </button>
+          <button className="p-2 rounded-lg hover:bg-white/10 text-gray-400">
+            <span className="text-xs">⚙️</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {visibleMessages.map((msg, i) => (
+          <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fadeIn`}>
+            <div 
+              className={`max-w-[85%] rounded-2xl px-4 py-3 ${
+                msg.role === 'user' 
+                  ? 'bg-purple-600 text-white rounded-br-md' 
+                  : msg.role === 'system'
+                  ? 'bg-white/5 text-gray-400 text-center w-full text-sm'
+                  : 'bg-[#2A2A2C] text-white rounded-bl-md'
+              }`}
+            >
+              <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed">{msg.text}</pre>
+            </div>
+          </div>
+        ))}
+        
+        {stepIndex >= 2 && stepIndex < 6 && (
+          <div className="flex justify-start">
+            <div className="bg-[#2A2A2C] rounded-2xl rounded-bl-md px-4 py-3">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                <span className="text-gray-400 text-sm ml-2">EKA-AI is analyzing...</span>
+              </div>
+            </div>
+          </div>
         )}
       </div>
 
-      {/* Mockup Area */}
-      <div className="flex-1 flex items-center justify-center">
-        {renderMockup()}
+      {/* Input Area */}
+      <div className="p-4 border-t border-white/10 bg-[#141416]">
+        <div className="flex items-center gap-3 bg-[#2A2A2C] rounded-xl px-4 py-3">
+          <input 
+            type="text"
+            value={stepIndex === 1 ? typingText : ''}
+            placeholder="Ask about vehicle diagnostics, repairs, or services..."
+            className="flex-1 bg-transparent text-white placeholder-gray-500 outline-none text-sm"
+            readOnly
+          />
+          <button 
+            className="p-2 rounded-lg text-white"
+            style={{ backgroundColor: color }}
+          >
+            <Send className="w-4 h-4" />
+          </button>
+        </div>
+        <p className="text-center text-gray-500 text-xs mt-2">
+          Powered by EKA-AI • Governed Automobile Intelligence
+        </p>
       </div>
+
+      {/* Highlight Cursor */}
+      {stepIndex === 0 && (
+        <div className="absolute bottom-20 right-8 animate-pulse">
+          <div className="w-8 h-8 rounded-full border-2 border-purple-500 flex items-center justify-center">
+            <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn { animation: fadeIn 0.3s ease-out; }
+      `}</style>
     </div>
   );
 };
 
-// Chat Mockup
-const ChatMockup: React.FC<{ step: DemoStep; color: string; stepIndex: number }> = ({ color, stepIndex }) => {
-  const messages = [
-    { role: 'user', text: 'My car has engine warning light on' },
-    { role: 'ai', text: 'I understand. Let me help diagnose this. What is your vehicle make and model?' },
-    { role: 'user', text: 'Maruti Swift 2020' },
-    { role: 'ai', text: 'Based on the engine warning light in your Swift, here are the most likely causes:\n\n1. Oxygen sensor issue (45%)\n2. Catalytic converter (25%)\n3. Mass airflow sensor (20%)\n\nEstimated repair: ₹3,500 - ₹8,000' },
+// Job Card Screen Recording
+const JobCardScreenRecording: React.FC<{ step: DemoStep; stepIndex: number; color: string; isPlaying: boolean }> = ({ stepIndex, color }) => {
+  const jobs = [
+    { id: 'JC-2024-0891', vehicle: 'MH01AB1234', customer: 'Rahul Sharma', status: 'In Progress', amount: '₹4,500', car: 'Maruti Swift' },
+    { id: 'JC-2024-0890', vehicle: 'MH02CD5678', customer: 'Priya Patel', status: 'Completed', amount: '₹7,200', car: 'Hyundai i20' },
+    { id: 'JC-2024-0889', vehicle: 'MH03EF9012', customer: 'Amit Kumar', status: 'Pending Approval', amount: '₹3,800', car: 'Honda City' },
+    { id: 'JC-2024-0888', vehicle: 'MH04GH3456', customer: 'Sneha Reddy', status: 'Invoiced', amount: '₹5,600', car: 'Tata Nexon' },
   ];
 
-  const visibleMessages = messages.slice(0, Math.min(stepIndex + 1, messages.length));
+  const statusColors: Record<string, string> = {
+    'In Progress': '#F97316',
+    'Completed': '#10B981',
+    'Pending Approval': '#EAB308',
+    'Invoiced': '#3B82F6',
+  };
 
   return (
-    <div className="w-full max-w-md bg-[#1A1A1C] rounded-xl border border-white/10 overflow-hidden">
-      <div className="p-3 border-b border-white/10 flex items-center gap-2">
-        <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: color }}>
-          <span className="text-white text-xs font-bold">AI</span>
+    <div className="h-full flex flex-col bg-[#1A1A1C]">
+      {/* Header */}
+      <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#141416]">
+        <div>
+          <h2 className="text-white text-xl font-semibold">Job Cards</h2>
+          <p className="text-gray-400 text-sm">Manage service orders and track progress</p>
         </div>
-        <span className="text-white text-sm font-medium">EKA-AI Chat</span>
+        <button 
+          className={`px-4 py-2 rounded-lg text-white font-medium flex items-center gap-2 ${stepIndex === 0 ? 'ring-2 ring-offset-2 ring-offset-[#141416]' : ''}`}
+          style={{ backgroundColor: color, ringColor: color }}
+        >
+          <span>+</span> New Job Card
+        </button>
       </div>
-      <div className="p-4 space-y-3 h-64 overflow-y-auto">
-        {visibleMessages.map((msg, i) => (
-          <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div 
-              className={`max-w-[80%] p-3 rounded-lg text-sm ${
-                msg.role === 'user' 
-                  ? 'bg-white/10 text-white' 
-                  : 'text-white'
-              }`}
-              style={msg.role === 'ai' ? { backgroundColor: `${color}20` } : {}}
-            >
-              <pre className="whitespace-pre-wrap font-sans">{msg.text}</pre>
-            </div>
-          </div>
-        ))}
-        <div className="flex items-center gap-2 text-gray-400 text-sm">
-          <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: color }}></div>
-          <span>EKA-AI is typing...</span>
-        </div>
-      </div>
-    </div>
-  );
-};
 
-// Dashboard Mockup
-const DashboardMockup: React.FC<{ step: DemoStep; color: string; stepIndex: number }> = ({ color, stepIndex }) => {
-  return (
-    <div className="w-full max-w-lg bg-[#1A1A1C] rounded-xl border border-white/10 overflow-hidden">
-      <div className="p-4 border-b border-white/10">
-        <span className="text-white font-medium">Brand Performance Dashboard</span>
-      </div>
-      <div className="p-4 grid grid-cols-3 gap-3">
-        {['Maruti', 'Hyundai', 'Tata', 'Honda', 'Toyota', 'Kia'].map((brand, i) => (
+      {/* Stats */}
+      <div className="grid grid-cols-4 gap-4 p-4 bg-[#141416] border-b border-white/10">
+        {[
+          { label: 'Total Jobs', value: '24', change: '+3 today' },
+          { label: 'In Progress', value: '8', change: '33% of total' },
+          { label: 'Completed', value: '12', change: '₹86,400 revenue' },
+          { label: 'Pending', value: '4', change: 'Needs attention' },
+        ].map((stat, i) => (
           <div 
-            key={brand} 
-            className={`p-3 rounded-lg border transition-all ${
-              i === stepIndex % 6 ? 'border-white/30 bg-white/10' : 'border-white/5 bg-white/5'
+            key={i} 
+            className={`p-4 rounded-xl bg-white/5 border transition-all ${
+              i === stepIndex % 4 ? 'border-white/20 bg-white/10' : 'border-transparent'
             }`}
           >
-            <p className="text-white text-sm font-medium">{brand}</p>
-            <p className="text-2xl font-bold mt-1" style={{ color }}>{Math.floor(Math.random() * 50 + 20)}%</p>
-            <p className="text-gray-400 text-xs">Market Share</p>
+            <p className="text-gray-400 text-sm">{stat.label}</p>
+            <p className="text-white text-2xl font-bold mt-1">{stat.value}</p>
+            <p className="text-gray-500 text-xs mt-1">{stat.change}</p>
           </div>
         ))}
       </div>
-      <div className="p-4 border-t border-white/10">
-        <div className="h-20 flex items-end gap-1">
-          {[40, 65, 45, 80, 55, 70, 90, 60].map((h, i) => (
-            <div 
-              key={i}
-              className="flex-1 rounded-t transition-all"
-              style={{ 
-                height: `${h}%`, 
-                backgroundColor: i === stepIndex % 8 ? color : `${color}40`
-              }}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
 
-// Form Mockup
-const FormMockup: React.FC<{ step: DemoStep; color: string; stepIndex: number }> = ({ color, stepIndex }) => {
-  const fields = [
-    'Vehicle Registration',
-    'Customer Name',
-    'Phone Number',
-    'Service Type',
-    'Estimated Cost'
-  ];
-
-  return (
-    <div className="w-full max-w-md bg-[#1A1A1C] rounded-xl border border-white/10 overflow-hidden">
-      <div className="p-4 border-b border-white/10">
-        <span className="text-white font-medium">New Inspection Form</span>
-      </div>
-      <div className="p-4 space-y-3">
-        {fields.map((field, i) => (
-          <div key={field} className="space-y-1">
-            <label className="text-gray-400 text-xs">{field}</label>
-            <div 
-              className={`h-10 rounded-lg border transition-all flex items-center px-3 ${
-                i <= stepIndex % 5 
-                  ? 'border-white/20 bg-white/5' 
-                  : 'border-white/10'
-              }`}
-              style={i === stepIndex % 5 ? { borderColor: color } : {}}
-            >
-              {i <= stepIndex % 5 && (
-                <span className="text-white text-sm">
-                  {i === 0 ? 'MH01AB1234' : i === 1 ? 'Rahul Sharma' : i === 2 ? '9876543210' : i === 3 ? 'Full Service' : '₹4,500'}
-                </span>
-              )}
-              {i === stepIndex % 5 && (
-                <span className="ml-auto animate-pulse" style={{ color }}>|</span>
-              )}
-            </div>
-          </div>
-        ))}
-        <button 
-          className="w-full py-2 rounded-lg text-white font-medium mt-4"
-          style={{ backgroundColor: color }}
-        >
-          Submit Inspection
-        </button>
-      </div>
-    </div>
-  );
-};
-
-// Table Mockup  
-const TableMockup: React.FC<{ step: DemoStep; color: string; stepIndex: number }> = ({ color, stepIndex }) => {
-  const rows = [
-    { id: 'JC-001', vehicle: 'MH01AB1234', status: 'In Progress', amount: '₹4,500' },
-    { id: 'JC-002', vehicle: 'MH02CD5678', status: 'Completed', amount: '₹7,200' },
-    { id: 'JC-003', vehicle: 'MH03EF9012', status: 'Pending', amount: '₹3,800' },
-    { id: 'JC-004', vehicle: 'MH04GH3456', status: 'Invoiced', amount: '₹5,600' },
-  ];
-
-  return (
-    <div className="w-full max-w-lg bg-[#1A1A1C] rounded-xl border border-white/10 overflow-hidden">
-      <div className="p-4 border-b border-white/10 flex items-center justify-between">
-        <span className="text-white font-medium">Job Cards</span>
-        <button 
-          className="px-3 py-1 rounded-lg text-white text-sm"
-          style={{ backgroundColor: color }}
-        >
-          + New Job
-        </button>
-      </div>
-      <div className="overflow-x-auto">
+      {/* Table */}
+      <div className="flex-1 overflow-auto">
         <table className="w-full">
-          <thead>
-            <tr className="border-b border-white/10">
-              <th className="text-left text-gray-400 text-xs p-3">ID</th>
-              <th className="text-left text-gray-400 text-xs p-3">Vehicle</th>
-              <th className="text-left text-gray-400 text-xs p-3">Status</th>
-              <th className="text-right text-gray-400 text-xs p-3">Amount</th>
+          <thead className="bg-[#141416] sticky top-0">
+            <tr>
+              <th className="text-left text-gray-400 text-xs font-medium px-6 py-3">JOB ID</th>
+              <th className="text-left text-gray-400 text-xs font-medium px-6 py-3">CUSTOMER</th>
+              <th className="text-left text-gray-400 text-xs font-medium px-6 py-3">VEHICLE</th>
+              <th className="text-left text-gray-400 text-xs font-medium px-6 py-3">STATUS</th>
+              <th className="text-right text-gray-400 text-xs font-medium px-6 py-3">AMOUNT</th>
+              <th className="text-right text-gray-400 text-xs font-medium px-6 py-3">ACTIONS</th>
             </tr>
           </thead>
           <tbody>
-            {rows.map((row, i) => (
+            {jobs.map((job, i) => (
               <tr 
-                key={row.id}
+                key={job.id}
                 className={`border-b border-white/5 transition-all ${
-                  i === stepIndex % 4 ? 'bg-white/10' : ''
+                  i === stepIndex % 4 ? 'bg-white/10' : 'hover:bg-white/5'
                 }`}
               >
-                <td className="p-3 text-white text-sm">{row.id}</td>
-                <td className="p-3 text-white text-sm">{row.vehicle}</td>
-                <td className="p-3">
+                <td className="px-6 py-4">
+                  <span className="text-white font-mono text-sm">{job.id}</span>
+                </td>
+                <td className="px-6 py-4">
+                  <div>
+                    <p className="text-white text-sm">{job.customer}</p>
+                    <p className="text-gray-500 text-xs">{job.vehicle}</p>
+                  </div>
+                </td>
+                <td className="px-6 py-4">
+                  <span className="text-gray-300 text-sm">{job.car}</span>
+                </td>
+                <td className="px-6 py-4">
                   <span 
-                    className="px-2 py-1 rounded text-xs"
+                    className="px-3 py-1 rounded-full text-xs font-medium"
                     style={{ 
-                      backgroundColor: row.status === 'Completed' ? '#10B98120' : 
-                                      row.status === 'In Progress' ? `${color}20` :
-                                      row.status === 'Invoiced' ? '#3B82F620' : '#F9731620',
-                      color: row.status === 'Completed' ? '#10B981' : 
-                             row.status === 'In Progress' ? color :
-                             row.status === 'Invoiced' ? '#3B82F6' : '#F97316'
+                      backgroundColor: `${statusColors[job.status]}20`,
+                      color: statusColors[job.status]
                     }}
                   >
-                    {row.status}
+                    {job.status}
                   </span>
                 </td>
-                <td className="p-3 text-white text-sm text-right">{row.amount}</td>
+                <td className="px-6 py-4 text-right">
+                  <span className="text-white font-medium">{job.amount}</span>
+                </td>
+                <td className="px-6 py-4 text-right">
+                  <button className="text-gray-400 hover:text-white p-1">
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {/* Action Indicator */}
+      {stepIndex >= 3 && stepIndex <= 5 && (
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/80 backdrop-blur-sm rounded-xl p-6 text-center">
+          <div 
+            className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
+            style={{ backgroundColor: `${color}20` }}
+          >
+            <FileText className="w-8 h-8" style={{ color }} />
+          </div>
+          <p className="text-white font-medium">{stepIndex === 3 ? 'AI Analyzing...' : stepIndex === 4 ? 'Building Estimate...' : 'Sending to Customer...'}</p>
+          <div className="w-32 h-1 bg-white/10 rounded-full mx-auto mt-3">
+            <div 
+              className="h-full rounded-full animate-pulse"
+              style={{ width: '60%', backgroundColor: color }}
+            ></div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-// Map Mockup
-const MapMockup: React.FC<{ step: DemoStep; color: string; stepIndex: number }> = ({ color, stepIndex }) => {
-  const cities = ['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Pune', 'Hyderabad'];
-  
+// PDI Screen Recording
+const PDIScreenRecording: React.FC<{ step: DemoStep; stepIndex: number; color: string; isPlaying: boolean }> = ({ stepIndex, color }) => {
+  const checklistItems = [
+    { category: 'Exterior', items: ['Body panels', 'Paint condition', 'Glass & mirrors', 'Lights', 'Wipers'], completed: stepIndex >= 2 ? 5 : 0 },
+    { category: 'Interior', items: ['Dashboard', 'Seats', 'AC/Heating', 'Electronics', 'Controls'], completed: stepIndex >= 3 ? 5 : 0 },
+    { category: 'Engine', items: ['Oil level', 'Coolant', 'Battery', 'Belts', 'Hoses'], completed: stepIndex >= 4 ? 5 : 0 },
+  ];
+
   return (
-    <div className="w-full max-w-lg bg-[#1A1A1C] rounded-xl border border-white/10 overflow-hidden">
-      <div className="p-4 border-b border-white/10">
-        <span className="text-white font-medium">Regional Coverage</span>
-      </div>
-      <div className="p-4">
-        {/* Simplified India Map */}
-        <div className="relative h-48 bg-white/5 rounded-lg overflow-hidden">
-          <svg viewBox="0 0 200 200" className="w-full h-full">
-            {/* India outline simplified */}
-            <path 
-              d="M100,20 L140,40 L160,80 L150,120 L140,160 L100,180 L60,160 L50,120 L40,80 L60,40 Z"
-              fill={`${color}20`}
-              stroke={color}
-              strokeWidth="2"
-            />
-            {/* City dots */}
-            {[
-              { x: 70, y: 100 },  // Mumbai
-              { x: 100, y: 50 },  // Delhi
-              { x: 110, y: 130 }, // Bangalore
-              { x: 120, y: 150 }, // Chennai
-              { x: 80, y: 110 },  // Pune
-              { x: 115, y: 115 }, // Hyderabad
-            ].map((pos, i) => (
-              <g key={i}>
-                <circle 
-                  cx={pos.x} 
-                  cy={pos.y} 
-                  r={i === stepIndex % 6 ? 8 : 5}
-                  fill={i === stepIndex % 6 ? color : `${color}60`}
-                  className="transition-all"
-                />
-                {i === stepIndex % 6 && (
-                  <circle 
-                    cx={pos.x} 
-                    cy={pos.y} 
-                    r="12"
-                    fill="none"
-                    stroke={color}
-                    strokeWidth="2"
-                    className="animate-ping"
-                  />
-                )}
-              </g>
-            ))}
-          </svg>
+    <div className="h-full flex flex-col bg-[#1A1A1C]">
+      {/* Header */}
+      <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#141416]">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+            <Car className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h2 className="text-white text-lg font-semibold">PDI Inspection</h2>
+            <p className="text-gray-400 text-sm">Vehicle: MH01AB1234 • Maruti Swift</p>
+          </div>
         </div>
-        {/* City Stats */}
-        <div className="grid grid-cols-3 gap-2 mt-4">
-          {cities.map((city, i) => (
+        <div className="flex items-center gap-3">
+          <span className="text-emerald-400 text-sm font-medium">
+            {Math.min(stepIndex * 15, 100)}% Complete
+          </span>
+          <div className="w-32 h-2 bg-white/10 rounded-full">
             <div 
-              key={city}
-              className={`p-2 rounded-lg text-center transition-all ${
-                i === stepIndex % 6 ? 'bg-white/10 border border-white/20' : 'bg-white/5'
-              }`}
-            >
-              <p className="text-white text-xs font-medium">{city}</p>
-              <p className="text-lg font-bold" style={{ color: i === stepIndex % 6 ? color : '#9CA3AF' }}>
-                {Math.floor(Math.random() * 100 + 50)}
-              </p>
-              <p className="text-gray-400 text-[10px]">Workshops</p>
+              className="h-full rounded-full transition-all"
+              style={{ width: `${Math.min(stepIndex * 15, 100)}%`, backgroundColor: color }}
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Checklist */}
+        <div className="w-2/3 p-6 overflow-y-auto">
+          {checklistItems.map((section, sectionIndex) => (
+            <div key={section.category} className="mb-6">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-white font-medium">{section.category} Inspection</h3>
+                <span className="text-gray-400 text-sm">{section.completed}/5</span>
+              </div>
+              <div className="space-y-2">
+                {section.items.map((item, itemIndex) => (
+                  <div 
+                    key={item}
+                    className={`flex items-center gap-3 p-3 rounded-lg border transition-all ${
+                      itemIndex < section.completed 
+                        ? 'bg-emerald-500/10 border-emerald-500/30' 
+                        : sectionIndex === stepIndex - 2 && itemIndex === section.completed
+                        ? 'bg-white/10 border-white/30 animate-pulse'
+                        : 'bg-white/5 border-white/10'
+                    }`}
+                  >
+                    <div 
+                      className={`w-5 h-5 rounded flex items-center justify-center ${
+                        itemIndex < section.completed ? 'bg-emerald-500' : 'bg-white/10'
+                      }`}
+                    >
+                      {itemIndex < section.completed && <Check className="w-3 h-3 text-white" />}
+                    </div>
+                    <span className={`text-sm ${itemIndex < section.completed ? 'text-white' : 'text-gray-400'}`}>
+                      {item}
+                    </span>
+                    {itemIndex < section.completed && (
+                      <span className="ml-auto text-emerald-400 text-xs">✓ Passed</span>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
+        </div>
+
+        {/* Photo Capture Panel */}
+        <div className="w-1/3 border-l border-white/10 p-4 bg-[#141416]">
+          <h4 className="text-white font-medium mb-4">Photo Documentation</h4>
+          <div className="grid grid-cols-2 gap-2">
+            {[1, 2, 3, 4].map((i) => (
+              <div 
+                key={i}
+                className={`aspect-square rounded-lg border-2 border-dashed flex items-center justify-center ${
+                  i <= stepIndex ? 'border-emerald-500 bg-emerald-500/10' : 'border-white/20'
+                }`}
+              >
+                {i <= stepIndex ? (
+                  <span className="text-2xl">📸</span>
+                ) : (
+                  <span className="text-gray-500 text-xs">+ Add</span>
+                )}
+              </div>
+            ))}
+          </div>
+          
+          {stepIndex >= 6 && (
+            <div className="mt-6 p-4 bg-white/5 rounded-lg">
+              <p className="text-white text-sm font-medium mb-2">Digital Signature</p>
+              <div className="h-20 border border-white/20 rounded-lg flex items-center justify-center">
+                <span className="text-gray-400 italic">Customer signature here</span>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// MG Model Screen Recording
+const MGScreenRecording: React.FC<{ step: DemoStep; stepIndex: number; color: string; isPlaying: boolean }> = ({ stepIndex, color }) => {
+  const plans = [
+    { name: 'Basic', price: '₹1,999', features: ['Oil change', 'Filter replacement', 'Basic inspection'] },
+    { name: 'Premium', price: '₹2,999', features: ['All Basic features', 'Brake service', 'AC check', 'Tire rotation'] },
+    { name: 'Elite', price: '₹4,999', features: ['All Premium features', 'Complete service', 'Roadside assistance', 'Priority booking'] },
+  ];
+
+  return (
+    <div className="h-full flex flex-col bg-[#1A1A1C]">
+      {/* Header */}
+      <div className="px-6 py-4 border-b border-white/10 bg-[#141416]">
+        <h2 className="text-white text-xl font-semibold">MG Model Setup</h2>
+        <p className="text-gray-400 text-sm">Create a Maintenance Guarantee subscription</p>
+      </div>
+
+      {/* Progress Steps */}
+      <div className="flex items-center px-6 py-4 border-b border-white/10 bg-[#141416]">
+        {['Select Plan', 'Add Vehicle', 'Configure', 'Review'].map((step, i) => (
+          <div key={step} className="flex items-center">
+            <div 
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                i < Math.ceil(stepIndex / 2) ? 'bg-blue-500 text-white' : 
+                i === Math.ceil(stepIndex / 2) ? 'border-2 text-white' : 'bg-white/10 text-gray-400'
+              }`}
+              style={i === Math.ceil(stepIndex / 2) ? { borderColor: color } : {}}
+            >
+              {i < Math.ceil(stepIndex / 2) ? <Check className="w-4 h-4" /> : i + 1}
+            </div>
+            <span className={`ml-2 text-sm ${i <= Math.ceil(stepIndex / 2) ? 'text-white' : 'text-gray-400'}`}>
+              {step}
+            </span>
+            {i < 3 && <div className="w-12 h-px bg-white/10 mx-4"></div>}
+          </div>
+        ))}
+      </div>
+
+      {/* Plan Selection */}
+      <div className="flex-1 p-6">
+        <div className="grid grid-cols-3 gap-4">
+          {plans.map((plan, i) => (
+            <div 
+              key={plan.name}
+              className={`p-6 rounded-xl border-2 transition-all cursor-pointer ${
+                i === stepIndex % 3 
+                  ? 'border-blue-500 bg-blue-500/10' 
+                  : 'border-white/10 hover:border-white/30'
+              }`}
+            >
+              <h3 className="text-white text-lg font-semibold">{plan.name}</h3>
+              <p className="text-3xl font-bold text-white mt-2">{plan.price}</p>
+              <p className="text-gray-400 text-sm">/month</p>
+              <ul className="mt-4 space-y-2">
+                {plan.features.map((f, fi) => (
+                  <li key={fi} className="flex items-center gap-2 text-sm text-gray-300">
+                    <Check className="w-4 h-4 text-blue-400" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              {i === 1 && (
+                <span className="mt-4 inline-block px-3 py-1 bg-blue-500 text-white text-xs rounded-full">
+                  Most Popular
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {stepIndex >= 5 && (
+          <div className="mt-6 p-4 bg-white/5 rounded-xl">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-white font-medium">Monthly Subscription</p>
+                <p className="text-gray-400 text-sm">Premium Plan • 12 months</p>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-bold" style={{ color }}>₹2,999</p>
+                <p className="text-gray-400 text-sm">Total: ₹35,988/year</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// Brand Marketing Screen Recording
+const BrandScreenRecording: React.FC<{ step: DemoStep; stepIndex: number; color: string; isPlaying: boolean }> = ({ stepIndex, color }) => {
+  const brands = ['Maruti Suzuki', 'Hyundai', 'Tata Motors', 'Honda', 'Toyota', 'Kia'];
+  
+  return (
+    <div className="h-full flex flex-col bg-[#1A1A1C]">
+      <div className="px-6 py-4 border-b border-white/10 bg-[#141416]">
+        <h2 className="text-white text-xl font-semibold">Brand Marketing Hub</h2>
+        <p className="text-gray-400 text-sm">Manage multi-brand campaigns</p>
+      </div>
+
+      <div className="flex-1 p-6">
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          {brands.map((brand, i) => (
+            <div 
+              key={brand}
+              className={`p-4 rounded-xl border transition-all cursor-pointer ${
+                i === stepIndex % 6 ? 'border-cyan-500 bg-cyan-500/10' : 'border-white/10 hover:border-white/30'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                  <span className="text-xl">🚗</span>
+                </div>
+                <div>
+                  <p className="text-white font-medium text-sm">{brand}</p>
+                  <p className="text-gray-400 text-xs">{Math.floor(Math.random() * 50 + 20)} campaigns</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="bg-white/5 rounded-xl p-4">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-white font-medium">Campaign Performance</h3>
+            <select className="bg-white/10 text-white text-sm rounded-lg px-3 py-1 border border-white/10">
+              <option>Last 7 days</option>
+            </select>
+          </div>
+          <div className="h-40 flex items-end gap-2">
+            {[40, 65, 45, 80, 55, 70, 90].map((h, i) => (
+              <div 
+                key={i}
+                className="flex-1 rounded-t transition-all"
+                style={{ 
+                  height: `${h}%`, 
+                  backgroundColor: i === stepIndex % 7 ? color : `${color}40`
+                }}
+              />
+            ))}
+          </div>
+          <div className="flex justify-between mt-2 text-xs text-gray-400">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Regional Marketing Screen Recording
+const RegionalScreenRecording: React.FC<{ step: DemoStep; stepIndex: number; color: string; isPlaying: boolean }> = ({ stepIndex, color }) => {
+  const regions = [
+    { name: 'Mumbai', workshops: 45, revenue: '₹12.5L' },
+    { name: 'Delhi NCR', workshops: 38, revenue: '₹10.2L' },
+    { name: 'Bangalore', workshops: 32, revenue: '₹8.7L' },
+    { name: 'Chennai', workshops: 28, revenue: '₹7.4L' },
+    { name: 'Pune', workshops: 24, revenue: '₹6.1L' },
+    { name: 'Hyderabad', workshops: 21, revenue: '₹5.8L' },
+  ];
+
+  return (
+    <div className="h-full flex flex-col bg-[#1A1A1C]">
+      <div className="px-6 py-4 border-b border-white/10 bg-[#141416]">
+        <h2 className="text-white text-xl font-semibold">Regional Marketing</h2>
+        <p className="text-gray-400 text-sm">City-wise targeting & analytics</p>
+      </div>
+
+      <div className="flex-1 flex">
+        {/* Map Area */}
+        <div className="w-1/2 p-4 flex items-center justify-center">
+          <div className="relative w-full max-w-sm">
+            <svg viewBox="0 0 200 220" className="w-full">
+              <path 
+                d="M100,10 L150,30 L170,70 L165,120 L150,160 L120,190 L80,200 L40,180 L25,140 L20,90 L35,50 L70,25 Z"
+                fill={`${color}15`}
+                stroke={color}
+                strokeWidth="2"
+              />
+              {[
+                { x: 55, y: 95, name: 'Mumbai' },
+                { x: 90, y: 45, name: 'Delhi' },
+                { x: 110, y: 145, name: 'Bangalore' },
+                { x: 125, y: 160, name: 'Chennai' },
+                { x: 70, y: 105, name: 'Pune' },
+                { x: 115, y: 115, name: 'Hyderabad' },
+              ].map((city, i) => (
+                <g key={city.name}>
+                  <circle 
+                    cx={city.x} 
+                    cy={city.y} 
+                    r={i === stepIndex % 6 ? 10 : 6}
+                    fill={i === stepIndex % 6 ? color : `${color}80`}
+                    className="transition-all cursor-pointer"
+                  />
+                  {i === stepIndex % 6 && (
+                    <>
+                      <circle cx={city.x} cy={city.y} r="15" fill="none" stroke={color} strokeWidth="2" opacity="0.5" className="animate-ping" />
+                      <text x={city.x} y={city.y - 15} textAnchor="middle" fill="white" fontSize="8" fontWeight="bold">
+                        {city.name}
+                      </text>
+                    </>
+                  )}
+                </g>
+              ))}
+            </svg>
+          </div>
+        </div>
+
+        {/* Region Stats */}
+        <div className="w-1/2 border-l border-white/10 p-4 overflow-y-auto">
+          <h3 className="text-white font-medium mb-4">Regional Performance</h3>
+          <div className="space-y-3">
+            {regions.map((region, i) => (
+              <div 
+                key={region.name}
+                className={`p-3 rounded-lg border transition-all ${
+                  i === stepIndex % 6 ? 'border-amber-500 bg-amber-500/10' : 'border-white/10'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4" style={{ color: i === stepIndex % 6 ? color : '#9CA3AF' }} />
+                    <span className="text-white text-sm font-medium">{region.name}</span>
+                  </div>
+                  <span className="text-white font-bold">{region.revenue}</span>
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <span className="text-gray-400 text-xs">{region.workshops} workshops</span>
+                  <div className="flex-1 mx-3 h-1 bg-white/10 rounded-full">
+                    <div 
+                      className="h-full rounded-full"
+                      style={{ width: `${(region.workshops / 45) * 100}%`, backgroundColor: color }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
