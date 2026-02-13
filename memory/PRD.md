@@ -256,13 +256,13 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 - [x] ~~Complete Login/Signup flow~~ ✅ COMPLETED (Update 10)
 
 ### P1 - Important  
-- [ ] Refactor backend server.py into separate routers (auth.py, chat.py, job_cards.py, etc.)
+- [x] ~~Refactor backend server.py into separate routers~~ ✅ COMPLETED (Update 14)
 - [x] ~~Phase 2 Frontend: InvoicesPage, MGFleetPage, PDIPage rebuilds~~ ✅ COMPLETED (Update 12)
 - [x] ~~Phase 3 Frontend: LoginPage dark theme, ChatsPage grouping, StatCard polish~~ ✅ COMPLETED (Update 13)
+- [x] ~~Add password hashing for production security~~ ✅ COMPLETED (Update 14)
 - [ ] WhatsApp integration for notifications
 - [ ] Voice input transcription (OpenAI Whisper)
 - [ ] Email invoice to customers (SendGrid/Resend)
-- [ ] Password hashing for production security
 
 ### P2 - Nice to Have
 - [ ] Advanced analytics dashboard
