@@ -38,24 +38,28 @@ const AppShell: React.FC = () => {
   const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [intelligenceMode, setIntelligenceMode] = useState<IntelligenceMode>('FAST');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
 
-  // Check for user in localStorage (simple auth check)
-  const user = React.useMemo(() => {
-    try {
-      const stored = localStorage.getItem('user');
-      return stored ? JSON.parse(stored) : null;
-    } catch {
-      return null;
-    }
-  }, []);
-
-  // Redirect to login if not authenticated
+  // Check for user in localStorage on mount
   React.useEffect(() => {
-    if (!loading && !user) {
-      navigate('/', { replace: true });
-    }
-  }, [user, loading, navigate]);
+    const checkAuth = () => {
+      try {
+        const stored = localStorage.getItem('user');
+        if (stored) {
+          setUser(JSON.parse(stored));
+        } else {
+          navigate('/', { replace: true });
+        }
+      } catch {
+        navigate('/', { replace: true });
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    checkAuth();
+  }, [navigate]);
 
   if (loading) return <LoadingScreen />;
   if (!user) return null;
