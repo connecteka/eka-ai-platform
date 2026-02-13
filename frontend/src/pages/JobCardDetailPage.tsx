@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Search, Bell, ChevronDown, Phone, MessageCircle, Printer, Download, FileText,
   Receipt, Check, Clock, AlertTriangle, ChevronRight, Plus, Eye, Camera,
   Upload, Paperclip, Star, Send, ChevronUp, ExternalLink, Mail, MapPin,
   Fuel, Calendar, Shield, Activity, Wrench, Package, CreditCard, Brain,
-  Heart, History, MessageSquare, PenTool, ThumbsUp, File, Link2, Settings
+  Heart, History, MessageSquare, PenTool, ThumbsUp, File, Link2, Settings,
+  Loader2
 } from 'lucide-react';
+import { useJobCardDetail, defaultJobCardData, defaultInsightsData, type JobCardDetail, type InsightsData } from '../hooks/useJobCardDetail';
+import SignaturePad from '../components/features/SignaturePad';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // TYPES
