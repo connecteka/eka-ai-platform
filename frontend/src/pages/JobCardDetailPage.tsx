@@ -2177,9 +2177,24 @@ const DocumentAttachmentsSection: React.FC<DocumentAttachmentsSectionProps> = ({
           padding: '24px',
           textAlign: 'center',
           marginTop: '16px',
-        }}>
-          <Upload size={24} color={styles.gray400} style={{ marginBottom: '8px' }} />
-          <div style={{ fontSize: '13px', color: styles.gray500 }}>Drop files here or click to upload</div>
+          cursor: 'pointer',
+        }}
+          onClick={() => fileInputRef.current?.click()}>
+          <input 
+            type="file" 
+            ref={fileInputRef} 
+            onChange={handleUpload} 
+            style={{ display: 'none' }} 
+            accept=".pdf,.jpg,.jpeg,.png"
+          />
+          {uploading ? (
+            <Loader2 size={24} color={styles.gray400} style={{ animation: 'spin 1s linear infinite', marginBottom: '8px' }} />
+          ) : (
+            <Upload size={24} color={styles.gray400} style={{ marginBottom: '8px' }} />
+          )}
+          <div style={{ fontSize: '13px', color: styles.gray500 }}>
+            {uploading ? 'Uploading...' : 'Drop files here or click to upload'}
+          </div>
           <div style={{ fontSize: '11px', color: styles.gray400, marginTop: '4px' }}>Supported: PDF, JPG, PNG (max 10MB)</div>
         </div>
       </Card>
@@ -2191,11 +2206,15 @@ const DocumentAttachmentsSection: React.FC<DocumentAttachmentsSectionProps> = ({
 // SECTION 16: RELATED JOB CARDS
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const RelatedJobCardsSection: React.FC = () => {
-  const relatedCards = [
-    { jobCard: 'JC-2024-00612', date: '15 Oct 2024', service: 'General Service', relation: 'Same vehicle, 4,250 km ago', badge: 'Previous', badgeVariant: 'info' as const },
-    { jobCard: 'JC-2024-00398', date: '12 Jul 2024', service: 'AC Service', relation: 'AC issue recurrence detected', badge: 'Repeat ⚠️', badgeVariant: 'warning' as const },
-    { jobCard: 'JC-2025-00852', date: '18 Jan 2025', service: 'Hyundai i20', relation: 'Same customer, different vehicle', badge: 'Same Owner', badgeVariant: 'purple' as const },
+interface RelatedJobCardsSectionProps {
+  relatedCards: any[];
+}
+
+const RelatedJobCardsSection: React.FC<RelatedJobCardsSectionProps> = ({ relatedCards: apiRelatedCards }) => {
+  const relatedCards = apiRelatedCards.length > 0 ? apiRelatedCards : [
+    { job_card_number: 'JC-2024-00612', date: '15 Oct 2024', service: 'General Service', relation: 'Same vehicle, 4,250 km ago', badge: 'Previous', badge_variant: 'info' },
+    { job_card_number: 'JC-2024-00398', date: '12 Jul 2024', service: 'AC Service', relation: 'AC issue recurrence detected', badge: 'Repeat ⚠️', badge_variant: 'warning' },
+    { job_card_number: 'JC-2025-00852', date: '18 Jan 2025', service: 'Hyundai i20', relation: 'Same customer, different vehicle', badge: 'Same Owner', badge_variant: 'purple' },
   ];
 
   return (
