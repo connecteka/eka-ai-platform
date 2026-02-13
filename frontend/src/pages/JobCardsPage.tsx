@@ -161,6 +161,7 @@ export default function JobCardsPage() {
           variant="primary"
           leftIcon={<Plus className="w-4 h-4" />}
           onClick={() => setShowNewModal(true)}
+          data-testid="new-job-card-btn"
         >
           New Job Card
         </Button>
