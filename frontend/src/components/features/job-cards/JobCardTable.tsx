@@ -150,7 +150,7 @@ const JobCardTable: React.FC<JobCardTableProps> = ({
   return (
     <div className="space-y-4">
       {/* Filters Bar */}
-      <div className="bg-white/5 rounded-xl p-4">
+      <div className="bg-white/5 rounded-xl p-4" data-testid="job-cards-filter">
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Search */}
           <div className="flex-1 relative">
@@ -161,6 +161,7 @@ const JobCardTable: React.FC<JobCardTableProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 bg-black/30 border border-white/10 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:border-orange-500/50 text-sm"
+              data-testid="job-cards-search"
             />
           </div>
 
