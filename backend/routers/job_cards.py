@@ -5,7 +5,7 @@ Handles CRUD operations for workshop job cards.
 from datetime import datetime, timezone
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, BackgroundTasks
 from bson import ObjectId
 
 from models.schemas import JobCardCreate, JobCardUpdate, JobCardTransition
