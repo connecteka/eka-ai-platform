@@ -14,6 +14,7 @@ import DemoModal from './DemoModal';
 
 interface FeatureSlide {
   id: number;
+  demoId: string;
   title: string;
   subtitle: string;
   description: string;
@@ -26,6 +27,7 @@ interface FeatureSlide {
 const FEATURE_SLIDES: FeatureSlide[] = [
   {
     id: 1,
+    demoId: 'pdi',
     title: "PDI Process",
     subtitle: "Pre-Delivery Inspection",
     description: "Streamlined digital PDI workflow with AI-powered checklist verification and instant reporting.",
@@ -41,6 +43,7 @@ const FEATURE_SLIDES: FeatureSlide[] = [
   },
   {
     id: 2,
+    demoId: 'mg',
     title: "MG Model",
     subtitle: "Maintenance Guarantee",
     description: "Revolutionary subscription model for predictable vehicle maintenance with fixed monthly costs.",
@@ -56,6 +59,7 @@ const FEATURE_SLIDES: FeatureSlide[] = [
   },
   {
     id: 3,
+    demoId: 'jobcard',
     title: "Job Card → Invoice",
     subtitle: "Complete Workflow",
     description: "Seamless transition from job creation to GST-compliant invoicing with automatic calculations.",
@@ -71,6 +75,7 @@ const FEATURE_SLIDES: FeatureSlide[] = [
   },
   {
     id: 4,
+    demoId: 'chat',
     title: "AI Chat Assistant",
     subtitle: "EKA-AI Powered",
     description: "Intelligent chatbot for instant vehicle diagnostics, service recommendations, and customer support.",
@@ -86,6 +91,7 @@ const FEATURE_SLIDES: FeatureSlide[] = [
   },
   {
     id: 5,
+    demoId: 'brand',
     title: "Brand Marketing",
     subtitle: "Multi-Brand Support",
     description: "Showcase multiple automobile brands with customized marketing campaigns and promotions.",
@@ -101,6 +107,7 @@ const FEATURE_SLIDES: FeatureSlide[] = [
   },
   {
     id: 6,
+    demoId: 'regional',
     title: "Regional Marketing",
     subtitle: "City & Zone Targeting",
     description: "Target customers by region, city, and zone with localized marketing campaigns and offers.",
