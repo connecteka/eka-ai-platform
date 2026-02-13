@@ -269,11 +269,22 @@ const FeatureVideoCarousel: React.FC = () => {
         </div>
 
         {/* Play Demo Button */}
-        <button className="flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-white/20 transition-all group">
+        <button 
+          onClick={() => openDemo(slide.demoId)}
+          className="flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-white/20 transition-all group"
+          data-testid="watch-demo-btn"
+        >
           <Play className="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" />
           <span className="text-sm font-medium">Watch Demo</span>
         </button>
       </div>
+
+      {/* Demo Modal */}
+      <DemoModal 
+        featureId={activeDemoId}
+        isOpen={isDemoOpen}
+        onClose={() => setIsDemoOpen(false)}
+      />
 
       {/* Navigation Arrows */}
       <button 
