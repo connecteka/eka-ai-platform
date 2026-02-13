@@ -2,9 +2,13 @@ import { VehicleContext, JobStatus, IntelligenceMode, OperatingMode } from "../t
 
 export class GeminiService {
   private getApiUrl(): string {
-    // Use Vite env variable for backend URL
-    const backendUrl = import.meta.env.VITE_API_URL || '';
-    return `${backendUrl}/api/chat`;
+    // Use Vite env variable for backend URL, fallback to proxy
+    const backendUrl = import.meta.env.VITE_API_URL;
+    if (backendUrl) {
+      return `${backendUrl}/api/chat`;
+    }
+    // Use proxy when VITE_API_URL is empty
+    return '/api/chat';
   }
 
   async sendMessage(
