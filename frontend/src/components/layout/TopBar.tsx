@@ -119,6 +119,16 @@ const TopBar: React.FC<TopBarProps> = ({ intelligenceMode, onModeChange }) => {
           </div>
         )}
 
+        {/* Help / Tour Button */}
+        <button 
+          onClick={() => (window as any).startProductTour?.()}
+          className="p-2 rounded-lg hover:bg-surface transition-colors"
+          data-testid="tour-help-btn"
+          title="Start product tour"
+        >
+          <HelpCircle className="w-5 h-5 text-text-secondary" />
+        </button>
+
         {/* Notifications */}
         <button 
           className="relative p-2 rounded-lg hover:bg-surface transition-colors"
