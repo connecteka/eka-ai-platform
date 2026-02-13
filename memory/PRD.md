@@ -131,7 +131,9 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 
 ## Routes
 ### App Routes (Sidebar Navigation)
+- `/` - Login Page (default)
 - `/app` - Dashboard
+- `/app/dashboard` - Dashboard
 - `/app/job-cards` - Job Cards Management
 - `/app/pdi` - PDI/Artifacts
 - `/app/fleet` - MG Fleet Management  
@@ -140,6 +142,12 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 - `/app/pricing` - Pricing
 
 ## API Endpoints
+### Authentication
+- `POST /api/auth/register` - Register new user with email/password
+- `POST /api/auth/login` - Login with email/password
+- `POST /api/auth/google/session` - Exchange Google OAuth session_id for user data
+- `GET /api/auth/me` - Get current authenticated user (cookie or Bearer token)
+- `POST /api/auth/logout` - Logout and clear session
 - `GET /api/health` - Health check
 - `POST /api/chat` - AI chat with Gemini (standard)
 - `POST /api/chat/stream` - AI chat with SSE streaming
