@@ -1,20 +1,29 @@
 """
 Invoices routes for EKA-AI Backend.
-Handles invoice CRUD and PDF generation.
+Handles invoice CRUD, PDF generation, and email delivery.
 """
 import io
 import uuid
+import base64
 from datetime import datetime, timezone
 from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import StreamingResponse
 from bson import ObjectId
+from pydantic import BaseModel, EmailStr
 
 from models.schemas import InvoiceCreate
 from utils.database import invoices_collection, serialize_doc, serialize_docs
+from services.email_service import send_email_async, generate_invoice_email_html, is_email_enabled
 
 router = APIRouter(prefix="/api/invoices", tags=["Invoices"])
+
+
+class EmailInvoiceRequest(BaseModel):
+    """Request body for emailing an invoice."""
+    recipient_email: EmailStr
+    recipient_name: Optional[str] = None
 
 
 @router.post("", status_code=201)
