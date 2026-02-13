@@ -270,14 +270,16 @@ const FeatureVideoCarousel: React.FC = () => {
       </button>
 
       {/* Slide Indicators with Progress */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-3" data-testid="slide-indicators">
         {FEATURE_SLIDES.map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className="relative h-1.5 rounded-full overflow-hidden transition-all"
+            data-testid={`slide-indicator-${index}`}
+            aria-label={`Go to slide ${index + 1}`}
+            className="relative h-2 rounded-full overflow-hidden transition-all hover:opacity-80"
             style={{ 
-              width: index === currentSlide ? '32px' : '8px',
+              width: index === currentSlide ? '40px' : '10px',
               backgroundColor: index === currentSlide ? 'transparent' : 'rgba(255,255,255,0.3)'
             }}
           >
