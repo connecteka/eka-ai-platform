@@ -5,6 +5,7 @@
 **Type:** Automobile Intelligence System  
 **Client:** Go4Garage Private Limited  
 **Date Created:** February 2026  
+**Last Updated:** February 13, 2026
 
 ## Original Problem Statement
 Build the EKA-AI Platform - a comprehensive automobile intelligence system with a Claude-like chat interface for vehicle diagnostics, job card management, and fleet operations.
@@ -19,6 +20,7 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
   - Dashboard with metrics
   - MG Fleet Management
   - Invoice Generation
+  - PDI Checklist Generator (interactive modal)
 
 ### Backend  
 - **Framework:** FastAPI (Python)
@@ -39,6 +41,7 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 - [x] Mobile-responsive design
 - [x] MG Fleet management module
 - [x] Invoice generation with GST support
+- [x] PDI Checklist with interactive modal
 
 ## What's Been Implemented
 ### February 13, 2026
@@ -51,14 +54,27 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 7. ✅ Responsive navigation
 
 ### February 13, 2026 - Update 6
-23. ✅ Added **Real Recordings** for Job Cards, MG Fleet, and PDI demos:
-    - **Job Cards**: List view + "Create New Job Card" form (Registration, Priority, Customer, Symptoms)
-    - **MG Fleet**: List view + "Create Contract" form (Fleet Name, KM Limits, Rates, Billing)
-    - **PDI/Artifacts**: Artifacts page with tool cards (Diagnostics, Reports, Compliance, Estimates, Fleet Tools)
-    - **Invoice**: Invoice list page
+23. ✅ Added **Real Recordings** for Job Cards, MG Fleet, and PDI demos
 24. ✅ Fixed Job Cards page crash (null check on `jobCards.filter`)
 25. ✅ Added sample job card data (4 test jobs with different statuses)
 26. ✅ All 6 demos now have "Live Recording" badge with real app screenshots
+
+### February 13, 2026 - Update 7 (Bug Fixes)
+27. ✅ **P0 FIXED**: Job Cards blank screen - Added `/app/*` routes to App.tsx and fixed API baseURL to include `/api` prefix
+28. ✅ **P1 FIXED**: PDI/Artifacts page now interactive - Added PDI Checklist modal with vehicle registration, technician inputs, 10-item checklist with Pass/Fail/Photo buttons
+29. ✅ **P2 FIXED**: Job Card stats now correct - Backend stats endpoint supports multiple status name formats (Pending/CREATED, In-Progress/IN_PROGRESS, etc.)
+30. ✅ Fixed vehicle registration field name mismatch (registration_number vs vehicle_registration)
+31. ✅ Added error state UI with retry button for Job Cards page
+
+## Routes
+### App Routes (Sidebar Navigation)
+- `/app` - Dashboard
+- `/app/job-cards` - Job Cards Management
+- `/app/pdi` - PDI/Artifacts
+- `/app/fleet` - MG Fleet Management  
+- `/app/invoices` - Invoices
+- `/app/settings` - Settings
+- `/app/pricing` - Pricing
 
 ## API Endpoints
 - `GET /api/health` - Health check
@@ -84,6 +100,8 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 - [ ] Advanced analytics dashboard
 - [ ] Multi-language support
 - [ ] Custom system prompts
+- [ ] Export demos to MP4
+- [ ] Product tour for first-time users
 
 ## Next Tasks
 1. Implement real SSE streaming for AI chat
