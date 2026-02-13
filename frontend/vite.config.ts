@@ -15,6 +15,14 @@ export default defineConfig({
   server: {
     port: 3000,
     host: '0.0.0.0',
+    allowedHosts: [
+      'localhost',
+      '.emergentagent.com',
+      '.preview.emergentagent.com',
+      '.preview.emergentcf.cloud',
+      'code-creator-129.preview.emergentagent.com',
+      'code-creator-129.cluster-5.preview.emergentcf.cloud'
+    ],
     proxy: {
       '/api': {
         target: 'http://localhost:8001',
