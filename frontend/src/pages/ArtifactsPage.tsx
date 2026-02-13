@@ -294,8 +294,18 @@ const ArtifactsPage = () => {
   );
 };
 
-const ArtifactCard = ({ title, desc, icon, color }: { title: string, desc: string, icon: React.ReactNode, color: string }) => (
-  <div className="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all cursor-pointer group hover:-translate-y-1">
+const ArtifactCard = ({ title, desc, icon, color, onClick }: { 
+  title: string, 
+  desc: string, 
+  icon: React.ReactNode, 
+  color: string,
+  onClick?: () => void 
+}) => (
+  <div 
+    className="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all cursor-pointer group hover:-translate-y-1"
+    onClick={onClick}
+    data-testid={`artifact-card-${title.toLowerCase().replace(/\s+/g, '-')}`}
+  >
     <div className={`aspect-[4/3] ${color} p-6 flex items-center justify-center`}>
       <div className="bg-white p-4 rounded-xl shadow-sm group-hover:scale-105 transition-transform">
         {icon}
