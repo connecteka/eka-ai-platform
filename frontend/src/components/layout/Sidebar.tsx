@@ -281,11 +281,16 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       )}
 
       {/* Navigation Section */}
-      <nav className={clsx("p-2 border-t border-border", collapsed && "flex flex-col items-center")}>
+      <nav className={clsx("p-2 border-t border-border", collapsed && "flex flex-col items-center")} data-testid="sidebar-nav">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path || 
             (item.path !== '/app/dashboard' && location.pathname.startsWith(item.path));
+          
+          // Special test IDs for tour targets
+          const testId = item.label === 'Job Cards' ? 'nav-job-cards' : 
+                        item.label === 'Dashboard' ? 'nav-dashboard' :
+                        `nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`;
           
           return (
             <button
@@ -299,7 +304,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
                   ? "bg-brand-orange/10 text-brand-orange border-l-2 border-brand-orange"
                   : "text-text-secondary hover:bg-surface hover:text-text-primary"
               )}
-              data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+              data-testid={testId}
             >
               <Icon className="w-5 h-5 flex-shrink-0" />
               {!collapsed && (
