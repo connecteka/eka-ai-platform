@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Loader2, ChevronDown, Menu, X } from 'lucide-react';
+import FeatureVideoCarousel from '../components/FeatureVideoCarousel';
 
 // Daily rotating taglines
 const TAGLINES = [
