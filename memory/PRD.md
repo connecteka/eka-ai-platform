@@ -185,27 +185,32 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
       - OAuth callback handling maintained
     - **Testing**: All 42 features verified working (100% pass rate)
 
-### February 13, 2026 - Update 14 (Backend Refactoring & Security)
-42. ✅ **Backend Refactoring - Modular APIRouter Structure**:
-    - Refactored 1500-line monolithic `server.py` into modular structure
-    - **Routers Created**:
-      - `routers/auth.py` - Authentication (login, register, Google OAuth, sessions)
-      - `routers/job_cards.py` - Job cards CRUD and stats
-      - `routers/chat.py` - AI chat and session management
-      - `routers/invoices.py` - Invoice CRUD and PDF generation
-      - `routers/mg_fleet.py` - MG Fleet contracts
-      - `routers/files.py` - File upload/download
-      - `routers/dashboard.py` - Dashboard metrics
-    - **Utils Created**:
-      - `utils/database.py` - MongoDB config, collections, serialize functions
-      - `utils/security.py` - Password hashing with bcrypt
-    - **Models Created**:
-      - `models/schemas.py` - All Pydantic models (JobCard, Invoice, Chat, User, etc.)
-43. ✅ **Password Hashing with bcrypt**:
-    - New users get passwords hashed with bcrypt (12 rounds)
-    - Backward compatible - legacy plain text passwords still work
-    - Secure verification with `verify_password()` function
-    - **Testing**: All 24 backend API tests passed (100% success rate)
+### February 13, 2026 - Update 15 (WhatsApp Notifications & Voice Input)
+44. ✅ **WhatsApp Notifications (MOCKED)**:
+    - Created `routers/notifications.py` with full WhatsApp notification infrastructure
+    - **Endpoints**:
+      - `GET /api/notifications/status` - Check service status
+      - `POST /api/notifications/send` - Send custom notification
+      - `POST /api/notifications/test` - Send test notification
+      - `POST /api/notifications/job-card-update/{id}` - Auto-notify on status change
+      - `GET /api/notifications/history` - View notification logs
+    - **Status-based message templates** for all 9 job card states
+    - **Automatic notification trigger** on job card status transition (via background task)
+    - **MOCKED**: Logs to MongoDB instead of sending real WhatsApp messages
+    - **To Enable Real WhatsApp**: Set `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_WHATSAPP_NUMBER`, `NOTIFICATIONS_ENABLED=true`
+45. ✅ **Voice Input Transcription (OpenAI Whisper)**:
+    - Created `routers/voice.py` with Whisper-based transcription
+    - **Endpoints**:
+      - `GET /api/voice/status` - Service status (enabled via EMERGENT_LLM_KEY)
+      - `GET /api/voice/supported-languages` - 20+ supported languages
+      - `POST /api/voice/transcribe` - Transcribe audio file
+      - `POST /api/voice/transcribe-for-chat` - Transcribe for chat input
+    - **Frontend integration** in ChatPage.tsx:
+      - Voice button with recording state (Mic/MicOff/Loader icons)
+      - Recording timer display
+      - MediaRecorder API for browser audio capture
+      - Auto-transcription and input population
+    - **Testing**: All 15 backend tests passed (100% success rate)
 
 ## Routes
 ### App Routes (Sidebar Navigation)
