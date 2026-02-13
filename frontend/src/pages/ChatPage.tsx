@@ -159,6 +159,105 @@ const ChatPage: React.FC = () => {
     }
   };
 
+  // Voice recording handlers
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+      
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+      
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+      
+      mediaRecorder.onstop = async () => {
+        stream.getTracks().forEach(track => track.stop());
+        
+        if (audioChunksRef.current.length > 0) {
+          const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+          await transcribeAudio(audioBlob);
+        }
+      };
+      
+      mediaRecorder.start(1000); // Collect data every second
+      setIsRecording(true);
+      setRecordingTime(0);
+      
+      // Start timer
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingTime(prev => prev + 1);
+      }, 1000);
+      
+    } catch (error) {
+      console.error('Failed to start recording:', error);
+      alert('Could not access microphone. Please check permissions.');
+    }
+  };
+  
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop();
+    }
+    setIsRecording(false);
+    
+    if (recordingTimerRef.current) {
+      clearInterval(recordingTimerRef.current);
+      recordingTimerRef.current = null;
+    }
+  };
+  
+  const transcribeAudio = async (audioBlob: Blob) => {
+    setIsTranscribing(true);
+    
+    const formData = new FormData();
+    formData.append('audio', audioBlob, 'recording.webm');
+    if (sessionId) {
+      formData.append('session_id', sessionId);
+    }
+    
+    try {
+      const response = await fetch(`${API_URL}/api/voice/transcribe-for-chat`, {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.transcription) {
+          // Set the transcribed text to input
+          setInput(prev => prev ? `${prev} ${data.transcription}` : data.transcription);
+          inputRef.current?.focus();
+        } else {
+          console.error('Transcription failed:', data.error);
+        }
+      }
+    } catch (error) {
+      console.error('Transcription error:', error);
+    } finally {
+      setIsTranscribing(false);
+      setRecordingTime(0);
+    }
+  };
+  
+  const handleVoiceButton = () => {
+    if (isRecording) {
+      stopRecording();
+    } else {
+      startRecording();
+    }
+  };
+  
+  // Format recording time
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   // Send message with SSE streaming
   const handleSend = useCallback(async () => {
     if ((!input.trim() && !attachedFile) || isLoading) return;
