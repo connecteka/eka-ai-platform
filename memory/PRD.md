@@ -265,9 +265,10 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 - [x] ~~Phase 2 Frontend: InvoicesPage, MGFleetPage, PDIPage rebuilds~~ ✅ COMPLETED (Update 12)
 - [x] ~~Phase 3 Frontend: LoginPage dark theme, ChatsPage grouping, StatCard polish~~ ✅ COMPLETED (Update 13)
 - [x] ~~Add password hashing for production security~~ ✅ COMPLETED (Update 14)
-- [ ] WhatsApp integration for notifications
-- [ ] Voice input transcription (OpenAI Whisper)
+- [x] ~~WhatsApp integration for notifications~~ ✅ COMPLETED - MOCKED (Update 15)
+- [x] ~~Voice input transcription (OpenAI Whisper)~~ ✅ COMPLETED (Update 15)
 - [ ] Email invoice to customers (SendGrid/Resend)
+- [ ] Guided product tour for first-time users
 
 ### P2 - Nice to Have
 - [ ] Advanced analytics dashboard
