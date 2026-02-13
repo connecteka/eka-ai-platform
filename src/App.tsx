@@ -22,11 +22,15 @@ import ProjectsPage from './pages/ProjectsPage';
 import ArtifactsPage from './pages/ArtifactsPage';
 import WorldClockPage from './pages/WorldClockPage';
 import ClockDemoPage from './pages/ClockDemoPage';
+import ClaudeChatPage from './pages/ClaudeChatPage';
 
 const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Claude-like Chat (Full Screen, No Layout) */}
+        <Route path="/claude-chat" element={<ClaudeChatPage />} />
+
         <Route element={<MainLayout />}>
           {/* Core Pages */}
           <Route path="/" element={<HomePage />} />
@@ -35,10 +39,10 @@ const App: React.FC = () => {
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/contact" element={<ContactPage />} />
-          
+
           {/* Auth Pages */}
           <Route path="/login" element={<LoginPage />} />
-          
+
           {/* Feature Pages */}
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/chats" element={<ChatsPage />} />

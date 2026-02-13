@@ -1,31 +1,32 @@
-# This file specifies files that are *not* uploaded to Google Cloud
+# This file specifies files that are *not* uploaded to Google Cloud Run
 .gcloudignore
 .git
 .gitignore
+
+# Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
+*.py[cod]
+*$py.class
+*.so
+.env
+.venv
 env/
 venv/
 ENV/
-.env
-.venv
-pip-log.txt
-pip-delete-this-directory.txt
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local development
+*.local
+.DS_Store
+
+# Tests (optional - remove if you want tests in container)
+tests/
 .pytest_cache/
-.mypy_cache/
-.dmypy.json
-dmypy.json
-*.egg-info/
-.installed.cfg
-*.egg
+
+# Documentation
+*.md

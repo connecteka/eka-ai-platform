@@ -1,21 +1,5 @@
-services:
-  # 1. The React Frontend
-  web:
-    path: .
-    build:
-      command: npm install && npm run build
-      output: dist
-    route: /
-    environment:
-      VITE_API_URL: /api
-
-  # 2. The Python Backend
-  api:
-    path: backend
-    build:
-      command: pip install -r requirements.txt
-    run: gunicorn --bind 0.0.0.0:8080 server:app
-    route: /api
-    environment:
-      FLASK_ENV: production
-      # Secrets will be injected by Emergent Vault
+{
+  "env_image_name": "fastapi_react_mongo_shadcn_base_image_cloud_arm:release-12022026-1",
+  "job_id": "1a75f4ce-eb36-470c-8d93-10736dbee559",
+  "created_at": "2026-02-13T22:37:19.976186+00:00Z"
+}
