@@ -318,21 +318,50 @@ Vehicle Context:
 @app.get("/api/job-cards/stats")
 def get_job_card_stats():
     """Get job card statistics."""
-    statuses = ["Pending", "In-Progress", "Completed", "Cancelled"]
-    stats = {}
+    # Count by various status names (supporting both old and new status naming)
+    total = job_cards_collection.count_documents({})
     
-    for status in statuses:
-        count = job_cards_collection.count_documents({"status": status})
-        stats[status.lower().replace("-", "_")] = count
+    # Count pending (multiple possible names)
+    pending = job_cards_collection.count_documents({
+        "status": {"$in": ["Pending", "CREATED", "pending"]}
+    })
     
-    stats["total"] = job_cards_collection.count_documents({})
+    # Count in-progress
+    in_progress = job_cards_collection.count_documents({
+        "status": {"$in": ["In-Progress", "IN_PROGRESS", "in_progress", "DIAGNOSED", "ESTIMATED"]}
+    })
     
-    # Add additional stats for frontend
-    stats["active"] = stats.get("pending", 0) + stats.get("in_progress", 0)
-    stats["by_status"] = {
+    # Count completed
+    completed = job_cards_collection.count_documents({
+        "status": {"$in": ["Completed", "CLOSED", "completed", "INVOICED"]}
+    })
+    
+    # Count cancelled
+    cancelled = job_cards_collection.count_documents({
+        "status": {"$in": ["Cancelled", "CANCELLED", "cancelled"]}
+    })
+    
+    # Active = pending + in_progress
+    active = pending + in_progress
+    
+    # Detailed status breakdown
+    by_status = {
         "CUSTOMER_APPROVAL": job_cards_collection.count_documents({"status": "CUSTOMER_APPROVAL"}),
         "PDI": job_cards_collection.count_documents({"status": "PDI"}),
         "PDI_COMPLETED": job_cards_collection.count_documents({"status": "PDI_COMPLETED"}),
+        "CREATED": job_cards_collection.count_documents({"status": {"$in": ["CREATED", "Pending"]}}),
+        "IN_PROGRESS": job_cards_collection.count_documents({"status": {"$in": ["IN_PROGRESS", "In-Progress"]}}),
+        "COMPLETED": job_cards_collection.count_documents({"status": {"$in": ["CLOSED", "Completed"]}}),
+    }
+    
+    stats = {
+        "total": total,
+        "pending": pending,
+        "in_progress": in_progress,
+        "completed": completed,
+        "cancelled": cancelled,
+        "active": active,
+        "by_status": by_status
     }
     
     return {"success": True, "data": stats, **stats}
