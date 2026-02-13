@@ -288,6 +288,8 @@ const DemoModal: React.FC<DemoModalProps> = ({ featureId, isOpen, onClose }) => 
                 <RealScreenRecording 
                   screenshot={step.screenshot}
                   hotspot={step.hotspot}
+                  zoom={step.zoom}
+                  highlightArea={step.highlightArea}
                   color={demo.color}
                   isPlaying={isPlaying}
                 />
