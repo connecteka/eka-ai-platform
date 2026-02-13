@@ -227,6 +227,25 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
         </button>
       </div>
 
+      {/* Chat Navigation Link */}
+      {!collapsed && (
+        <div className="px-2">
+          <button
+            onClick={() => navigate('/chat')}
+            className={clsx(
+              "flex items-center gap-3 w-full px-3 py-2 rounded-lg transition-colors",
+              location.pathname === '/chat' || location.pathname.includes('/chat')
+                ? "bg-brand-orange/10 text-brand-orange border-l-2 border-brand-orange"
+                : "text-text-secondary hover:bg-surface hover:text-text-primary"
+            )}
+            data-testid="nav-chat"
+          >
+            <MessageSquare className="w-5 h-5 flex-shrink-0" />
+            <span className="text-sm font-medium">AI Chat</span>
+          </button>
+        </div>
+      )}
+
       {/* Recent Chats Section */}
       {!collapsed && (
         <div className="flex-1 overflow-y-auto px-2 py-1">
