@@ -223,6 +223,28 @@ export default function JobCardsPage() {
         </div>
       )}
 
+      {/* Error State */}
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-6 mb-8" data-testid="job-cards-error">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center">
+              <AlertCircle className="w-6 h-6 text-red-400" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-medium text-red-400">Failed to load job cards</h3>
+              <p className="text-sm text-gray-400 mt-1">{error}</p>
+            </div>
+            <Button
+              variant="secondary"
+              onClick={() => { fetchJobCards(); fetchStats(); }}
+              leftIcon={<RefreshCw className="w-4 h-4" />}
+            >
+              Retry
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Job Cards Table */}
       <JobCardTable
         jobCards={jobCards}
