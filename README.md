@@ -1,148 +1,180 @@
-# 🚀 EKA-AI Platform
+# 🚗 EKA-AI Platform
 
 **Governed Automobile Intelligence System**  
 **Go4Garage Private Limited**
 
-[![Production Ready](https://img.shields.io/badge/status-production%20ready-success)](https://github.com/ekaaiurgaa-glitch/eka-ai-platform)
-[![Firebase](https://img.shields.io/badge/deploy-Firebase-orange)](https://console.firebase.google.com)
-[![Tests](https://img.shields.io/badge/tests-25%2F25%20passing-success)](./docs/verify-production.sh)
+[![Production Ready](https://img.shields.io/badge/status-production%20ready-success)](https://github.com/connecteka/eka-ai-platform)
+[![React](https://img.shields.io/badge/React-19-blue)](https://react.dev)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Python-green)](https://fastapi.tiangolo.com)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Database-brightgreen)](https://mongodb.com)
+[![Tests](https://img.shields.io/badge/tests-31%2F31%20passing-success)](./test_reports/)
 
 ---
 
-## 📋 Quick Start
+## 🎯 Overview
 
-### Deploy to Firebase Studio
+EKA-AI is a comprehensive automobile workshop management platform powered by AI. It features:
 
-```bash
-npm install
-npm run build
-```
-
-Then upload `dist/` folder to [Firebase Console](https://console.firebase.google.com)
-
-### Deploy via CLI
-
-```bash
-npm install
-npm run build
-firebase deploy --only hosting
-```
+- **AI Chat Assistant** - Claude-like interface for vehicle diagnostics (Gemini 2.0 Flash)
+- **Job Card Management** - Full CRUD with state machine workflow
+- **Digital Signature Capture** - Canvas-based customer approval
+- **Invoice Generation** - GST-compliant PDF invoices with email delivery
+- **Vehicle Documentation** - Photo upload and management
+- **WhatsApp Notifications** - Customer status updates (Twilio integration)
+- **Voice Input** - Speech-to-text transcription (OpenAI Whisper)
+- **Guided Product Tour** - First-time user onboarding
 
 ---
 
-## 🏗️ Project Structure
+## 🏗️ Architecture
 
 ```
 eka-ai-platform/
-├── src/                          # Frontend source code
-│   ├── components/               # React components
-│   ├── pages/                   # Application pages
-│   ├── services/                # API services
-│   └── lib/                     # Utilities
-├── backend/                      # Python backend
+├── frontend/                     # React 19 + TypeScript + Vite
+│   ├── src/
+│   │   ├── components/          # Reusable UI components
+│   │   │   ├── ui/              # Shadcn/UI components
+│   │   │   └── features/        # Feature components (SignaturePad)
+│   │   ├── pages/               # Application pages
+│   │   ├── hooks/               # Custom React hooks
+│   │   └── lib/                 # Utilities
+│   └── package.json
+│
+├── backend/                      # FastAPI (Python)
+│   ├── routers/                 # API route handlers
+│   │   ├── auth.py              # Authentication
+│   │   ├── job_cards.py         # Job card CRUD + insights
+│   │   ├── invoices.py          # Invoice + PDF + Email
+│   │   ├── chat.py              # AI chat sessions
+│   │   ├── files.py             # File uploads
+│   │   ├── notifications.py     # WhatsApp notifications
+│   │   └── voice.py             # Voice transcription
 │   ├── services/                # Business logic
-│   ├── database/                # SQL migrations
-│   └── prompts/                 # AI system prompts
-├── docs/                        # Documentation
-├── firebase.json                # Firebase configuration
-└── dist/                        # Build output (deploy this)
+│   │   └── email_service.py     # Resend email integration
+│   ├── models/                  # Pydantic schemas
+│   ├── utils/                   # Database & security
+│   └── requirements.txt
+│
+├── memory/                       # Project documentation
+│   └── PRD.md                   # Product Requirements Document
+│
+├── test_reports/                # Test results
+└── uploads/                     # Uploaded files storage
 ```
 
 ---
 
-## 🔧 Tech Stack
+## 🚀 Quick Start
 
-**Frontend:** React 19 + TypeScript + Tailwind CSS + Vite  
-**Backend:** Python (FastAPI) + PostgreSQL (Supabase)  
-**Deployment:** Firebase Hosting + GitHub Actions  
-**Monitoring:** Sentry
+### Prerequisites
 
----
+- Node.js 18+
+- Python 3.11+
+- MongoDB
 
-## 🎨 Design System (Dark Mode)
-
-**Dark Theme Palette:**
-
-| Color | Hex Code | Usage |
-|-------|----------|-------|
-| **Brand Orange** | `#F45D3D` | Accent, buttons, highlights |
-| **Background** | `#0D0D0D` | Primary background |
-| **Background Alt** | `#1B1B1D` | Cards, elevated surfaces |
-| **Text Primary** | `#FFFFFF` | Main text, headings |
-| **Text Secondary** | `#E5E5E5` | Secondary text |
-| **Border** | `#333333` | Subtle borders |
-
-### Tailwind Usage
-
-```jsx
-// Card with dark theme
-<div className="bg-background-alt border border-border rounded-lg">
-  <h2 className="text-text-primary">Title</h2>
-  <p className="text-text-secondary">Description</p>
-  <button className="bg-brand-orange text-white">Action</button>
-</div>
-```
-
----
-
-## 📚 Documentation
-
-| Document | Description |
-|----------|-------------|
-| [Firebase Studio Guide](./docs/FIREBASE_STUDIO_CHECKLIST.md) | Step-by-step deployment |
-| [Firebase Deployment](./docs/FIREBASE_DEPLOYMENT.md) | Complete Firebase guide |
-| [Implementation Guide](./docs/IMPLEMENTATION_GUIDE.md) | Code reference |
-| [Production Checklist](./docs/PRODUCTION_DEPLOYMENT_CHECKLIST.md) | Full audit |
-
----
-
-## ⚙️ Environment Variables
-
-Create `.env` file:
+### Frontend Setup
 
 ```bash
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
-VITE_API_URL=https://api.go4garage.com
-VITE_SENTRY_DSN=https://your-sentry-dsn
+cd frontend
+yarn install
+yarn dev
 ```
 
-See [.env.example](./.env.example) for complete list.
+### Backend Setup
+
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn server:app --reload --port 8001
+```
+
+### Environment Variables
+
+**Frontend** (`frontend/.env`):
+```env
+VITE_API_URL=http://localhost:8001
+```
+
+**Backend** (`backend/.env`):
+```env
+MONGO_URL=mongodb://localhost:27017
+DB_NAME=eka_ai
+EMERGENT_LLM_KEY=your_key_here
+
+# Optional
+RESEND_API_KEY=re_xxxxx          # Email invoices
+TWILIO_ACCOUNT_SID=xxxxx         # WhatsApp notifications
+TWILIO_AUTH_TOKEN=xxxxx
+```
 
 ---
 
-## ✅ Production Features
+## 📡 API Endpoints
 
-- ✅ Dark Mode Design System
-- ✅ Dual-Pane Login with Video Scroller
-- ✅ AI Chat (Automobile-only)
-- ✅ Job Card Workflow
-- ✅ MG Fleet Management
-- ✅ Invoice Generation (GST)
-- ✅ Error Tracking (Sentry)
-- ✅ Rate Limiting
-- ✅ Health Monitoring
+### Authentication
+- `POST /api/auth/register` - Register user
+- `POST /api/auth/login` - Login
+- `GET /api/auth/me` - Current user
+
+### Job Cards
+- `GET /api/job-cards` - List job cards
+- `POST /api/job-cards` - Create job card
+- `GET /api/job-cards/{id}/detail` - Full job card details
+- `GET /api/job-cards/{id}/insights` - AI insights
+- `POST /api/job-cards/{id}/signature` - Save digital signature
+- `POST /api/job-cards/{id}/notes` - Add internal note
+
+### Invoices
+- `GET /api/invoices` - List invoices
+- `POST /api/invoices` - Create invoice
+- `GET /api/invoices/{id}/pdf` - Download PDF
+- `POST /api/invoices/{id}/email` - Email invoice to customer
+
+### Files
+- `POST /api/files/upload` - Upload file (images, documents)
+- `GET /api/files/{id}` - Download file
+
+### AI Chat
+- `POST /api/chat` - Send message
+- `POST /api/chat/stream` - SSE streaming response
+- `GET /api/chat/sessions` - List sessions
 
 ---
 
-## 🚀 Deployment Status
+## 🎨 Brand Colors
 
-**Production Readiness:** 100% ✅
-
-All components tested and ready for deployment.
+| Color | Hex | Usage |
+|-------|-----|-------|
+| EKA Orange | `#E8820C` | Primary accent, CTAs |
+| Go4Garage Purple | `#7433A2` | Secondary, headers |
+| Success Green | `#3CB44B` | Status indicators |
+| Background | `#FFFFFF` | Light theme base |
 
 ---
 
-## 📞 Support
+## 🧪 Testing
 
-**Go4Garage Private Limited**
-- Technical: tech@go4garage.com
-- Support: support@go4garage.com
+```bash
+# Backend tests
+cd backend
+pytest tests/ -v
+
+# Frontend lint
+cd frontend
+yarn lint
+```
 
 ---
 
 ## 📄 License
 
-© 2024 Go4Garage Private Limited. All rights reserved.
+Proprietary - Go4Garage Private Limited © 2025
 
-**EKA-AI - Governed Automobile Intelligence**
+---
+
+## 🙏 Acknowledgments
+
+- Powered by **Emergent Labs** AI infrastructure
+- Built with **Gemini 2.0 Flash** for AI capabilities
+- **Resend** for transactional emails
+- **Twilio** for WhatsApp notifications
