@@ -972,41 +972,291 @@ def get_dashboard_metrics():
     }
 
 
-# ==================== AUTH ENDPOINTS (Simple) ====================
+# ==================== AUTH ENDPOINTS ====================
+import httpx
+from fastapi import Response, Cookie, Request
+
+# User sessions collection
+user_sessions_collection = db["user_sessions"]
+
+
+class GoogleAuthSession(BaseModel):
+    session_id: str
+
+
+@app.post("/api/auth/google/session")
+async def process_google_session(session_data: GoogleAuthSession, response: Response):
+    """
+    Process Google OAuth session_id from Emergent Auth.
+    Exchanges session_id for user data and creates a persistent session.
+    """
+    try:
+        # Call Emergent Auth to get user data
+        async with httpx.AsyncClient() as client:
+            auth_response = await client.get(
+                "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
+                headers={"X-Session-ID": session_data.session_id},
+                timeout=10.0
+            )
+            
+            if auth_response.status_code != 200:
+                raise HTTPException(status_code=401, detail="Invalid session")
+            
+            user_info = auth_response.json()
+        
+        email = user_info.get("email")
+        name = user_info.get("name", email.split("@")[0] if email else "User")
+        picture = user_info.get("picture", "")
+        session_token = user_info.get("session_token")
+        
+        if not email or not session_token:
+            raise HTTPException(status_code=400, detail="Invalid user data from auth provider")
+        
+        # Check if user exists, create or update
+        existing_user = users_collection.find_one({"email": email}, {"_id": 0})
+        
+        if existing_user:
+            # Update existing user
+            users_collection.update_one(
+                {"email": email},
+                {"$set": {
+                    "name": name,
+                    "picture": picture,
+                    "updated_at": datetime.now(timezone.utc)
+                }}
+            )
+            user_id = existing_user.get("user_id")
+        else:
+            # Create new user with custom user_id
+            user_id = f"user_{uuid.uuid4().hex[:12]}"
+            users_collection.insert_one({
+                "user_id": user_id,
+                "email": email,
+                "name": name,
+                "picture": picture,
+                "role": "user",
+                "auth_provider": "google",
+                "created_at": datetime.now(timezone.utc),
+                "updated_at": datetime.now(timezone.utc)
+            })
+        
+        # Create session with 7 day expiry
+        expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+        
+        # Delete any existing sessions for this user
+        user_sessions_collection.delete_many({"user_id": user_id})
+        
+        # Create new session
+        user_sessions_collection.insert_one({
+            "user_id": user_id,
+            "session_token": session_token,
+            "expires_at": expires_at,
+            "created_at": datetime.now(timezone.utc)
+        })
+        
+        # Set httpOnly cookie
+        response.set_cookie(
+            key="session_token",
+            value=session_token,
+            httponly=True,
+            secure=True,
+            samesite="none",
+            path="/",
+            max_age=7 * 24 * 60 * 60  # 7 days in seconds
+        )
+        
+        # Get user data to return
+        user_doc = users_collection.find_one({"user_id": user_id}, {"_id": 0, "password": 0})
+        
+        return {
+            "success": True,
+            "user": user_doc,
+            "token": session_token
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Google Auth Error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Authentication failed: {str(e)}")
+
+
+@app.get("/api/auth/me")
+async def get_current_user(
+    request: Request,
+    session_token: Optional[str] = Cookie(None)
+):
+    """
+    Get current authenticated user.
+    Checks session_token from cookie first, then Authorization header.
+    """
+    token = session_token
+    
+    # Fallback to Authorization header
+    if not token:
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header.split(" ")[1]
+    
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    # Find session
+    session_doc = user_sessions_collection.find_one({"session_token": token}, {"_id": 0})
+    
+    if not session_doc:
+        raise HTTPException(status_code=401, detail="Invalid session")
+    
+    # Check expiry with timezone awareness
+    expires_at = session_doc.get("expires_at")
+    if isinstance(expires_at, str):
+        expires_at = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+    
+    if expires_at < datetime.now(timezone.utc):
+        user_sessions_collection.delete_one({"session_token": token})
+        raise HTTPException(status_code=401, detail="Session expired")
+    
+    # Get user
+    user_id = session_doc.get("user_id")
+    user_doc = users_collection.find_one({"user_id": user_id}, {"_id": 0, "password": 0})
+    
+    if not user_doc:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return user_doc
+
+
+@app.post("/api/auth/logout")
+async def logout_user(
+    request: Request,
+    response: Response,
+    session_token: Optional[str] = Cookie(None)
+):
+    """Logout user and clear session."""
+    token = session_token
+    
+    # Fallback to Authorization header
+    if not token:
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header.split(" ")[1]
+    
+    if token:
+        user_sessions_collection.delete_one({"session_token": token})
+    
+    # Clear cookie
+    response.delete_cookie(
+        key="session_token",
+        path="/",
+        secure=True,
+        samesite="none"
+    )
+    
+    return {"success": True, "message": "Logged out successfully"}
+
 
 @app.post("/api/auth/register")
-def register_user(user: UserRegister):
-    """Register a new user."""
+def register_user(user: UserRegister, response: Response):
+    """Register a new user with email/password."""
     existing = users_collection.find_one({"email": user.email})
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
     
-    doc = user.model_dump()
-    doc["created_at"] = datetime.now(timezone.utc)
-    doc["role"] = "user"
+    # Create user with custom user_id
+    user_id = f"user_{uuid.uuid4().hex[:12]}"
     
-    result = users_collection.insert_one(doc)
-    doc["_id"] = result.inserted_id
-    del doc["password"]  # Don't return password
+    doc = {
+        "user_id": user_id,
+        "email": user.email,
+        "password": user.password,  # In production, hash this!
+        "name": user.name,
+        "workshop_name": user.workshop_name,
+        "role": "user",
+        "auth_provider": "email",
+        "created_at": datetime.now(timezone.utc),
+        "updated_at": datetime.now(timezone.utc)
+    }
     
-    return {"success": True, "user": serialize_doc(doc)}
+    users_collection.insert_one(doc)
+    
+    # Create session
+    session_token = f"email_session_{uuid.uuid4().hex}"
+    expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+    
+    user_sessions_collection.insert_one({
+        "user_id": user_id,
+        "session_token": session_token,
+        "expires_at": expires_at,
+        "created_at": datetime.now(timezone.utc)
+    })
+    
+    # Set cookie
+    response.set_cookie(
+        key="session_token",
+        value=session_token,
+        httponly=True,
+        secure=True,
+        samesite="none",
+        path="/",
+        max_age=7 * 24 * 60 * 60
+    )
+    
+    # Return user without password
+    user_doc = users_collection.find_one({"user_id": user_id}, {"_id": 0, "password": 0})
+    
+    return {"success": True, "user": user_doc, "token": session_token}
 
 
 @app.post("/api/auth/login")
-def login_user(credentials: UserLogin):
-    """Login user (simplified - no JWT for demo)."""
+def login_user(credentials: UserLogin, response: Response):
+    """Login user with email/password."""
     user = users_collection.find_one({"email": credentials.email})
     
     if not user or user.get("password") != credentials.password:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
-    user_data = serialize_doc(user)
-    del user_data["password"]
+    user_id = user.get("user_id")
+    
+    # If user doesn't have user_id (legacy), create one
+    if not user_id:
+        user_id = f"user_{uuid.uuid4().hex[:12]}"
+        users_collection.update_one(
+            {"email": credentials.email},
+            {"$set": {"user_id": user_id}}
+        )
+    
+    # Delete old sessions and create new one
+    user_sessions_collection.delete_many({"user_id": user_id})
+    
+    session_token = f"email_session_{uuid.uuid4().hex}"
+    expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+    
+    user_sessions_collection.insert_one({
+        "user_id": user_id,
+        "session_token": session_token,
+        "expires_at": expires_at,
+        "created_at": datetime.now(timezone.utc)
+    })
+    
+    # Set cookie
+    response.set_cookie(
+        key="session_token",
+        value=session_token,
+        httponly=True,
+        secure=True,
+        samesite="none",
+        path="/",
+        max_age=7 * 24 * 60 * 60
+    )
+    
+    user_data = users_collection.find_one({"user_id": user_id}, {"_id": 0, "password": 0})
     
     return {
         "success": True,
         "user": user_data,
-        "token": f"demo-token-{user_data['id']}"
+        "token": session_token
     }
 
 
