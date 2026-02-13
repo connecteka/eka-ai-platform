@@ -10,6 +10,7 @@ import {
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
+import DemoModal from './DemoModal';
 
 interface FeatureSlide {
   id: number;
