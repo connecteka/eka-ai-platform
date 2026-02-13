@@ -31,9 +31,12 @@ const App: React.FC = () => {
         {/* Claude-like Chat (Full Screen, No Layout) */}
         <Route path="/claude-chat" element={<ClaudeChatPage />} />
 
+        {/* Login as default home page */}
+        <Route path="/" element={<LoginPage />} />
+        
         <Route element={<MainLayout />}>
           {/* Core Pages */}
-          <Route path="/" element={<HomePage />} />
+          <Route path="/home" element={<HomePage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/services" element={<ServicesPage />} />
