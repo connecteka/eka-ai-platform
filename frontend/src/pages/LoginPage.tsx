@@ -232,8 +232,16 @@ const LoginPage = () => {
         </div>
       </div>
 
-      {/* RIGHT SIDE - Video */}
+      {/* RIGHT SIDE - Video/Image */}
       <div className="hidden lg:block w-1/2 bg-[#1A1915] relative overflow-hidden">
+        {/* Background Image as fallback */}
+        <img 
+          src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1920&q=80"
+          alt="Team collaboration"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        
+        {/* Video overlay - will play if supported */}
         <video
           ref={videoRef}
           autoPlay
@@ -241,8 +249,9 @@ const LoginPage = () => {
           loop
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
+          poster="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1920&q=80"
         >
-          <source src={videoUrl} type="video/mp4" />
+          <source src="https://cdn.coverr.co/videos/coverr-typing-on-computer-keyboard-8668/1080p.mp4" type="video/mp4" />
         </video>
         
         {/* Gradient Overlay */}
