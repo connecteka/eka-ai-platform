@@ -887,10 +887,11 @@ const PreInspectionSection: React.FC<PreInspectionSectionProps> = ({ preInspecti
       <Card>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <span style={{ fontSize: '16px', fontWeight: 600, color: styles.gray800 }}>📸 Vehicle Documentation</span>
-          <Badge variant="gray" size="sm">4 Photos</Badge>
+          <Badge variant="gray" size="sm">{4 + uploadedPhotos.length} Photos</Badge>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
+          {/* Default placeholder photos */}
           {[
             { label: 'Front View', hasWarning: false },
             { label: 'Rear View', hasWarning: false },
@@ -912,25 +913,71 @@ const PreInspectionSection: React.FC<PreInspectionSectionProps> = ({ preInspecti
               <div style={{ fontSize: '11px', color: styles.gray500, textAlign: 'center', marginTop: '6px' }}>{photo.label}</div>
             </div>
           ))}
+          
+          {/* Uploaded photos */}
+          {uploadedPhotos.map((photo, idx) => (
+            <div key={`uploaded-${idx}`}>
+              <div style={{
+                aspectRatio: '4/3',
+                background: styles.gray100,
+                borderRadius: '8px',
+                overflow: 'hidden',
+                border: `1px solid ${styles.gray200}`,
+              }}>
+                <img 
+                  src={photo.url || `/api/files/${photo.file_id}`}
+                  alt={photo.original_name || `Photo ${idx + 1}`}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              </div>
+              <div style={{ fontSize: '11px', color: styles.gray500, textAlign: 'center', marginTop: '6px' }}>
+                {photo.original_name || `Uploaded Photo ${idx + 1}`}
+              </div>
+            </div>
+          ))}
         </div>
 
-        <button style={{
-          width: '100%',
-          padding: '12px',
-          border: `2px dashed ${styles.gray300}`,
-          borderRadius: '8px',
-          background: 'transparent',
-          color: styles.gray500,
-          fontSize: '13px',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '8px',
-        }}>
-          <Plus size={16} /> Upload More Photos
+        {/* Hidden file input */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleUpload}
+          style={{ display: 'none' }}
+        />
+        
+        <button 
+          onClick={handleUploadClick}
+          disabled={uploading || uploadedPhotos.length >= 6}
+          style={{
+            width: '100%',
+            padding: '12px',
+            border: `2px dashed ${uploading ? styles.ekaOrange : styles.gray300}`,
+            borderRadius: '8px',
+            background: uploading ? styles.ekaOrangeLight : 'transparent',
+            color: uploading ? styles.ekaOrange : styles.gray500,
+            fontSize: '13px',
+            cursor: uploading || uploadedPhotos.length >= 6 ? 'not-allowed' : 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            transition: 'all 150ms ease',
+          }}
+        >
+          {uploading ? (
+            <>
+              <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Uploading...
+            </>
+          ) : (
+            <>
+              <Plus size={16} /> Upload More Photos
+            </>
+          )}
         </button>
-        <div style={{ fontSize: '11px', color: styles.gray400, textAlign: 'center', marginTop: '8px' }}>Max 10 photos, 5MB each</div>
+        <div style={{ fontSize: '11px', color: styles.gray400, textAlign: 'center', marginTop: '8px' }}>
+          Max 10 photos, 5MB each {uploadedPhotos.length > 0 && `(${uploadedPhotos.length} uploaded)`}
+        </div>
       </Card>
     </div>
   );
