@@ -50,18 +50,17 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 6. ✅ Dark theme implementation
 7. ✅ Responsive navigation
 
-### February 13, 2026 - Update 3
-10. ✅ Added Feature Video Carousel with 6 slides:
-    - **PDI Process** (green) - 120+ point inspection, photo documentation, digital signatures
-    - **MG Model** (blue) - Fixed monthly subscription, unlimited visits, genuine parts
-    - **Job Card → Invoice** (orange) - One-click creation, real-time tracking, auto GST
-    - **AI Chat Assistant** (purple) - Instant diagnostics, cost estimates, multi-language
-    - **Brand Marketing** (cyan) - Multi-brand dashboard, custom themes, analytics
-    - **Regional Marketing** (amber) - Geo-targeted campaigns, city-wise analytics
-11. ✅ Auto-rotation every 6 seconds with progress indicator
-12. ✅ Navigation arrows and clickable slide dots
-13. ✅ Animated gradient backgrounds with floating particles
-14. ✅ Mobile feature showcase with grid layout
+### February 13, 2026 - Update 4
+15. ✅ Added Interactive Demo Modals for "Watch Demo" button:
+    - **PDI Demo** (8 steps): Form mockup with inspection checklist
+    - **MG Model Demo** (7 steps): Form mockup with subscription setup
+    - **Job Card → Invoice Demo** (10 steps): Table mockup with job cards
+    - **AI Chat Demo** (7 steps): Chat mockup with conversation flow
+    - **Brand Marketing Demo** (6 steps): Dashboard mockup with brand stats
+    - **Regional Marketing Demo** (6 steps): Map mockup with India zones
+16. ✅ Auto-playing step-by-step walkthrough (4 sec per step)
+17. ✅ Play/Pause, Skip, Progress controls
+18. ✅ Clickable steps sidebar for navigation
 
 ## API Endpoints
 - `GET /api/health` - Health check
