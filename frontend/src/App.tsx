@@ -101,9 +101,11 @@ const AppRouter: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <BrowserRouter>
-      <AppRouter />
-    </BrowserRouter>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <BrowserRouter>
+        <AppRouter />
+      </BrowserRouter>
+    </GoogleOAuthProvider>
   );
 };
 
