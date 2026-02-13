@@ -1040,11 +1040,13 @@ def get_file_type(filename: str) -> str:
     return 'other'
 
 
+from fastapi import Form as FastAPIForm
+
 @app.post("/api/files/upload")
 async def upload_file(
     file: UploadFile = File(...),
-    job_card_id: Optional[str] = None,
-    category: Optional[str] = None
+    job_card_id: Optional[str] = FastAPIForm(None),
+    category: Optional[str] = FastAPIForm(None)
 ):
     """Upload a file (image, document, or video)."""
     
