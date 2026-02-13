@@ -512,13 +512,17 @@ const DemoModal: React.FC<DemoModalProps> = ({ featureId, isOpen, onClose }) => 
 interface RealScreenRecordingProps {
   screenshot: string;
   hotspot?: { x: number; y: number; label: string };
+  zoom?: { scale: number; x: number; y: number };
+  highlightArea?: { x: number; y: number; width: number; height: number };
   color: string;
   isPlaying: boolean;
 }
 
-const RealScreenRecording: React.FC<RealScreenRecordingProps> = ({ screenshot, hotspot, color, isPlaying }) => {
+const RealScreenRecording: React.FC<RealScreenRecordingProps> = ({ screenshot, hotspot, zoom, highlightArea, color, isPlaying }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  
   return (
-    <div className="h-full w-full relative bg-[#1A1A1C]">
+    <div className="h-full w-full relative bg-[#1A1A1C] overflow-hidden">
       {/* Browser Chrome */}
       <div className="h-10 bg-[#2A2A2C] flex items-center px-4 gap-2 border-b border-white/10">
         <div className="flex gap-2">
@@ -534,13 +538,53 @@ const RealScreenRecording: React.FC<RealScreenRecordingProps> = ({ screenshot, h
         </div>
       </div>
 
-      {/* Screenshot */}
+      {/* Screenshot with Zoom Effect */}
       <div className="h-[calc(100%-40px)] relative overflow-hidden">
-        <img 
-          src={screenshot}
-          alt="App Screenshot"
-          className="w-full h-full object-cover object-top transition-transform duration-500"
-        />
+        <div 
+          className="w-full h-full transition-transform duration-1000 ease-out"
+          style={zoom && isPlaying ? {
+            transform: `scale(${zoom.scale}) translate(${(50 - zoom.x) * (zoom.scale - 1) / zoom.scale}%, ${(50 - zoom.y) * (zoom.scale - 1) / zoom.scale}%)`,
+            transformOrigin: `${zoom.x}% ${zoom.y}%`
+          } : {}}
+        >
+          <img 
+            src={screenshot}
+            alt="App Screenshot"
+            className={`w-full h-full object-cover object-top transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+            onLoad={() => setImageLoaded(true)}
+          />
+        </div>
+        
+        {/* Highlight Area Rectangle */}
+        {highlightArea && isPlaying && (
+          <div 
+            className="absolute pointer-events-none z-10 transition-all duration-500"
+            style={{ 
+              left: `${highlightArea.x}%`, 
+              top: `${highlightArea.y}%`, 
+              width: `${highlightArea.width}%`, 
+              height: `${highlightArea.height}%`
+            }}
+          >
+            {/* Pulsing border */}
+            <div 
+              className="absolute inset-0 rounded-xl border-2 animate-pulse"
+              style={{ borderColor: color }}
+            />
+            {/* Glow effect */}
+            <div 
+              className="absolute inset-0 rounded-xl"
+              style={{ 
+                boxShadow: `0 0 30px ${color}40, inset 0 0 20px ${color}20`,
+              }}
+            />
+            {/* Corner markers */}
+            <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 rounded-tl" style={{ borderColor: color }} />
+            <div className="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 rounded-tr" style={{ borderColor: color }} />
+            <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 rounded-bl" style={{ borderColor: color }} />
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 rounded-br" style={{ borderColor: color }} />
+          </div>
+        )}
         
         {/* Hotspot Indicator */}
         {hotspot && isPlaying && (
@@ -550,24 +594,28 @@ const RealScreenRecording: React.FC<RealScreenRecordingProps> = ({ screenshot, h
           >
             {/* Ripple Effect */}
             <div 
-              className="absolute w-16 h-16 rounded-full animate-ping opacity-30"
-              style={{ backgroundColor: color, left: '-32px', top: '-32px' }}
+              className="absolute w-20 h-20 rounded-full animate-ping opacity-20"
+              style={{ backgroundColor: color, left: '-40px', top: '-40px' }}
             />
             <div 
-              className="absolute w-12 h-12 rounded-full animate-ping opacity-50"
-              style={{ backgroundColor: color, left: '-24px', top: '-24px', animationDelay: '0.2s' }}
+              className="absolute w-16 h-16 rounded-full animate-ping opacity-30"
+              style={{ backgroundColor: color, left: '-32px', top: '-32px', animationDelay: '0.15s' }}
+            />
+            <div 
+              className="absolute w-12 h-12 rounded-full animate-ping opacity-40"
+              style={{ backgroundColor: color, left: '-24px', top: '-24px', animationDelay: '0.3s' }}
             />
             
             {/* Cursor */}
-            <div className="relative">
+            <div className="relative animate-bounce">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" className="drop-shadow-lg">
                 <path d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87c.48 0 .72-.58.38-.92L6.35 2.86a.5.5 0 0 0-.85.35Z" fill="white" stroke="black" strokeWidth="1"/>
               </svg>
               
               {/* Label */}
               <div 
-                className="absolute left-8 top-0 px-3 py-1 rounded-lg text-white text-xs font-medium whitespace-nowrap shadow-lg"
-                style={{ backgroundColor: color }}
+                className="absolute left-8 top-0 px-3 py-1.5 rounded-lg text-white text-xs font-medium whitespace-nowrap shadow-xl animate-pulse"
+                style={{ backgroundColor: color, boxShadow: `0 4px 20px ${color}60` }}
               >
                 {hotspot.label}
               </div>
@@ -577,11 +625,14 @@ const RealScreenRecording: React.FC<RealScreenRecordingProps> = ({ screenshot, h
 
         {/* Scan Line Effect */}
         <div 
-          className="absolute inset-0 pointer-events-none opacity-10"
+          className="absolute inset-0 pointer-events-none opacity-5"
           style={{
             background: `repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px)`
           }}
         />
+        
+        {/* Vignette effect */}
+        <div className="absolute inset-0 pointer-events-none bg-gradient-radial from-transparent via-transparent to-black/30" />
       </div>
     </div>
   );
