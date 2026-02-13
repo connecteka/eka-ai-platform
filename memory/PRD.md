@@ -50,25 +50,15 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 6. ✅ Dark theme implementation
 7. ✅ Responsive navigation
 
-### February 13, 2026 - Update 5
-19. ✅ Added **Real App Screen Recordings** for demos:
-    - **Chat Demo**: 3 real screenshots (empty chat, message typed, AI response with diagnostics)
-    - **Dashboard Demo**: Real screenshot showing $45K revenue, 2350 subscriptions, recent sales
-    - Both marked with **"Live Recording"** green badge
-20. ✅ **Smooth Transition Animations** between steps:
-    - Fade-out/scale-down on exit (300ms)
-    - Fade-in/scale-up on enter (500ms)
-    - Black overlay during transition
-21. ✅ **Interactive Cursor Hotspots**:
-    - Animated cursor pointer on active areas
-    - Ripple/ping effect around cursor
-    - Context labels (e.g., "Type Here", "Send")
-22. ✅ **Enhanced UI**:
-    - Progress bar with segment markers for each step
-    - "Restart" button in controls
-    - "Playing/Paused" status indicator
-    - Scan line effect on real recordings for video feel
-    - Browser chrome (red/yellow/green buttons) for authenticity
+### February 13, 2026 - Update 6
+23. ✅ Added **Real Recordings** for Job Cards, MG Fleet, and PDI demos:
+    - **Job Cards**: List view + "Create New Job Card" form (Registration, Priority, Customer, Symptoms)
+    - **MG Fleet**: List view + "Create Contract" form (Fleet Name, KM Limits, Rates, Billing)
+    - **PDI/Artifacts**: Artifacts page with tool cards (Diagnostics, Reports, Compliance, Estimates, Fleet Tools)
+    - **Invoice**: Invoice list page
+24. ✅ Fixed Job Cards page crash (null check on `jobCards.filter`)
+25. ✅ Added sample job card data (4 test jobs with different statuses)
+26. ✅ All 6 demos now have "Live Recording" badge with real app screenshots
 
 ## API Endpoints
 - `GET /api/health` - Health check
