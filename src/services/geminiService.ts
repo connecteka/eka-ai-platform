@@ -1,7 +1,11 @@
 import { VehicleContext, JobStatus, IntelligenceMode, OperatingMode } from "../types";
 
 export class GeminiService {
-  private apiUrl = '/api/chat'; 
+  private getApiUrl(): string {
+    // Use Vite env variable for backend URL
+    const backendUrl = import.meta.env.VITE_API_URL || '';
+    return `${backendUrl}/api/chat`;
+  }
 
   async sendMessage(
     history: { role: string; parts: { text: string }[] }[], 
@@ -11,7 +15,7 @@ export class GeminiService {
     opMode: OperatingMode = 0
   ) {
     try {
-      const response = await fetch(this.apiUrl, {
+      const response = await fetch(this.getApiUrl(), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
