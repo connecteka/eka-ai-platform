@@ -283,19 +283,8 @@ class TestEmailInvoice:
         # Create a test invoice first
         invoice_payload = {
             "customer_name": "Test Customer",
-            "customer_phone": "+919876543210",
             "job_card_id": TEST_JOB_CARD_ID,
-            "items": [
-                {
-                    "description": "Test Service",
-                    "quantity": 1,
-                    "unit_price": 1000,
-                    "gst_rate": 18,
-                    "hsn_sac_code": "998711",
-                    "total_amount": 1180
-                }
-            ],
-            "total_taxable_value": 1000,
+            "amount": 1000,  # Required field
             "cgst": 90,
             "sgst": 90,
             "igst": 0,
