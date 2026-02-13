@@ -1746,12 +1746,34 @@ const ActivityTimelineSection: React.FC<ActivityTimelineSectionProps> = ({ timel
     }
   };
 
-  const sampleTimeline = apiTimeline.length > 0 ? apiTimeline : [
+  const sampleTimelineItems = [
+    { id: 1, time: '10:30 AM', description: 'Job card created', actor: 'Priya (Front Desk)', status: 'completed' },
+    { id: 2, time: '10:35 AM', description: 'Payment received: ₹5,000 (UPI)', actor: 'System', status: 'completed' },
+    { id: 3, time: '10:40 AM', description: 'Vehicle moved to Bay #3', actor: 'Rajesh K.', status: 'completed' },
+    { id: 4, time: '10:45 AM', description: 'Pre-inspection checklist completed', actor: 'Rajesh K.', status: 'completed' },
+    { id: 5, time: '10:50 AM', description: 'EKA-AI scan complete: 3 insights generated', actor: 'EKA-AI', status: 'ai' },
+    { id: 6, time: '11:00 AM', description: 'General service started', actor: 'Rajesh K.', status: 'completed' },
+    { id: 7, time: '12:30 PM', description: 'General service completed (1h 45m)', actor: 'Rajesh K.', status: 'completed' },
+    { id: 8, time: '12:35 PM', description: 'Brake inspection started', actor: 'Suresh M.', status: 'current' },
+    { id: 9, time: 'Pending', description: 'AC service', actor: 'Vijay R.', status: 'pending' },
+    { id: 10, time: 'Pending', description: 'Wheel alignment', actor: 'Rajesh K.', status: 'pending' },
+    { id: 11, time: 'Pending', description: 'Quality check', actor: 'Supervisor', status: 'pending' },
+    { id: 12, time: 'Pending', description: 'Customer notification', actor: 'System', status: 'pending' },
+    { id: 13, time: 'Pending', description: 'Vehicle delivery', actor: 'Front Desk', status: 'pending' },
+  ];
+
+  const sampleTimeline = apiTimeline.length > 0 ? apiTimeline.map((item, idx) => ({
+    id: idx + 1,
+    time: item.timestamp ? new Date(item.timestamp).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }) : 'N/A',
+    description: item.description,
+    actor: item.actor,
+    status: item.status
+  })) : sampleTimelineItems;
 
   const notes = [
-    { author: 'Rajesh K.', time: '11:15 AM', text: 'Oil filter was slightly stuck. Used extra tool. No damage to housing.', isAI: false },
-    { author: 'Suresh M.', time: '12:40 PM', text: 'Front brake pads were at 15% life. Customer approved replacement. Rear pads at 60% — OK for now.', isAI: false, hasAttachment: true },
-    { author: 'EKA-AI', time: '12:42 PM', text: 'Auto-note: Based on brake wear pattern, customer driving style indicates heavy city braking. Recommend ceramic pads for longer life on next replacement.', isAI: true },
+    { id: '1', author: 'Rajesh K.', timestamp: '2025-01-15T11:15:00Z', text: 'Oil filter was slightly stuck. Used extra tool. No damage to housing.', is_ai: false, attachments: [] },
+    { id: '2', author: 'Suresh M.', timestamp: '2025-01-15T12:40:00Z', text: 'Front brake pads were at 15% life. Customer approved replacement. Rear pads at 60% — OK for now.', is_ai: false, attachments: ['photo.jpg'] },
+    { id: '3', author: 'EKA-AI', timestamp: '2025-01-15T12:42:00Z', text: 'Auto-note: Based on brake wear pattern, customer driving style indicates heavy city braking. Recommend ceramic pads for longer life on next replacement.', is_ai: true, attachments: [] },
   ];
 
   const getTimelineDotStyle = (status: string): React.CSSProperties => {
