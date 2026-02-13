@@ -66,6 +66,25 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 30. ✅ Fixed vehicle registration field name mismatch (registration_number vs vehicle_registration)
 31. ✅ Added error state UI with retry button for Job Cards page
 
+### February 13, 2026 - Update 8 (Enhancements)
+32. ✅ **Interactive Demos Enhanced**: Added zoom and highlight animations to demo screenshots
+    - Zoom effect on key UI elements (scale 1.1-1.3x)
+    - Pulsing highlight rectangles with corner markers
+    - Animated cursor with labels
+    - Updated PDI demo to 8 steps with new modal screenshots
+    - Updated Job Card demo to 10 steps with form workflow
+33. ✅ **New Demo Screenshots Captured**:
+    - `jobcard-form-empty.png`: Empty job card creation form
+    - `jobcard-form-filled.png`: Filled form with customer data
+    - `pdi-modal-empty.png`: PDI checklist modal (empty)
+    - `pdi-modal-progress.png`: PDI modal with 3/10 items checked
+34. ✅ **SSE Streaming for AI Chat**:
+    - New `/api/chat/stream` endpoint with Server-Sent Events
+    - Real-time word-by-word streaming display
+    - Streaming toggle button in chat UI
+    - Session persistence for conversations
+    - Animated cursor while streaming
+
 ## Routes
 ### App Routes (Sidebar Navigation)
 - `/app` - Dashboard
