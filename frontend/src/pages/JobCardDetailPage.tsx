@@ -1138,21 +1138,6 @@ interface CostPaymentSectionProps {
 }
 
 const CostPaymentSection: React.FC<CostPaymentSectionProps> = ({ payment }) => {
-  const subtotal = payment.subtotal || 9400;
-  const discounts = payment.discounts || [
-    { label: 'Loyal Customer Discount (5%)', amount: 470 },
-    { label: 'Coupon: FIRST2025', amount: 200 },
-  ];
-  const loyaltyDiscount = discounts[0]?.amount || 470;
-  const couponDiscount = discounts[1]?.amount || 200;
-  const afterDiscount = subtotal - loyaltyDiscount - couponDiscount;
-  const cgst = payment.cgst || Math.round(afterDiscount * 0.09);
-  const sgst = payment.sgst || Math.round(afterDiscount * 0.09);
-  const grandTotal = payment.grand_total || (afterDiscount + cgst + sgst);
-  const amountPaid = payment.amount_paid || 5000;
-  const balanceDue = payment.balance_due || (grandTotal - amountPaid);
-  const paidPercent = (amountPaid / grandTotal) * 100;
-
   const costItems = [
     { label: 'Parts & Materials', amount: 4910 },
     { label: 'Labour Charges', amount: 2800 },
@@ -1161,16 +1146,19 @@ const CostPaymentSection: React.FC<CostPaymentSectionProps> = ({ payment }) => {
     { label: 'Consumables (grease, cleaning, etc.)', amount: 240 },
   ];
 
-  const subtotal = costItems.reduce((sum, item) => sum + item.amount, 0);
-  const loyaltyDiscount = Math.round(subtotal * 0.05);
-  const couponDiscount = 200;
+  const subtotal = payment.subtotal || costItems.reduce((sum, item) => sum + item.amount, 0);
+  const discounts = payment.discounts || [
+    { label: 'Loyal Customer Discount (5%)', amount: 470 },
+    { label: 'Coupon: FIRST2025', amount: 200 },
+  ];
+  const loyaltyDiscount = discounts[0]?.amount || Math.round(subtotal * 0.05);
+  const couponDiscount = discounts[1]?.amount || 200;
   const afterDiscount = subtotal - loyaltyDiscount - couponDiscount;
-  const cgst = Math.round(afterDiscount * 0.09);
-  const sgst = Math.round(afterDiscount * 0.09);
-  const grandTotal = afterDiscount + cgst + sgst;
-
-  const amountPaid = 5000;
-  const balanceDue = grandTotal - amountPaid;
+  const cgst = payment.cgst || Math.round(afterDiscount * 0.09);
+  const sgst = payment.sgst || Math.round(afterDiscount * 0.09);
+  const grandTotal = payment.grand_total || (afterDiscount + cgst + sgst);
+  const amountPaid = payment.amount_paid || 5000;
+  const balanceDue = payment.balance_due || (grandTotal - amountPaid);
   const paidPercent = (amountPaid / grandTotal) * 100;
 
   return (
