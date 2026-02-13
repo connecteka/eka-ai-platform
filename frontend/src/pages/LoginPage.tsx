@@ -332,26 +332,34 @@ const MobileFeatureShowcase: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const currentFeature = features[currentSlide];
+
   return (
-    <div className="py-8 px-4">
+    <div className="py-8 px-4" data-testid="mobile-feature-showcase">
       {/* Current Feature */}
       <div className="text-center mb-6">
         <div 
           className="inline-flex items-center justify-center w-16 h-16 rounded-2xl text-3xl mb-3"
-          style={{ backgroundColor: `${features[currentSlide].color}20` }}
+          style={{ backgroundColor: `${currentFeature.color}20` }}
         >
-          {features[currentSlide].icon}
+          {currentFeature.icon}
         </div>
-        <h3 className="text-white text-xl font-bold">{features[currentSlide].title}</h3>
-        <p className="text-gray-400 text-sm mt-1">{features[currentSlide].desc}</p>
+        <h3 className="text-white text-xl font-bold" data-testid="mobile-feature-title">
+          {currentFeature.title}
+        </h3>
+        <p className="text-gray-400 text-sm mt-1" data-testid="mobile-feature-desc">
+          {currentFeature.desc}
+        </p>
       </div>
 
       {/* Feature Dots */}
-      <div className="flex justify-center gap-2 mb-4">
+      <div className="flex justify-center gap-2 mb-4" data-testid="mobile-feature-dots">
         {features.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
+            data-testid={`mobile-dot-${index}`}
+            aria-label={`Go to feature ${index + 1}`}
             className={`h-2 rounded-full transition-all ${
               index === currentSlide ? 'w-6 bg-[#E65C2E]' : 'w-2 bg-white/30'
             }`}
@@ -360,18 +368,19 @@ const MobileFeatureShowcase: React.FC = () => {
       </div>
 
       {/* Feature Grid Preview */}
-      <div className="grid grid-cols-3 gap-2 mt-4">
+      <div className="grid grid-cols-3 gap-2 mt-4" data-testid="mobile-feature-grid">
         {features.map((feature, index) => (
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
+            data-testid={`mobile-feature-btn-${index}`}
             className={`p-3 rounded-lg text-center transition-all ${
               index === currentSlide 
                 ? 'bg-white/10 border border-white/20' 
                 : 'bg-white/5'
             }`}
           >
-            <span className="text-xl">{feature.icon}</span>
+            <span className="text-xl block">{feature.icon}</span>
             <p className="text-[10px] text-white/70 mt-1 truncate">{feature.title}</p>
           </button>
         ))}
