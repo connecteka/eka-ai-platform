@@ -923,6 +923,12 @@ interface ServiceDetailsSectionProps {
 
 const ServiceDetailsSection: React.FC<ServiceDetailsSectionProps> = ({ services }) => {
   const sampleServices = services.length > 0 ? services : [
+    { id: '1', service_type: 'General Service', description: 'Full car servicing — oil change, filter replacement, multi-point check', technician: 'Rajesh K.', priority: 'normal', status: 'completed', estimated_time: '2h 00m', actual_time: '1h 45m', cost: 2800 },
+    { id: '2', service_type: 'Brake Inspection & Repair', description: 'Front & rear brake pad inspection. Front pads replaced.', technician: 'Suresh M.', priority: 'high', status: 'in-progress', estimated_time: '1h 00m', actual_time: '0h 40m...', cost: 500 },
+    { id: '3', service_type: 'AC Service & Gas Top-up', description: 'AC gas refill (R134a), cooling coil cleaning, cabin filter check', technician: 'Vijay R.', priority: 'normal', status: 'queued', estimated_time: '1h 30m', cost: 800 },
+    { id: '4', service_type: 'Wheel Alignment & Balancing', description: '4-wheel computerized alignment + balancing', technician: 'Rajesh K.', priority: 'low', status: 'queued', estimated_time: '0h 45m', cost: 650 },
+  ];
+  
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'completed': return <Badge variant="success"><Check size={10} /> Completed</Badge>;
