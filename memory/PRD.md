@@ -279,10 +279,9 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 - [ ] Enhanced sign-up with workshop details (GST, address)
 
 ## Next Tasks
-1. WhatsApp integration for notifications
-2. Voice input transcription (OpenAI Whisper)
-3. Guided product tour for first-time users
-4. Email invoice to customers (SendGrid/Resend)
+1. Guided product tour for first-time users
+2. Email invoice to customers (SendGrid/Resend)
+3. Enable real WhatsApp notifications (requires Twilio credentials)
 
 ## Backend Architecture (v3.0)
 ```
@@ -290,12 +289,14 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 ├── server.py                # Main FastAPI app (minimal, includes routers)
 ├── routers/
 │   ├── auth.py             # Authentication (login, register, OAuth)
-│   ├── job_cards.py        # Job cards CRUD & stats
+│   ├── job_cards.py        # Job cards CRUD & stats + notification trigger
 │   ├── chat.py             # AI chat & sessions
 │   ├── invoices.py         # Invoice CRUD & PDF
 │   ├── mg_fleet.py         # MG Fleet contracts
 │   ├── files.py            # File upload/download
-│   └── dashboard.py        # Dashboard metrics
+│   ├── dashboard.py        # Dashboard metrics
+│   ├── notifications.py    # WhatsApp/SMS notifications (MOCKED)
+│   └── voice.py            # Voice transcription (Whisper)
 ├── models/
 │   └── schemas.py          # Pydantic models
 └── utils/
