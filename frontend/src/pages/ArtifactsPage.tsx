@@ -59,7 +59,11 @@ const ArtifactsPage = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="font-serif text-4xl text-gray-900">Artifacts</h1>
-          <button className="bg-gray-900 hover:bg-gray-800 text-white px-5 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors shadow-sm">
+          <button 
+            onClick={() => setShowPDIModal(true)}
+            className="bg-gray-900 hover:bg-gray-800 text-white px-5 py-2.5 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors shadow-sm"
+            data-testid="new-artifact-btn"
+          >
             <Plus size={16} />
             New artifact
           </button>
