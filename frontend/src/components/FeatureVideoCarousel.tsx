@@ -127,10 +127,20 @@ const FeatureVideoCarousel: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [isDemoOpen, setIsDemoOpen] = useState(false);
+  const [activeDemoId, setActiveDemoId] = useState('');
 
   const SLIDE_DURATION = 6000; // 6 seconds per slide
 
+  const openDemo = (demoId: string) => {
+    setActiveDemoId(demoId);
+    setIsDemoOpen(true);
+  };
+
   useEffect(() => {
+    // Pause auto-rotation when demo is open
+    if (isDemoOpen) return;
+
     const progressInterval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 100) {
@@ -148,6 +158,12 @@ const FeatureVideoCarousel: React.FC = () => {
         setProgress(0);
       }, 300);
     }, SLIDE_DURATION);
+
+    return () => {
+      clearInterval(progressInterval);
+      clearInterval(slideInterval);
+    };
+  }, [isDemoOpen]);
 
     return () => {
       clearInterval(progressInterval);
