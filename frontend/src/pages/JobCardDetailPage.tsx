@@ -1968,15 +1968,35 @@ const CustomerApprovalSection: React.FC<CustomerApprovalSectionProps> = ({
             fontStyle: 'italic',
             color: styles.gray400,
             fontSize: '13px',
+            overflow: 'hidden',
           }}>
-            [Signature Image Placeholder]
+            {savedSignature ? (
+              <img src={savedSignature} alt="Signature" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+            ) : showSignaturePad ? null : (
+              '[No signature yet]'
+            )}
           </div>
-          <div style={{ fontWeight: 600, color: styles.gray900, marginBottom: '8px' }}>Amit Sharma</div>
-          <div style={{ fontSize: '11px', color: styles.gray400 }}>
-            Digitally signed via OTP<br />
-            OTP verified: ✅<br />
-            IP: 49.xxx.xxx.xx
-          </div>
+          
+          {showSignaturePad ? (
+            <SignaturePad 
+              onSave={handleSaveSignature} 
+              onClear={() => {}} 
+              width={350} 
+              height={120} 
+            />
+          ) : !savedSignature ? (
+            <Button variant="primary" onClick={() => setShowSignaturePad(true)}>
+              Capture Signature
+            </Button>
+          ) : (
+            <>
+              <div style={{ fontWeight: 600, color: styles.gray900, marginBottom: '8px' }}>{customer.name}</div>
+              <div style={{ fontSize: '11px', color: styles.gray400 }}>
+                Digitally signed<br />
+                Verified: ✅
+              </div>
+            </>
+          )}
         </div>
       </Card>
     </div>
@@ -1987,8 +2007,17 @@ const CustomerApprovalSection: React.FC<CustomerApprovalSectionProps> = ({
 // SECTION 14: CUSTOMER FEEDBACK / RATING
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const CustomerFeedbackSection: React.FC = () => {
-  const ratings = [
+interface CustomerFeedbackSectionProps {
+  feedback?: JobCardDetail['feedback'];
+}
+
+const CustomerFeedbackSection: React.FC<CustomerFeedbackSectionProps> = ({ feedback }) => {
+  const ratings = feedback ? [
+    { category: 'Service Quality', score: feedback.service_quality || 5 },
+    { category: 'Value for Money', score: feedback.value_for_money || 4 },
+    { category: 'Communication', score: feedback.communication || 5 },
+    { category: 'Timeliness', score: feedback.timeliness || 4 },
+  ] : [
     { category: 'Service Quality', score: 5 },
     { category: 'Value for Money', score: 4 },
     { category: 'Communication', score: 5 },
