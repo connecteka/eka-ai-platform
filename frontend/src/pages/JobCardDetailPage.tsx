@@ -1724,8 +1724,28 @@ const ServiceHistorySection: React.FC = () => {
 // SECTION 12: ACTIVITY TIMELINE + INTERNAL NOTES
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const ActivityTimelineSection: React.FC = () => {
+interface ActivityTimelineSectionProps {
+  timeline: JobCardDetail['timeline'];
+  notes: JobCardDetail['notes'];
+  onAddNote?: (text: string, author: string) => Promise<any>;
+}
+
+const ActivityTimelineSection: React.FC<ActivityTimelineSectionProps> = ({ timeline: apiTimeline, notes: apiNotes, onAddNote }) => {
   const [newNote, setNewNote] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  
+  const handleAddNote = async () => {
+    if (!newNote.trim() || !onAddNote) return;
+    setSubmitting(true);
+    try {
+      await onAddNote(newNote, 'Workshop User');
+      setNewNote('');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const sampleTimeline = apiTimeline.length > 0 ? apiTimeline : [
 
   const notes = [
     { author: 'Rajesh K.', time: '11:15 AM', text: 'Oil filter was slightly stuck. Used extra tool. No damage to housing.', isAI: false },
