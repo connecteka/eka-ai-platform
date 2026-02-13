@@ -3,68 +3,75 @@
 **PRODUCT REQUIREMENTS (current source of truth):**
 *   **Goal**: Build a pixel-perfect, production-grade Job Card Detail Page based on the user's extensive MEGA TEMPLATE.
 *   **Branding**: Must adhere to the specified brand hierarchy for Go4Garage (Parent Company) and EKA-AI (AI Product), including logos and color schemes.
-*   **Design System**: A complete design token system (CSS variables) has been provided and must be implemented exactly as specified for colors, spacing, typography, shadows, etc.
-*   **Structure**: The page must be built with 17 distinct sections, including:
-    *   Top Navigation Bar (Sticky)
-    *   Job Card Header with SLA Timer
-    *   Quick Actions Bar
-    *   Vehicle & Customer Info Cards
-    *   Pre-Inspection Checklist & Vehicle Photos
-    *   Service & Parts Tables
-    *   Cost Breakdown & Payment Status
-    *   ⭐ **EKA-AI Insights Panel (Hero Section)**
-    *   Vehicle Health Score Card
-    *   Activity Timeline & Internal Notes
-    *   Digital Signature & Customer Feedback sections
-*   **Functionality**: Implement all 24 missing components identified by the user, such as digital signature capture, photo uploads, real-time notifications, and AI-driven insights.
-*   **Tech Stack**: Utilize the existing frontend stack (React, TypeScript, Tailwind) and backend (FastAPI). All styling must come from the provided design tokens.
+*   **Design System**: A complete design token system (CSS variables) was provided and has been implemented.
+*   **Structure**: The page must be built with 17 distinct sections, including a Top Nav Bar, Job Card Header, Quick Actions, Vehicle & Customer Info, Checklists, Service & Parts Tables, Cost Breakdown, an **EKA-AI Insights Panel (Hero Section)**, a Health Score Card, Timelines, and Digital Signature capture.
+*   **Functionality**: Implement all 24 missing components identified by the user, such as digital signature capture, photo uploads, real-time notifications, and AI-driven insights. The initial UI has been built, and the next phase is to connect it to the backend.
+*   **Tech Stack**: Utilize the existing frontend stack (React, TypeScript, Tailwind) and backend (FastAPI).
 
 **User's preferred language**: English
 
 **what currently exists?**
-The application is a stable full-stack app with a Claude.ai-style frontend and a refactored, modular FastAPI backend. Major features completed include a dashboard, chat with voice input (Whisper), and a guided product tour (). The backend was successfully migrated from a monolith  to a clean  structure with password hashing. All significant work has been verified by the testing agent. The last user request completely pivots the project's focus to a ground-up rebuild of the .
+A visually complete, 17-section  has been created, perfectly matching the user's MEGA TEMPLATE specification but using hardcoded data. To support this, the backend has been enhanced with new (mocked) API endpoints for fetching job details, insights, and posting notes/signatures. A large-scale refactor of the  was started to connect it to these new backend APIs. This involved creating a  hook for data fetching, a  component, and converting the static sections into components that accept props. This refactoring process is currently incomplete and has broken the frontend build.
 
 **Last working item**:
-- **Last item agent was working**: Analyzing the user's new, highly detailed MEGA TEMPLATE prompt for rebuilding the . The agent had just received this massive new specification, which supersedes previous plans.
-- **Status**: NOT STARTED
-- **Agent Testing Done**: N/A
-- **Which testing method agent to use?**: Frontend testing agent. This is a massive task requiring verification of all 17 new/enhanced sections on the page, including their responsiveness and interactivity.
-- **User Testing Done**: N/A
+- **Last item agent was working**: Fixing a syntax error in the  of . The agent was in the middle of a large refactoring to connect the hardcoded frontend to the new backend APIs and introduced several syntax and logic errors, causing the build to fail.
+- **Status**: IN PROGRESS
+- **Agent Testing Done**: N
+- **Which testing method agent to use?**: both. Once the build is fixed, the agent should first manually test the page with  to ensure API data is flowing correctly. Then, use the frontend testing agent to verify all 17 sections render correctly with dynamic data and that interactions like the signature pad are functional.
+- **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
-There are no known bugs or issues. The current work is feature development based on the new user directive.
+- **Issue 1: Frontend Build is Broken (P0)**
+  - **Description**: The application is not buildable due to multiple syntax errors and logical flaws in . These were introduced while refactoring the static page to accept dynamic data from a hook. Errors have been noted in  and .
+  - **Attempted fixes**: The agent tried to fix errors one by one as the linter found them, but the file is large and the fixes were not comprehensive, leading to a cascade of issues.
+  - **Next debug checklist**:
+    1.  Run yarn run v1.22.22
+$ npx vite build
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command. or  to get the full list of current errors in .
+    2.  Systematically review each function/component within the file, paying close attention to:
+        -   Duplicate variable declarations (e.g.,  in ).
+        -   Correctly passing props from the main component to the sub-components (, , , etc.).
+        -   Ensuring fallback  is correctly structured and used when live data is absent.
+        -   Correctly accessing nested properties from the  object (e.g., ).
+    3.  Consider breaking the massive single-file component into smaller, more manageable component files under  to improve readability and reduce errors.
+  - **Why fix this issue and what will be achieved with the fix?**: This is a critical blocker. Fixing the build will make the application runnable again and unblock the primary task of connecting the UI to the backend.
+  - **Status**: IN PROGRESS
+  - **Is recurring issue?**: Y (Multiple syntax errors have been found and fixed sequentially, indicating a systemic problem with the monolithic file structure).
+  - **Should Test frontend/backend/both after fix?**: frontend
+  - **Blocked on other issue**: No, this is the main blocker.
 
 **In progress Task List**:
-- **Task 1: Build Market Launch Ready Job Card Detail Page (P0)**
-    - **Where to resume**: This is a new, large-scale task. The agent should start by creating a new file (e.g., ) to avoid conflicts. The first step will be to implement the provided design token system, likely by extending the  file or creating a global CSS file. Then, begin building the 17 sections of the page, starting with the layout and top navigation bar.
-    - **What will be achieved with this?**: A complete, production-grade Job Card Detail Page that matches the user's detailed specification, ready for market launch.
-    - **Status**: NOT STARTED
-    - **Should Test frontend/backend/both after fix?**: Frontend
-    - **Blocked on something**: No.
+- **Task 1: Connect Job Card Detail Page to Backend API (P0)**
+  - **Where to resume**: Resume at . The immediate priority is to resolve all build errors (see Issue 1 above). Once the build is fixed, the agent must complete the refactoring, ensuring all 17 sections are correctly wired to the  hook and display data from the backend.
+  - **What will be achieved with this?**: The Job Card Detail page will display dynamic data served from the backend API instead of hardcoded values, making it a functional part of the application.
+  - **Status**: IN PROGRESS
+  - **Should Test frontend/backend/both after fix?**: both
+  - **Blocked on something**: Blocked by Issue 1: Frontend Build is Broken.
 
 **Upcoming and Future Tasks**
 
 **Upcoming Tasks**:
-The MEGA TEMPLATE provided by the user is the only upcoming task. It is a single, large task composed of implementing the 17 specified sections and 24 missing components.
+- **P1: Implement Digital Signature Capture**: The  component exists. The Save Signature button needs to be wired to the  endpoint to save the signature data (as base64) to the backend.
+- **P1: Implement Photo Upload**: The UI for Vehicle Documentation exists. It needs to be connected to a file upload endpoint (e.g., ) to allow users to upload and associate images with a job card.
 
 **Future Tasks**:
-These tasks were planned before the user's major pivot and should be considered backlogged until the new Job Card page is complete.
-- **Email invoice to customers**: Integrate SendGrid or Resend to email invoices.
-- **Export to MP4**: Add a feature for exporting interactive demos.
-- **Enhance user sign-up**: Collect more workshop-specific details during the sign-up process.
+- **P2: Email invoice to customers**: The user needs to decide on an email provider (SendGrid or Resend). The agent asked for this but did not receive a response.
+- **Backlog**: Export to MP4 feature.
+- **Backlog**: Enhance user sign-up process with more workshop-specific details.
 
 **Completed work in this session**
-- **Frontend Polish (Phase 4)**:
-    - Made job card rows fully clickable.
-    - Revamped  and  with a full dark theme, adding search and date-grouping to the chats page.
-- **Backend Refactoring & Hardening**:
-    - Re-architected the monolithic  into a modular  structure located in .
-    - Implemented password hashing using  in .
-- **New Feature Integrations**:
-    - **Voice Input**: Integrated OpenAI Whisper for voice-to-text transcription in the chat interface via a new  endpoint.
-    - **Mocked WhatsApp Notifications**: Created a mocked notification system to simulate sending job status updates.
-    - **Guided Product Tour**: Implemented a step-by-step product tour using , adding a  component and  attributes across the UI for tour targets.
-- **Testing**: All of the above work was successfully validated with the , with all tests passing at each stage.
+- **MEGA TEMPLATE UI Implementation**: A pixel-perfect, 17-section  was built from scratch with hardcoded data, fully matching the user's detailed specification. The design tokens were also implemented in .
+- **Backend API Scaffolding**:
+  - New Pydantic schemas were created in .
+  - The  file was extended with new endpoints that return mock data:
+    - 
+    - 
+    - 
+    - 
+- **Initial Frontend Integration Work**:
+  - Created  to fetch data from the new endpoints.
+  - Created  using .
+  - Began refactoring  to use the hook and props (this is the currently broken part).
 
 **Earlier issues found/mentioned but not fixed**
 - None.
@@ -76,75 +83,72 @@ These tasks were planned before the user's major pivot and should be considered 
 
 
 **Key Technical Concepts**
-- **Frontend**: React, TypeScript, Vite, Tailwind CSS, Recharts, , .
-- **Backend**: FastAPI with a modular  design, MongoDB,  for passwords.
-- **Integrations**: OpenAI Whisper for Speech-to-Text.
-- **Testing**: Automated end-to-end and feature verification using .
+- **Frontend**: React, TypeScript, Tailwind CSS, Component-level state management (), Data fetching hooks (), Prop-drilling for component composition.
+- **Backend**: FastAPI, Pydantic for data modeling, creating mock/scaffolded API endpoints.
+- **Integration**: Connecting a React frontend to a FastAPI backend using .
 
 **key DB schema**
-- No changes were made to the database schema. User password handling in the application layer was updated to use .
+- The new Pydantic models in  define the target schema for the job card details. However, the backend endpoints currently return **mocked data** and are **not connected to MongoDB**. The database schema itself has not been updated yet.
 
 **changes in tech stack**
-- **Backend**: Added , , .
-- **Frontend**: Added .
+- **Frontend**: Added  and its type definitions ().
 
 **All files of reference**
-*   **/backend/app/main.py**: New main entry point for the refactored FastAPI application.
-*   **/backend/app/core/security.py**: New file for  password hashing functions.
-*   **/backend/app/routers/**: Directory containing all the refactored API endpoints (, , etc.).
-*   **/backend/app/routers/voice.py**: New router for the Whisper transcription endpoint.
-*   **/backend/app/routers/notifications.py**: New router for the mocked WhatsApp notifications.
-*   **/frontend/src/pages/ChatPage.tsx**: Modified to include UI and logic for voice recording and transcription.
-*   **/frontend/src/components/features/ProductTour.tsx**: New component for the guided tour.
-*   **/frontend/src/components/layout/AppShell.tsx**: Modified to wrap the application with the  provider.
+- : The primary file for the new feature. It was completely rewritten and is now in a broken state due to ongoing refactoring.
+- : Contains the new (mocked) API endpoints that the frontend will consume.
+- : Contains the new Pydantic models defining the structure of the data for the detail page.
+- : The new custom hook responsible for fetching data for the detail page.
+- : The new reusable component for capturing digital signatures.
+- : Updated with the full design token system provided by the user.
 
 **Areas that need refactoring**:
-- The entire  needs to be rebuilt from scratch according to the user's new MEGA TEMPLATE.
+- The  file is extremely large (over 1500 lines), even with sub-components defined within it. After fixing the current build errors, it should be broken down into smaller, individual component files for better maintainability (e.g., , , etc.).
 
 **key api endpoints**
-- : Transcribes an audio file using OpenAI Whisper.
-- : Mocked endpoint that logs a simulated WhatsApp message.
-- All pre-existing API endpoints were moved to the new router structure (e.g., ).
+- : (New) Fetches all data for the job card detail page.
+- : (New) Fetches AI-generated insights for the job card.
+- : (New) Adds an internal note to the job card.
+- : (New) Saves the customer's digital signature.
 
 **Critical Info for New Agent**
-*   **NEW DIRECTIVE IS TOP PRIORITY**: The user's last message is a massive, detailed request to build a Market Launch Ready Job Card Detail Page. This is the **only** task to work on. All previous plans are now secondary.
-*   **THE PROMPT IS THE SPEC**: The user's last message is the complete design document, branding guide, and technical specification. It must be followed with extreme precision. Refer to it for every design token, component structure, and feature implementation.
-*   **FRONTEND-ONLY TASK**: This is a pure frontend build. The backend is stable and should not be modified unless a new endpoint is explicitly required to support one of the 24 missing components (e.g., digital signature storage).
-*   **IMPLEMENT THE DESIGN SYSTEM FIRST**: The user provided a complete list of CSS variables for a design token system. This should be the first implementation step, likely within  or a global CSS file, to ensure all subsequent components are styled correctly.
+- **Build is Broken**: Your first and highest priority task is to fix the frontend build. The  is full of syntax errors from an incomplete refactor. Do not proceed until yarn run v1.22.22
+$ npx vite build
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command. succeeds.
+- **Backend is Mocked**: The new backend endpoints are returning static, hardcoded data from the router file itself. They are not connected to the database. The next phase of backend work will be to implement the database logic for these endpoints.
+- **Follow the Plan**: The user has approved a clear plan: 1. Connect UI to API (currently in progress). 2. Implement Signature Capture. 3. Implement Photo Upload. 4. Implement Emailing. Follow this priority order.
+- **Pending User Input**: The user was asked to choose an email provider (SendGrid vs. Resend) but has not yet responded. Do not implement the email feature until you get a confirmation.
 
 **documents and test reports created in this job**
-*    (Continuously updated throughout the session).
-*   Multiple test reports were generated by the , confirming the success of frontend polish, backend refactoring, and new feature integrations.
+- : Was updated after the initial UI build was completed.
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **LATEST (PENDING)**: User provided a massive MEGA TEMPLATE to build a new, production-grade . This is the new, sole priority.
-2.  User requested implementation of the guided product tour. (Completed)
-3.  User approved previous work and listed next actions: WhatsApp notifications, voice input, and product tour. (Completed)
-4.  User chose  to proceed with mocked WhatsApp and real voice transcription. (Completed)
-5.  User approved the backend refactoring plan. (Completed)
-6.  User approved the Phase 4 Polish plan for the frontend. (Completed)
+1.  **LATEST (PENDING)**: User was asked to choose an email provider: SendGrid, Resend, or skip. (Awaiting Response)
+2.  User provided a clear implementation plan: P0 (API Connection), P1 (Signature & Photo Upload), P2 (Email). (Confirmed)
+3.  User provided a list of next action items to implement. (Confirmed)
+4.  User confirmed the goal is to build all 17 sections and overwrite the existing page. (Confirmed)
+5.  User provided the massive MEGA TEMPLATE to build a new, production-grade . This is the primary specification. (Completed)
 
 **Project Health Check:**
-*   **Broken**: None. The application is stable.
-*   **Mocked**: The WhatsApp notification system is mocked. It logs to the console instead of sending a real message.
+- **Broken**: The frontend is currently broken. The  has syntax errors preventing the application from building.
+- **Mocked**: The entire backend logic for the new Job Card Detail page is mocked in the  router. It returns static data and does not interact with the database.
 
 **3rd Party Integrations**
-*   **Gemini**: Uses Emergent LLM Key for the AI Chat Assistant.
-*   **Emergent-managed Google Auth**: Used for the Continue with Google feature.
-*   **Recharts**: Used for charts on the .
-*   **bcrypt**: (New) Used for hashing user passwords.
-*   **OpenAI Whisper**: (New) Used for voice-to-text transcription.
-*   **React Joyride**: (New) Used for the guided product tour.
+- **react-signature-canvas**: (New) For capturing digital signatures.
+- **Gemini**: Uses Emergent LLM Key for the AI Chat Assistant.
+- **Emergent-managed Google Auth**: Used for the Continue with Google feature.
+- **Recharts**: Used for charts on the .
+- **bcrypt**: Used for hashing user passwords.
+- **OpenAI Whisper**: Used for voice-to-text transcription.
+- **React Joyride**: Used for the guided product tour.
 
 **Testing status**
-- **Testing agent used after significant changes**: YES. The agent was used successfully after the frontend polish, backend refactoring, new feature implementation, and product tour launch.
+- **Testing agent used after significant changes**: YES, it was used to verify the initial hardcoded version of the .
 - **Troubleshoot agent used after agent stuck in loop**: NO
 - **Test files created**: []
-- **Known regressions**: None.
+- **Known regressions**: The entire frontend is non-functional due to the broken build.
 
 **Credentials to test flow:**
 -  / 
--  / 
 
 **What agent forgot to execute**
-- The task to Email invoice to customers was on the list but has been superseded by the user's new, massive directive to rebuild the Job Card Detail Page. It should be considered backlogged.</analysis>
+- The agent moved on to implementation after asking the user for a choice on the email provider, without waiting for the answer. This question remains pending.</analysis>
