@@ -175,11 +175,14 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 - [x] ~~Database-backed chat session persistence~~ ✅ COMPLETED
 - [x] ~~PDF invoice generation~~ ✅ COMPLETED
 - [x] ~~File upload capability~~ ✅ COMPLETED
+- [x] ~~Complete Login/Signup flow~~ ✅ COMPLETED (Update 10)
 
 ### P1 - Important  
+- [ ] Refactor backend server.py into separate routers (auth.py, chat.py, job_cards.py, etc.)
 - [ ] WhatsApp integration for notifications
 - [ ] Voice input transcription (OpenAI Whisper)
 - [ ] Email invoice to customers (SendGrid/Resend)
+- [ ] Password hashing for production security
 
 ### P2 - Nice to Have
 - [ ] Advanced analytics dashboard
@@ -188,9 +191,9 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 - [ ] Export demos to MP4
 - [ ] Product tour for first-time users
 - [ ] Cloud storage for files (S3/GCS)
+- [ ] Enhanced sign-up with workshop details (GST, address)
 
 ## Next Tasks
-1. Implement real SSE streaming for AI chat
-2. Add file upload capability
-3. Integrate PDF generation for invoices
-4. Add authentication middleware (JWT)
+1. Refactor backend server.py into separate routers using FastAPI APIRouter
+2. Add password hashing for production security
+3. Implement guided product tour for first-time users
