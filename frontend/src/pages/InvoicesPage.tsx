@@ -5,6 +5,8 @@ import {
   ChevronDown, ChevronUp, Printer
 } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 interface Invoice {
   id: string;
   invoice_number: string;
@@ -15,10 +17,16 @@ interface Invoice {
   total_taxable_value: number;
   total_tax_amount: number;
   grand_total: number;
-  status: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED';
+  amount?: number;
+  total_amount?: number;
+  cgst?: number;
+  sgst?: number;
+  igst?: number;
+  status: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'Draft' | 'Finalized';
   due_date?: string;
-  generated_at: string;
-  items: InvoiceItem[];
+  generated_at?: string;
+  created_at?: string;
+  items?: InvoiceItem[];
 }
 
 interface InvoiceItem {
