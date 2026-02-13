@@ -40,7 +40,8 @@ const FEATURE_SLIDES: FeatureSlide[] = [
       "Instant PDF reports"
     ],
     gradient: "from-emerald-500 to-teal-600",
-    accentColor: "#10B981"
+    accentColor: "#10B981",
+    videoUrl: "/videos/pdi-demo.webm"
   },
   {
     id: 2,
@@ -56,7 +57,8 @@ const FEATURE_SLIDES: FeatureSlide[] = [
       "24/7 roadside assistance"
     ],
     gradient: "from-blue-500 to-indigo-600",
-    accentColor: "#3B82F6"
+    accentColor: "#3B82F6",
+    videoUrl: "/videos/dashboard-demo.webm"
   },
   {
     id: 3,
@@ -72,7 +74,8 @@ const FEATURE_SLIDES: FeatureSlide[] = [
       "Digital invoice delivery"
     ],
     gradient: "from-orange-500 to-red-500",
-    accentColor: "#F97316"
+    accentColor: "#F97316",
+    videoUrl: "/videos/jobcard-demo.webm"
   },
   {
     id: 4,
@@ -88,7 +91,8 @@ const FEATURE_SLIDES: FeatureSlide[] = [
       "Voice-enabled queries"
     ],
     gradient: "from-purple-500 to-pink-500",
-    accentColor: "#A855F7"
+    accentColor: "#A855F7",
+    videoUrl: "/videos/chat-demo.webm"
   },
   {
     id: 5,
