@@ -143,12 +143,20 @@ def delete_job_card(job_card_id: str):
 
 
 @router.post("/{job_card_id}/transition")
-def transition_job_card(job_card_id: str, transition: JobCardTransition):
-    """Transition a job card to a new status."""
+async def transition_job_card(
+    job_card_id: str, 
+    transition: JobCardTransition,
+    background_tasks: BackgroundTasks,
+    send_notification: bool = True
+):
+    """
+    Transition a job card to a new status.
+    Optionally sends WhatsApp notification to customer.
+    """
     valid_statuses = [
         "Pending", "In-Progress", "Completed", "Cancelled", "On-Hold",
         "CREATED", "CONTEXT_VERIFIED", "DIAGNOSED", "ESTIMATED",
-        "CUSTOMER_APPROVAL", "IN_PROGRESS", "PDI", "INVOICED", "CLOSED"
+        "CUSTOMER_APPROVAL", "IN_PROGRESS", "PDI", "PDI_COMPLETED", "INVOICED", "CLOSED"
     ]
     
     if transition.new_status not in valid_statuses:
@@ -171,8 +179,29 @@ def transition_job_card(job_card_id: str, transition: JobCardTransition):
             raise HTTPException(status_code=404, detail="Job Card not found")
         
         updated = job_cards_collection.find_one({"_id": ObjectId(job_card_id)})
-        return {"success": True, "data": serialize_doc(updated)}
+        
+        # Send notification in background if requested
+        if send_notification:
+            background_tasks.add_task(
+                trigger_status_notification,
+                job_card_id
+            )
+        
+        return {"success": True, "data": serialize_doc(updated), "notification_queued": send_notification}
     except HTTPException:
         raise
     except:
         raise HTTPException(status_code=400, detail="Invalid job card ID format")
+
+
+async def trigger_status_notification(job_card_id: str):
+    """Background task to trigger status notification."""
+    try:
+        import httpx
+        async with httpx.AsyncClient() as client:
+            await client.post(
+                f"http://localhost:8001/api/notifications/job-card-update/{job_card_id}",
+                timeout=10.0
+            )
+    except Exception as e:
+        print(f"Notification trigger error: {str(e)}")
