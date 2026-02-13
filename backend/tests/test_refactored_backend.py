@@ -19,7 +19,7 @@ import time
 import uuid
 
 # Get BASE_URL from environment
-BASE_URL = os.environ.get('VITE_API_URL', 'https://detail-page-rebuild.preview.emergentagent.com')
+BASE_URL = os.environ.get('VITE_API_URL', 'https://garage-job-portal.preview.emergentagent.com')
 BASE_URL = BASE_URL.rstrip('/')
 API_URL = f"{BASE_URL}/api"
 
