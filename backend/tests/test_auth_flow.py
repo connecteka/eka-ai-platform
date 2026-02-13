@@ -10,7 +10,7 @@ import time
 # Get BASE_URL from environment - NO defaults
 BASE_URL = os.environ.get('VITE_API_URL', os.environ.get('REACT_APP_BACKEND_URL'))
 if not BASE_URL:
-    BASE_URL = "https://ai-workshop-hub-1.preview.emergentagent.com"
+    BASE_URL = "https://garage-assistant-1.preview.emergentagent.com"
 
 BASE_URL = BASE_URL.rstrip('/')
 

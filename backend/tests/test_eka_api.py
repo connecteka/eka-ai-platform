@@ -8,7 +8,7 @@ import os
 from datetime import datetime
 
 # Get base URL from environment (with /api prefix already handled)
-BASE_URL = os.environ.get('VITE_API_URL', 'https://ai-workshop-hub-1.preview.emergentagent.com')
+BASE_URL = os.environ.get('VITE_API_URL', 'https://garage-assistant-1.preview.emergentagent.com')
 API_URL = f"{BASE_URL}/api"
 
 print(f"Testing API at: {API_URL}")

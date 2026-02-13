@@ -3,17 +3,16 @@
 **PRODUCT REQUIREMENTS (Evolved through conversation):**
 1.  **Tech Stack:** Use FastAPI and MongoDB for the backend. The AI chat feature must use the Emergent LLM Key.
 2.  **Login Page:**
-    *   It must be the application's main entry point, replacing any landing page.
-    *   The design should mimic the Claude.ai login page: a two-panel layout with a beige/cream background on the left and a media panel on the right.
-    *   It must be fully responsive (desktop, tablet, mobile).
+    *   Must be the application's main entry point.
+    *   The design should mimic the Claude.ai login page: a two-panel layout.
+    *   It must be fully responsive.
     *   The header should display the EKA-AI mascot and brand name.
-    *   The main tagline should have an animated typing effect and change daily.
+    *   The main tagline should have an animated typing effect.
+    *   **Continue with Google** and **Continue with email** must be fully functional.
 3.  **Feature Showcase:**
-    *   The right panel of the login page must be a feature carousel highlighting key app features: PDI Process, MG Model, Job Card to Invoice, AI Chat, and Marketing Tools.
-4.  **Interactive Demos:**
-    *   Each slide in the carousel must have a Watch Demo button opening an interactive demo modal.
-    *   These demos must be video-like recordings of the *actual, live application*, not just mockups, and include smooth transition animations with zoom/highlight effects.
-5.  **Core Functionality:**
+    *   The right panel of the login page must be a feature carousel highlighting key app features.
+    *   The carousel must display **actual video recordings** of the app in action, not static images or mockups.
+4.  **Core Functionality:**
     *   AI Chat with database-backed session history and SSE streaming.
     *   Job Card management system.
     *   PDF Invoice generation from Job Cards.
@@ -22,134 +21,113 @@
 **User's preferred language**: English
 
 **what currently exists?**
-A stable, full-stack EKA-AI application. The backend is FastAPI with MongoDB, serving APIs for AI chat (with SSE streaming and session history), user authentication, job cards, PDF invoice generation, and file uploads. The frontend is a responsive Vite/React/TypeScript application. Major bugs from the previous session, including a recurring blank screen on the Job Cards page, have been fixed. The interactive demos on the login page have been enhanced with zoom/highlight animations.
+A stable, full-stack EKA-AI application. The login page is now feature-complete, with fully functional Continue with Google (via Emergent-managed OAuth) and email/password authentication systems. The feature carousel on the right side of the login page now displays actual, auto-playing video recordings of the application's features, replacing the previous animated screenshots. The backend is a monolithic FastAPI server connected to MongoDB.
 
 **Last working item**:
-*   **Last item agent was working**: The user has uploaded a video containing new instructions. The previous agent acknowledged receipt of the video but did not have a chance to analyze its content or act on it. The immediate priority is to understand and implement the changes requested in this video.
-*   **Status**: NOT STARTED
-*   **Agent Testing Done**: N/A
-*   **Which testing method agent to use?**: Use  to understand the video content first. Subsequent testing will depend on the nature of the requested changes.
-*   **User Testing Done**: N
+- **Last item agent was working**: The agent implemented the user's request to display actual videos in the feature carousel on the login page. This involved creating a Python script () with Playwright to record the application features, saving them as video files, and updating the  component to play these videos.
+- **Status**: USER VERIFICATION PENDING
+- **Agent Testing Done**: Y (Visually confirmed via screenshot that videos are playing in the carousel.)
+- **Which testing method agent to use?**: Manual testing by user.
+- **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
-There are no known pending issues. All previously reported bugs (P0, P1, P2) were resolved and verified in the last session. New issues may be identified from the user's video.
+There are no known pending issues.
 
 **In progress Task List**:
-*   **Task 1**: Analyze User Video and Implement Changes (P0)
-
-**Task Detail**:
-*   **Task 1**:
-    *   **Where to resume**: The first step is to use the  on the video artifact to extract the user's instructions. The video is located at the public URL: .
-    *   **What will be achieved with this?**: This will define the next set of development tasks required to meet the user's latest requirements.
-    *   **Status**: NOT STARTED
-    *   **Should Test frontend/backend/both after fix?**: To be determined based on video content.
-    *   **Blocked on something**: Understanding the user's request from the video.
+There are no tasks currently in progress.
 
 **Upcoming and Future Tasks**
+**Upcoming Tasks**:
+- **(P1) Refactor Backend**: The  file contains all API logic and is monolithic. It should be broken down into multiple files using FastAPI's  for better organization (e.g., , , ).
 
-*   **Upcoming Tasks**:
-    *   **(P1) Refactor Backend**: The  file contains all API logic and is becoming monolithic. It should be broken down into multiple files using FastAPI's  for better organization (e.g., , , ).
-
-*   **Future Tasks**:
-    *   Implement an Export to MP4 feature for the interactive demos.
-    *   Add a guided product tour for first-time users.
-    *   Enhance the user sign-up process to collect workshop-specific details (e.g., GST number, address).
+**Future Tasks**:
+- Implement an Export to MP4 feature for the interactive demos.
+- Add a guided product tour for first-time users.
+- Enhance the user sign-up process to collect workshop-specific details (e.g., GST number, address).
 
 **Completed work in this session**
-- **Bug Fixes (All Resolved)**:
-  - **P0 - Job Cards Blank Screen**: Fixed the recurring blank screen issue by correcting frontend routing from  to  in  and updating the sidebar navigation.
-  - **P1 - PDI/Artifacts Page Interactivity**: Implemented a PDI Checklist modal in , making the PDI cards interactive.
-  - **P2 - Incorrect Job Card Stats**: Corrected the status key mismatch in  to ensure stats are calculated and displayed correctly.
-- **Feature Enhancements**:
-  - **Interactive Demos**: Added zoom and highlight animations to the demos in .
-  - **AI Chat SSE Streaming**: Implemented Server-Sent Events (SSE) for a real-time, streaming chat experience, with a toggle on the frontend ().
-- **New Features**:
-  - **Chat History**: Implemented database-backed session persistence. The UI in  now includes a sidebar to manage and view past conversations.
-  - **PDF Invoice Generation**: Added a  endpoint to generate PDF invoices. The Invoices page now correctly displays financial data.
-  - **File Upload**: Added a  endpoint and a UI element in the chat for file uploads.
+- **Full Authentication System**:
+    - Implemented Continue with Google using Emergent-managed Google Auth. Added backend endpoints (, , ) in  and frontend logic in  and a new  component.
+    - Implemented a complete email/password sign-up and login flow.
+    - The entire authentication flow was verified by the testing agent.
+- **Live Video Demos on Login Page**:
+    - Replaced the animated screenshot demos with actual video recordings.
+    - Created a script  using Playwright to generate demo videos of app features.
+    - Updated  to embed and auto-play the videos.
 
 **Earlier issues found/mentioned but not fixed**
-*   None. All previously identified issues have been addressed.
+- None.
 
 **Known issue recurrence from previous fork**
-*   **Issue**: Job Cards page sometimes loaded as a blank/dark screen.
-*   **Recurrence count**: 1
-*   **Status**: RESOLVED. The root cause was identified as a routing mismatch in React Router ( vs ) and has been fixed.
+- **Issue**: Job Cards page sometimes loaded as a blank/dark screen.
+- **Recurrence count**: 1
+- **Status**: RESOLVED. This issue has not recurred.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
 *   **Frontend**: React, TypeScript, Vite, Tailwind CSS, Framer Motion
-*   **Backend**: Python, FastAPI, MongoDB (), FPDF2 () for PDF generation.
-*   **AI Integration**: Emergent LLM Key with the  library for Gemini.
-*   **Real-time**: Server-Sent Events (SSE) for chat streaming.
-*   **Architecture**: Monorepo with a Vite proxy routing  requests from frontend to backend.
+*   **Backend**: Python, FastAPI, MongoDB ()
+*   **Authentication**: JWT-based email auth, Emergent-managed Google OAuth 2.0.
+*   **Testing/Automation**: Playwright for video recording.
 
 **key DB schema**
-*   **job_cards**: 
-*   **users**: 
-*   **chat_sessions**: 
+- **job_cards**: 
+- **users**: 
+- **chat_sessions**: 
 
 **changes in tech stack**
-*   Added  to the backend for PDF generation.
+-  was used via a script to generate video recordings.
 
 **All files of reference**
-*   **/app/backend/server.py**: Contains all backend logic, including new endpoints for SSE, chat history, PDFs, and file uploads.
-*   **/app/frontend/src/App.tsx**: Updated with corrected routing for  paths.
-*   **/app/frontend/src/pages/ChatPage.tsx**: Heavily modified to include chat history sidebar, file upload UI, and SSE streaming logic.
-*   **/app/frontend/src/pages/JobCardsPage.tsx**: Fixed to correctly display stats and job card data.
-*   **/app/frontend/src/pages/ArtifactsPage.tsx**: Updated with the interactive PDI modal.
-*   **/app/frontend/src/pages/InvoicesPage.tsx**: Created and fixed to display invoice data correctly.
-*   **/app/frontend/src/components/DemoModal.tsx**: Updated to include new animated demo steps.
+*   **/app/backend/server.py**: Updated to include Google OAuth and session management endpoints.
+*   **/app/frontend/src/App.tsx**: Updated to handle the  route for OAuth.
+*   **/app/frontend/src/pages/LoginPage.tsx**: Rewritten to implement the complete auth UI/UX for both Google and email.
+*   **/app/frontend/src/pages/AuthCallback.tsx**: New file created to handle the OAuth redirect and session management.
+*   **/app/frontend/src/components/FeatureVideoCarousel.tsx**: Updated to display actual video files instead of animated images.
+*   **/app/record_demos.py**: New script created to record app features using Playwright.
+*   **/app/frontend/public/videos/**: New directory containing the generated  demo files.
 
 **Areas that need refactoring**:
-*   The  file is monolithic and urgently needs to be broken into smaller, manageable routers using FastAPI's . This was noted as a future task but becomes more critical as more features are added.
+- The  file is monolithic and urgently needs to be broken into smaller, manageable routers using FastAPI's . This is the most important upcoming technical debt to address.
 
 **key api endpoints**
-*   : **(New)** SSE endpoint for streaming AI responses.
-*   : **(New)** Fetches all chat sessions for a user.
-*   : **(New)** Fetches messages for a specific session.
-*   : **(New)** Generates a PDF invoice.
-*   : **(New)** Handles file uploads.
-*   : Handles non-streaming AI chat requests.
-*   : Retrieves job card statistics.
+*   : **(New)** Initiates Google OAuth flow.
+*   : **(New)** Callback endpoint for Google OAuth.
+*   : **(New)** Creates a session from an Emergent Auth token.
+*   : Handles user registration with email/password.
+*   : Handles user login with email/password.
 
 **Critical Info for New Agent**
-*   **Your first task is to analyze the user's video**: Use the  on the URL  to understand the user's latest request. Do not start any other work before this.
-*   **Routing Fix**: A major recurring bug (blank page) was fixed by adding  prefixes to the main routes in . Be mindful of this routing structure (, , etc.) when adding new pages or links.
-*   **Backend Refactoring**: The  file is getting large. Prioritize refactoring it into separate routers as an upcoming task after addressing the user's video request.
+*   The two primary requirements from the user's video (functional login and video demos) are complete. The user should be asked to verify these changes.
+*   The next logical task is to address the technical debt of the monolithic  file by refactoring it into separate routers. This will improve maintainability significantly.
 
 **documents and test reports created in this job**
+*    (Auth testing report)
 *    (Updated)
-*   
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User**: GO THROUGH THE VIDEO AND LISTEN IT CAREFULLY AND DO THE CHANGES ACCORDINGLY 
-    *   **Status**: PENDING. This is the highest priority task for the next agent.
-2.  **User**: complete Add database-backed session persistence for chat history, Implement PDF invoice generation, Add file upload capability
-    *   **Status**: COMPLETED.
-3.  **User**: Complete Interactive Demo recordings (capture success states), Add zoom/highlight animations to demos, Implement real SSE streaming for AI chat
-    *   **Status**: COMPLETED.
-4.  **User**: Current Issues (by priority): P0 - Job Cards Page Blank Screen, P1 - PDI/Artifacts Page Not Interactive, P2 - Job Card Stats Incorrect
-    *   **Status**: COMPLETED. All three issues were resolved.
+1.  **User**:  - User pointed out that the demos were not actual videos. (Status: COMPLETED)
+2.  **User**:  - User corrected the agent's misunderstanding about the existence of videos. (Status: ADDRESSED)
+3.  **User**:  - User approved the initial plan to analyze the video. (Status: COMPLETED)
 
 **Project Health Check:**
-*   **Broken**: None. The application is in a stable state.
-*   **Mocked**:
-    *   **Interactive Demos**: The videos are animated slideshows of real screenshots controlled by , not actual video files. This is the intended design.
+*   **Broken**: None. The application is stable and all core features are functional.
+*   **Mocked**: None. The mocked demos have been replaced with actual video recordings.
 
 **3rd Party Integrations**
-*   **Gemini** — uses Emergent LLM Key for the AI Chat Assistant.
+*   **Gemini**: Uses Emergent LLM Key for the AI Chat Assistant.
+*   **Emergent-managed Google Auth**: Used for the Continue with Google feature.
 
 **Testing status**
-*   **Testing agent used after significant changes**: YES. The testing agent was used to perform comprehensive testing after the bug fixes and new feature implementations.
-*   **Troubleshoot agent used after agent stuck in loop**: NO
-*   **Test files created**: []
-*   **Known regressions**: None. The previously recurring regression with the Job Cards page has been resolved.
+- **Testing agent used after significant changes**: YES. The full authentication flow was tested and verified by the testing agent.
+- **Troubleshoot agent used after agent stuck in loop**: NO
+- **Test files created**: []
+- **Known regressions**: None.
 
 **Credentials to test flow:**
-*   User registration is open. You can create a new user via the login page UI to test the application flow.
+- User registration is open. You can create a new user via the login page UI or use the Google login to test the application flow.
 
 **What agent forgot to execute**
-*   The agent did not refactor the monolithic  file into smaller routers, despite it being identified as a necessary step for maintainability. This should be prioritized after the user's latest video request is handled.</analysis>
+- Nothing was forgotten. The agent successfully addressed the user's explicit requests from the video analysis. The backend refactor remains the next priority task from the backlog.</analysis>
