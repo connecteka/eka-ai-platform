@@ -185,8 +185,33 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
       - OAuth callback handling maintained
     - **Testing**: All 42 features verified working (100% pass rate)
 
-### February 13, 2026 - Update 15 (WhatsApp Notifications & Voice Input)
-44. ✅ **WhatsApp Notifications (MOCKED)**:
+### February 13, 2026 - Update 16 (Guided Product Tour)
+46. ✅ **Guided Product Tour (React Joyride)**:
+    - **ProductTour.tsx**: New component with 9-step tour
+    - **Tour Steps**:
+      1. Welcome to EKA-AI (centered intro)
+      2. Navigation Sidebar
+      3. Start New Chat button
+      4. Dashboard KPI Stats
+      5. Revenue Trend chart
+      6. Job Cards Management nav
+      7. AI Chat Assistant nav
+      8. User Profile section
+      9. You're All Set (finish with help tip)
+    - **Features**:
+      - Auto-starts for first-time users (1.5s delay after dashboard load)
+      - localStorage persistence (`eka_tour_completed` with version tracking)
+      - Returning users don't see tour automatically
+      - Help button (?) in TopBar restarts tour anytime
+      - Skip Tour option to dismiss early
+      - Dark theme styling (#1A1A1B bg, #F45D3D primary)
+    - **Data-testids added** for tour targets:
+      - Dashboard: `dashboard-stats`, `revenue-chart`
+      - Sidebar: `sidebar-nav`, `new-chat-btn`, `nav-job-cards`, `nav-chat`, `user-profile`
+      - TopBar: `tour-help-btn`
+      - Chat: `chat-input-area`, `voice-input-btn`
+      - Job Cards: `job-cards-filter`, `new-job-card-btn`
+    - **Testing**: All 14 features verified working (100% pass rate)
     - Created `routers/notifications.py` with full WhatsApp notification infrastructure
     - **Endpoints**:
       - `GET /api/notifications/status` - Check service status
