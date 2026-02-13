@@ -299,62 +299,9 @@ const LoginPage = () => {
         </div>
       </div>
 
-      {/* RIGHT SIDE - Video/Image */}
-      <div className="hidden lg:block w-1/2 bg-[#1A1915] relative overflow-hidden">
-        {/* Background Image as fallback */}
-        <img 
-          src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1920&q=80"
-          alt="Team collaboration"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        
-        {/* Video overlay - will play if supported */}
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          poster="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1920&q=80"
-        >
-          <source src="https://cdn.coverr.co/videos/coverr-typing-on-computer-keyboard-8668/1080p.mp4" type="video/mp4" />
-        </video>
-        
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-        
-        {/* Welcome Card */}
-        <div className="absolute bottom-8 right-8 left-8 max-w-md ml-auto">
-          <div className="bg-[#1A1915]/90 backdrop-blur-sm rounded-xl p-6 text-white">
-            <div className="flex items-center gap-3 mb-3">
-              <img 
-                src={mascotUrl} 
-                alt="EKA-AI Mascot" 
-                className="w-12 h-12 rounded-full object-cover border-2 border-[#E65C2E]"
-              />
-              <div>
-                <h3 className="text-lg font-semibold">Welcome to EKA-AI</h3>
-                <p className="text-xs text-gray-400">Governed Automobile Intelligence</p>
-              </div>
-            </div>
-            <p className="text-sm text-gray-300 mb-4">
-              Your intelligent automobile assistant. Get instant diagnostics, 
-              manage job cards, and streamline your workshop operations.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-2">
-              <button className="px-4 py-2 border border-white/30 rounded-lg text-sm hover:bg-white/10 transition-colors">
-                Learn More
-              </button>
-              <Link
-                to="/claude-chat"
-                className="px-4 py-2 bg-[#E65C2E] rounded-lg text-sm hover:bg-[#D54D1F] transition-colors text-center"
-              >
-                Start Chatting
-              </Link>
-            </div>
-          </div>
-        </div>
+      {/* RIGHT SIDE - Feature Video Carousel */}
+      <div className="hidden lg:block w-1/2 bg-[#0A0A0B] relative overflow-hidden">
+        <FeatureVideoCarousel />
       </div>
 
       {/* Mobile Video Section */}
