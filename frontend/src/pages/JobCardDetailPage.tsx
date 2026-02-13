@@ -1285,10 +1285,14 @@ const CostPaymentSection: React.FC<CostPaymentSectionProps> = ({ payment }) => {
 // SECTION 9: EKA-AI INSIGHTS PANEL ⭐ HERO SECTION
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const EkaAIInsightsPanel: React.FC = () => {
+interface EkaAIInsightsPanelProps {
+  insights: InsightsData['insights'];
+}
+
+const EkaAIInsightsPanel: React.FC<EkaAIInsightsPanelProps> = ({ insights: apiInsights }) => {
   const [aiQuery, setAiQuery] = useState('');
 
-  const insights = [
+  const insights = apiInsights.length > 0 ? apiInsights : [
     {
       type: 'predictive',
       icon: '🔮',
