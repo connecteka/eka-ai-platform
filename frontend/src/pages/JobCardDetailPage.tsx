@@ -1042,6 +1042,13 @@ interface PartsInventorySectionProps {
 
 const PartsInventorySection: React.FC<PartsInventorySectionProps> = ({ parts }) => {
   const sampleParts = parts.length > 0 ? parts : [
+    { id: '1', name: 'Engine Oil 5W-30 (Castrol)', part_number: 'OIL-5W30-4L', category: 'Lubricant', quantity: '4 L', unit_price: 350, total: 1400, warranty: undefined, availability: 'in-stock' },
+    { id: '2', name: 'Oil Filter (Genuine)', part_number: 'FLT-MSZ-OIL-22', category: 'Filter', quantity: '1', unit_price: 280, total: 280, warranty: '6 months', availability: 'in-stock' },
+    { id: '3', name: 'Front Brake Pad Set (Brembo)', part_number: 'BRK-FRT-SWF-B', category: 'Brake', quantity: '1 set', unit_price: 2200, total: 2200, warranty: '12 months', availability: 'in-stock' },
+    { id: '4', name: 'AC Gas R134a', part_number: 'ACG-R134A-1KG', category: 'AC', quantity: '1 kg', unit_price: 650, total: 650, availability: 'low-stock', availability_note: '2 left' },
+    { id: '5', name: 'Cabin Air Filter', part_number: 'FLT-CAB-SWF', category: 'Filter', quantity: '1', unit_price: 380, total: 380, availability: 'ordered', availability_note: 'ETA: Tomorrow' },
+  ];
+
   const getAvailabilityBadge = (availability: string, note?: string) => {
     switch (availability) {
       case 'in-stock': return <span style={{ color: styles.success, fontSize: '13px' }}>🟢 In Stock</span>;
