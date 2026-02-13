@@ -462,6 +462,7 @@ const ClaudeLikeChat: React.FC = () => {
                 <button
                   onClick={handleSend}
                   disabled={!input.trim() || isLoading}
+                  data-testid="send-message-btn"
                   className={`p-2 rounded-lg transition-all ${
                     input.trim() && !isLoading
                       ? 'bg-brand-orange hover:bg-[#e54d2d] text-white'
