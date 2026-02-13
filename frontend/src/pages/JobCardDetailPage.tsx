@@ -1825,19 +1825,19 @@ const ActivityTimelineSection: React.FC<ActivityTimelineSectionProps> = ({ timel
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0', marginBottom: '16px' }}>
-          {notes.map((note, idx) => (
-            <div key={idx} style={{
+          {(apiNotes.length > 0 ? apiNotes : notes).map((note, idx) => (
+            <div key={note.id || idx} style={{
               padding: '12px 16px',
-              borderBottom: idx < notes.length - 1 ? `1px solid ${styles.gray100}` : 'none',
-              background: note.isAI ? styles.ekaOrangeSuperLight : 'transparent',
-              borderLeft: note.isAI ? `3px solid ${styles.ekaOrange}` : 'none',
+              borderBottom: idx < (apiNotes.length > 0 ? apiNotes : notes).length - 1 ? `1px solid ${styles.gray100}` : 'none',
+              background: note.is_ai ? styles.ekaOrangeSuperLight : 'transparent',
+              borderLeft: note.is_ai ? `3px solid ${styles.ekaOrange}` : 'none',
             }}>
               <div style={{ fontSize: '12px', fontWeight: 500, color: styles.gray500, marginBottom: '4px' }}>
-                {note.isAI ? '🤖 ' : ''}{note.author} • {note.time}
+                {note.is_ai ? '🤖 ' : ''}{note.author} • {note.timestamp ? new Date(note.timestamp).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }) : 'Just now'}
               </div>
               <div style={{ fontSize: '13px', color: styles.gray700, lineHeight: 1.5 }}>
                 {note.text}
-                {note.hasAttachment && <span style={{ color: styles.gray400, marginLeft: '8px' }}>[Photo attached 📎]</span>}
+                {note.attachments?.length > 0 && <span style={{ color: styles.gray400, marginLeft: '8px' }}>[Photo attached 📎]</span>}
               </div>
             </div>
           ))}
@@ -1864,7 +1864,9 @@ const ActivityTimelineSection: React.FC<ActivityTimelineSectionProps> = ({ timel
           />
           <div style={{ display: 'flex', gap: '8px' }}>
             <Button size="sm" variant="outline" icon={<Paperclip size={14} />}>Attach</Button>
-            <Button size="sm" style={{ background: styles.gray700, color: styles.white }} icon={<Send size={14} />}>Add Note</Button>
+            <Button size="sm" style={{ background: styles.gray700, color: styles.white }} icon={<Send size={14} />} onClick={handleAddNote}>
+              {submitting ? 'Adding...' : 'Add Note'}
+            </Button>
           </div>
         </div>
       </Card>
