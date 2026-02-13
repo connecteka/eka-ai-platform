@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, FileText, Clock, AlertCircle, CheckCircle } from 'lucide-react';
+import { Plus, FileText, Clock, AlertCircle, CheckCircle, RefreshCw } from 'lucide-react';
 import JobCardTable from '../components/features/job-cards/JobCardTable';
 import Button from '../components/shared/Button';
 import Modal from '../components/shared/Modal';
@@ -18,6 +18,7 @@ export default function JobCardsPage() {
   const [jobCards, setJobCards] = useState<JobCard[]>([]);
   const [stats, setStats] = useState<JobCardStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showNewModal, setShowNewModal] = useState(false);
   
   // New job card form state
@@ -39,12 +40,14 @@ export default function JobCardsPage() {
   const fetchJobCards = async () => {
     try {
       setLoading(true);
+      setError(null);
       const response = await jobCardService.listJobCards({ limit: 50 });
-      // Handle both response formats
-      const cards = response?.job_cards || response?.data || [];
+      // Handle both response formats - ensure we always get an array
+      const cards = response?.job_cards || response?.data || response || [];
       setJobCards(Array.isArray(cards) ? cards : []);
-    } catch (error) {
-      console.error('Error fetching job cards:', error);
+    } catch (err: any) {
+      console.error('Error fetching job cards:', err);
+      setError(err?.message || 'Failed to load job cards. Please try again.');
       setJobCards([]);
     } finally {
       setLoading(false);
