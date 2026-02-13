@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_URL = import.meta.env.VITE_API_URL || '';
 
 class APIService {
   private async request(endpoint: string, options: RequestInit = {}) {
@@ -19,9 +19,16 @@ class APIService {
   }
 
   async login(email: string, password: string) {
-    return this.request('/api/login', {
+    return this.request('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
+    });
+  }
+
+  async register(email: string, password: string, name: string, workshopName?: string) {
+    return this.request('/api/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({ email, password, name, workshop_name: workshopName }),
     });
   }
 
@@ -32,15 +39,86 @@ class APIService {
     });
   }
 
-  async getJobCards(workshopId: string) {
-    return this.request(`/api/job-cards?workshop_id=${workshopId}`);
+  async getJobCards(status?: string) {
+    const params = status ? `?status=${status}` : '';
+    return this.request(`/api/job-cards${params}`);
   }
 
-  async calculateMG(data: any) {
-    return this.request('/api/mg/calculate', {
+  async getJobCard(id: string) {
+    return this.request(`/api/job-cards/${id}`);
+  }
+
+  async createJobCard(data: any) {
+    return this.request('/api/job-cards', {
       method: 'POST',
       body: JSON.stringify(data),
     });
+  }
+
+  async updateJobCard(id: string, data: any) {
+    return this.request(`/api/job-cards/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteJobCard(id: string) {
+    return this.request(`/api/job-cards/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async transitionJobCard(id: string, newStatus: string, notes?: string) {
+    return this.request(`/api/job-cards/${id}/transition`, {
+      method: 'POST',
+      body: JSON.stringify({ new_status: newStatus, notes }),
+    });
+  }
+
+  async getJobCardStats() {
+    return this.request('/api/job-cards/stats/overview');
+  }
+
+  async getInvoices(status?: string) {
+    const params = status ? `?status=${status}` : '';
+    return this.request(`/api/invoices${params}`);
+  }
+
+  async createInvoice(data: any) {
+    return this.request('/api/invoices', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async finalizeInvoice(id: string) {
+    return this.request(`/api/invoices/${id}/finalize`, {
+      method: 'POST',
+    });
+  }
+
+  async getMGContracts(status?: string) {
+    const params = status ? `?status=${status}` : '';
+    return this.request(`/api/mg/contracts${params}`);
+  }
+
+  async createMGContract(data: any) {
+    return this.request('/api/mg/contracts', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getMGReport(contractId: string) {
+    return this.request(`/api/mg/reports/${contractId}`);
+  }
+
+  async getDashboardMetrics() {
+    return this.request('/api/dashboard/metrics');
+  }
+
+  async healthCheck() {
+    return this.request('/api/health');
   }
 }
 
