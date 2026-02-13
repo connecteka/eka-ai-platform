@@ -339,7 +339,14 @@ def get_all_job_cards(
     docs = list(cursor)
     total = job_cards_collection.count_documents(query)
     
-    return {"success": True, "data": serialize_docs(docs), "count": len(docs), "total": total}
+    # Return in format expected by frontend
+    return {
+        "success": True, 
+        "data": serialize_docs(docs), 
+        "job_cards": serialize_docs(docs),  # For frontend compatibility
+        "count": len(docs), 
+        "total": total
+    }
 
 
 @app.get("/api/job-cards/{job_card_id}")
