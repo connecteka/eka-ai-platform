@@ -64,6 +64,7 @@ const AppRouter: React.FC = () => {
           
           {/* /app/* Routes (sidebar navigation) */}
           <Route path="/app" element={<DashboardPage />} />
+          <Route path="/app/dashboard" element={<DashboardPage />} />
           <Route path="/app/job-cards" element={<JobCardsPage />} />
           <Route path="/app/pdi" element={<ArtifactsPage />} />
           <Route path="/app/fleet" element={<MGFleetPage />} />
