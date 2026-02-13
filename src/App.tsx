@@ -11,6 +11,7 @@ import LoginPage from './pages/LoginPage';
 import ChatPage from './pages/ChatPage';
 import ChatsPage from './pages/ChatsPage';
 import JobCardsPage from './pages/JobCardsPage';
+import JobCardDetailPage from './pages/JobCardDetailPage';
 import InvoicesPage from './pages/InvoicesPage';
 import MGFleetPage from './pages/MGFleetPage';
 import LandingPage from './pages/LandingPage';
@@ -47,6 +48,7 @@ const App: React.FC = () => {
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/chats" element={<ChatsPage />} />
           <Route path="/job-cards" element={<JobCardsPage />} />
+          <Route path="/job-cards/:id" element={<JobCardDetailPage />} />
           <Route path="/invoices" element={<InvoicesPage />} />
           <Route path="/mg-fleet" element={<MGFleetPage />} />
           

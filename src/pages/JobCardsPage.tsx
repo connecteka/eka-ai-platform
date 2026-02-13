@@ -86,11 +86,11 @@ export default function JobCardsPage() {
   };
 
   const handleViewJobCard = (jobCard: JobCard) => {
-    navigate(`/app/job-cards/${jobCard.id}`);
+    navigate(`/job-cards/${jobCard.id}`);
   };
 
   const handleEditJobCard = (jobCard: JobCard) => {
-    navigate(`/app/job-cards/${jobCard.id}/edit`);
+    navigate(`/job-cards/${jobCard.id}/edit`);
   };
 
   const handleDeleteJobCard = async (jobCard: JobCard) => {
