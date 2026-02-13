@@ -1,120 +1,123 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, Paperclip, Mic, Brain, Zap, Sparkles, Plus, MessageSquare, Trash2, ChevronLeft, ChevronRight, Upload, X, FileText, Image as ImageIcon } from 'lucide-react';
+import { useSearchParams, useOutletContext } from 'react-router-dom';
+import { 
+  Send, 
+  Paperclip, 
+  Mic, 
+  Brain, 
+  Zap, 
+  Sparkles, 
+  Upload, 
+  X, 
+  FileText, 
+  Image as ImageIcon,
+  Car,
+  Wrench,
+  FileCheck,
+  Truck
+} from 'lucide-react';
+import { clsx } from 'clsx';
 import { geminiService } from '../services/geminiService';
 import { useJobCard } from '../hooks/useJobCard';
-import { JobStatus, IntelligenceMode, OperatingMode } from '../types';
+import { JobStatus, IntelligenceMode, OperatingMode, VehicleContext } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
-interface ChatSession {
+interface Message {
   id: string;
-  session_id: string;
-  title: string;
-  updated_at: string;
-  messages: { role: string; content: string; timestamp: string }[];
+  role: 'user' | 'model';
+  content: string;
+  timestamp: Date;
 }
 
-const ChatPage = () => {
-  const [messages, setMessages] = useState<{role: string, parts: {text: string}[]}[]>([]);
-  const [input, setInput] = useState('');
-  const [isLoading, setLoading] = useState(false);
-  const [streamingText, setStreamingText] = useState('');
-  const [useStreaming, setUseStreaming] = useState(true);
-  const [mode, setMode] = useState<IntelligenceMode>('FAST');
-  const [status, setStatus] = useState<JobStatus>('CREATED');
-  const [sessionId, setSessionId] = useState<string | null>(null);
-  const [sessions, setSessions] = useState<ChatSession[]>([]);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [uploadingFile, setUploadingFile] = useState(false);
-  const [attachedFile, setAttachedFile] = useState<{ name: string; url: string } | null>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const abortControllerRef = useRef<AbortController | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+interface OutletContextType {
+  intelligenceMode: IntelligenceMode;
+  setIntelligenceMode: (mode: IntelligenceMode) => void;
+}
+
+// Quick suggestion chips for empty state
+const SUGGESTION_CHIPS = [
+  { icon: Wrench, text: 'Diagnose a vehicle issue', color: 'text-red-400' },
+  { icon: FileCheck, text: 'Create a new job card', color: 'text-blue-400' },
+  { icon: FileText, text: 'Generate an invoice', color: 'text-green-400' },
+  { icon: Truck, text: 'Check MG fleet contract', color: 'text-purple-400' },
+];
+
+const ChatPage: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const context = useOutletContext<OutletContextType>();
+  const intelligenceMode = context?.intelligenceMode || 'FAST';
   
-  // Connect to Job Card system
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [streamingText, setStreamingText] = useState('');
+  const [sessionId, setSessionId] = useState<string | null>(searchParams.get('session'));
+  const [vehicleContext, setVehicleContext] = useState<VehicleContext>({
+    vehicleType: '',
+    brand: '',
+    model: '',
+    year: '',
+    fuelType: '',
+    registrationNumber: '',
+  });
+  const [attachedFile, setAttachedFile] = useState<{ name: string; url: string } | null>(null);
+  const [uploadingFile, setUploadingFile] = useState(false);
+  
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  
+  // Job card hook
   const [jobCardState, jobCardActions] = useJobCard();
 
-  // Load chat sessions on mount
-  useEffect(() => {
-    fetchSessions();
-  }, []);
-
+  // Auto-scroll to bottom on new messages
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, streamingText]);
 
-  const fetchSessions = async () => {
+  // Load session from URL param
+  useEffect(() => {
+    const sessionParam = searchParams.get('session');
+    if (sessionParam && sessionParam !== sessionId) {
+      setSessionId(sessionParam);
+      loadSession(sessionParam);
+    }
+  }, [searchParams]);
+
+  // Load session messages
+  const loadSession = async (sid: string) => {
     try {
       const response = await fetch(`${API_URL}/api/chat/sessions`);
       if (response.ok) {
         const data = await response.json();
-        setSessions(data.sessions || []);
+        const session = data.sessions?.find((s: any) => s.session_id === sid);
+        if (session?.messages) {
+          setMessages(session.messages.map((m: any) => ({
+            id: crypto.randomUUID(),
+            role: m.role === 'user' ? 'user' : 'model',
+            content: m.content,
+            timestamp: new Date(m.timestamp),
+          })));
+        }
       }
     } catch (error) {
-      console.error('Error fetching sessions:', error);
+      console.error('Error loading session:', error);
     }
   };
 
-  const createNewSession = async () => {
-    try {
-      const response = await fetch(`${API_URL}/api/chat/sessions`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: 'New Conversation' })
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setSessionId(data.session_id);
-        setMessages([]);
-        fetchSessions();
-      }
-    } catch (error) {
-      console.error('Error creating session:', error);
-    }
-  };
-
-  const loadSession = async (session: ChatSession) => {
-    setSessionId(session.session_id);
-    
-    // Convert stored messages to component format
-    const loadedMessages = session.messages?.map(msg => ({
-      role: msg.role,
-      parts: [{ text: msg.content }]
-    })) || [];
-    
-    setMessages(loadedMessages);
-  };
-
-  const deleteSession = async (sessionIdToDelete: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    try {
-      await fetch(`${API_URL}/api/chat/sessions/${sessionIdToDelete}`, {
-        method: 'DELETE'
-      });
-      
-      if (sessionId === sessionIdToDelete) {
-        setSessionId(null);
-        setMessages([]);
-      }
-      fetchSessions();
-    } catch (error) {
-      console.error('Error deleting session:', error);
-    }
-  };
-
+  // Save message to session
   const saveMessageToSession = async (role: string, content: string) => {
     if (!sessionId) return;
-    
     try {
       await fetch(`${API_URL}/api/chat/sessions/${sessionId}/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ session_id: sessionId, role, content })
       });
-      fetchSessions(); // Refresh to get updated title
     } catch (error) {
       console.error('Error saving message:', error);
     }
@@ -148,21 +151,26 @@ const ChatPage = () => {
     }
   };
 
-  // SSE Streaming handler
-  const handleStreamingSend = useCallback(async () => {
-    if (!input.trim() && !attachedFile) return;
+  // Send message with SSE streaming
+  const handleSend = useCallback(async () => {
+    if ((!input.trim() && !attachedFile) || isLoading) return;
 
     // Create session if not exists
-    if (!sessionId) {
-      const response = await fetch(`${API_URL}/api/chat/sessions`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: input.slice(0, 50) })
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setSessionId(data.session_id);
-        fetchSessions();
+    let currentSessionId = sessionId;
+    if (!currentSessionId) {
+      try {
+        const response = await fetch(`${API_URL}/api/chat/sessions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: input.slice(0, 50) })
+        });
+        if (response.ok) {
+          const data = await response.json();
+          currentSessionId = data.session_id;
+          setSessionId(data.session_id);
+        }
+      } catch (error) {
+        console.error('Error creating session:', error);
       }
     }
 
@@ -170,16 +178,23 @@ const ChatPage = () => {
       ? `${input}\n\n[Attached: ${attachedFile.name}]`
       : input;
 
-    const userMsg = { role: 'user', parts: [{ text: messageText }] };
-    setMessages(prev => [...prev, userMsg]);
+    // Add user message
+    const userMessage: Message = {
+      id: crypto.randomUUID(),
+      role: 'user',
+      content: messageText,
+      timestamp: new Date(),
+    };
+    
+    setMessages(prev => [...prev, userMessage]);
     const userInput = input;
     setInput('');
     setAttachedFile(null);
-    setLoading(true);
+    setIsLoading(true);
     setStreamingText('');
 
     // Save user message to session
-    if (sessionId) {
+    if (currentSessionId) {
       saveMessageToSession('user', messageText);
     }
 
@@ -191,8 +206,8 @@ const ChatPage = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: userInput,
-          context: jobCardState.vehicleData || undefined,
-          session_id: sessionId
+          context: vehicleContext.brand ? vehicleContext : undefined,
+          session_id: currentSessionId
         }),
         signal: abortControllerRef.current.signal
       });
@@ -224,26 +239,36 @@ const ChatPage = () => {
                 setStreamingText(fullText);
               } else if (data.type === 'done') {
                 setStreamingText('');
-                setMessages(prev => [...prev, { role: 'model', parts: [{ text: data.full_text }] }]);
+                const aiMessage: Message = {
+                  id: crypto.randomUUID(),
+                  role: 'model',
+                  content: data.full_text,
+                  timestamp: new Date(),
+                };
+                setMessages(prev => [...prev, aiMessage]);
                 
                 // Save AI response to session
-                if (sessionId) {
+                if (currentSessionId) {
                   saveMessageToSession('model', data.full_text);
                 }
                 
+                // Check for vehicle context detection
                 if (data.show_orange_border && !jobCardState.jobCard) {
                   const regMatch = userInput.match(/([A-Z]{2}[\s-]?\d{1,2}[\s-]?[A-Z]{0,2}[\s-]?\d{1,4})/i);
-                  jobCardActions.initializeJobCard({
-                    vehicleType: '4W',
-                    brand: '',
-                    model: '',
-                    year: '',
-                    fuelType: '',
-                    registrationNumber: regMatch ? regMatch[1].toUpperCase() : 'NEW-VEHICLE',
-                  });
+                  if (regMatch) {
+                    setVehicleContext(prev => ({
+                      ...prev,
+                      registrationNumber: regMatch[1].toUpperCase(),
+                    }));
+                  }
                 }
               } else if (data.type === 'error') {
-                setMessages(prev => [...prev, { role: 'model', parts: [{ text: `Error: ${data.content}` }] }]);
+                setMessages(prev => [...prev, {
+                  id: crypto.randomUUID(),
+                  role: 'model',
+                  content: `Error: ${data.content}`,
+                  timestamp: new Date(),
+                }]);
               }
             } catch (e) {
               // Skip invalid JSON
@@ -254,236 +279,211 @@ const ChatPage = () => {
     } catch (error: any) {
       if (error.name !== 'AbortError') {
         console.error('Streaming error:', error);
-        setMessages(prev => [...prev, { role: 'model', parts: [{ text: 'Connection error. Falling back to standard mode.' }] }]);
+        setMessages(prev => [...prev, {
+          id: crypto.randomUUID(),
+          role: 'model',
+          content: '⚠️ Connection error. Please check your connection and try again.',
+          timestamp: new Date(),
+        }]);
       }
     } finally {
-      setLoading(false);
+      setIsLoading(false);
       setStreamingText('');
       abortControllerRef.current = null;
     }
-  }, [input, jobCardState, sessionId, jobCardActions, attachedFile]);
+  }, [input, sessionId, vehicleContext, attachedFile, jobCardState.jobCard, isLoading]);
 
-  // Standard (non-streaming) handler
-  const handleStandardSend = async () => {
-    if (!input.trim()) return;
-
-    const userMsg = { role: 'user', parts: [{ text: input }] };
-    setMessages(prev => [...prev, userMsg]);
-    setInput('');
-    setLoading(true);
-
-    try {
-      const response = await geminiService.sendMessage(
-        [...messages, userMsg], 
-        jobCardState.vehicleData || undefined,
-        status,
-        mode,
-        0 as OperatingMode
-      );
-      
-      const aiText = response.response_content?.visual_text || "System processing...";
-      const aiMsg = { role: 'model', parts: [{ text: aiText }] };
-      setMessages(prev => [...prev, aiMsg]);
-
-      if (response.ui_triggers?.show_orange_border && !jobCardState.jobCard) {
-        const regMatch = input.match(/([A-Z]{2}[\s-]?\d{1,2}[\s-]?[A-Z]{0,2}[\s-]?\d{1,4})/i);
-        jobCardActions.initializeJobCard({
-          vehicleType: '4W',
-          brand: '',
-          model: '',
-          year: '',
-          fuelType: '',
-          registrationNumber: regMatch ? regMatch[1].toUpperCase() : 'NEW-VEHICLE',
-        });
-      }
-
-      if (response.job_status_update) {
-        setStatus(response.job_status_update);
-      }
-
-    } catch (error) {
-      console.error(error);
-      setMessages(prev => [...prev, { role: 'model', parts: [{ text: "Connection error. Please check backend." }] }]);
-    } finally {
-      setLoading(false);
+  // Handle Enter key
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
     }
   };
 
-  const handleSend = useStreaming ? handleStreamingSend : handleStandardSend;
+  // Set input from suggestion chip
+  const handleSuggestionClick = (text: string) => {
+    setInput(text);
+    inputRef.current?.focus();
+  };
 
   return (
-    <div className="flex h-full">
-      {/* Chat History Sidebar */}
-      <div className={`bg-[#1A1A1C] border-r border-border transition-all duration-300 flex flex-col ${sidebarOpen ? 'w-64' : 'w-0'}`}>
-        {sidebarOpen && (
-          <>
-            <div className="p-3 border-b border-border">
-              <button
-                onClick={createNewSession}
-                className="w-full flex items-center justify-center gap-2 py-2.5 bg-brand-orange text-white rounded-lg hover:bg-brand-hover transition-colors text-sm font-medium"
-                data-testid="new-chat-btn"
-              >
-                <Plus size={16} />
-                New Chat
-              </button>
-            </div>
-            
-            <div className="flex-1 overflow-y-auto p-2 space-y-1">
-              {sessions.map(session => (
-                <div
-                  key={session.session_id}
-                  onClick={() => loadSession(session)}
-                  className={`group flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-colors ${
-                    sessionId === session.session_id 
-                      ? 'bg-brand-orange/20 text-white' 
-                      : 'text-text-secondary hover:bg-surface hover:text-white'
-                  }`}
-                  data-testid={`session-${session.session_id}`}
-                >
-                  <MessageSquare size={14} className="flex-shrink-0" />
-                  <span className="flex-1 text-sm truncate">{session.title}</span>
-                  <button
-                    onClick={(e) => deleteSession(session.session_id, e)}
-                    className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-500/20 rounded transition-all"
-                  >
-                    <Trash2 size={12} className="text-red-400" />
-                  </button>
-                </div>
-              ))}
+    <div className="flex flex-col h-full bg-background">
+      {/* Messages Area */}
+      <div 
+        ref={scrollRef}
+        className="flex-1 overflow-y-auto px-4 md:px-6 py-6"
+        data-testid="messages-area"
+      >
+        <div className="max-w-3xl mx-auto">
+          {/* Welcome Screen - Empty State */}
+          {messages.length === 0 && !streamingText && (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+              <div className="w-16 h-16 bg-brand-orange rounded-2xl flex items-center justify-center mb-6">
+                <span className="text-3xl font-bold text-white font-heading">E</span>
+              </div>
+              <h2 className="text-2xl font-semibold text-text-primary mb-3">
+                How can I help with the garage today?
+              </h2>
+              <p className="text-text-secondary text-sm mb-8 max-w-md">
+                Create job cards, diagnose vehicle issues, or check fleet contracts.
+              </p>
               
-              {sessions.length === 0 && (
-                <div className="text-center py-8 text-text-muted text-sm">
-                  No conversations yet
-                </div>
-              )}
+              {/* Suggestion Chips */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg">
+                {SUGGESTION_CHIPS.map((chip, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => handleSuggestionClick(chip.text)}
+                    className="flex items-center gap-3 p-4 bg-background-alt border border-border rounded-xl text-left hover:border-brand-orange/50 transition-colors group"
+                    data-testid={`suggestion-chip-${idx}`}
+                  >
+                    <chip.icon className={clsx("w-5 h-5", chip.color)} />
+                    <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
+                      {chip.text}
+                    </span>
+                  </button>
+                ))}
+              </div>
             </div>
-          </>
-        )}
+          )}
+
+          {/* Messages */}
+          <div className="space-y-6">
+            {messages.map((msg) => (
+              <div 
+                key={msg.id} 
+                className={clsx(
+                  "flex gap-4",
+                  msg.role === 'user' ? "justify-end" : "justify-start"
+                )}
+              >
+                {/* AI Avatar */}
+                {msg.role === 'model' && (
+                  <div className="w-8 h-8 rounded-lg bg-surface border border-border flex items-center justify-center flex-shrink-0">
+                    <span className="text-xs font-bold text-brand-orange">EKA</span>
+                  </div>
+                )}
+                
+                {/* Message Content */}
+                <div className={clsx(
+                  "max-w-[85%] rounded-2xl px-4 py-3",
+                  msg.role === 'user' 
+                    ? "bg-brand-orange/10 border border-brand-orange/20 text-text-primary" 
+                    : "text-text-primary"
+                )}>
+                  {msg.content.split('\n').map((line, i) => (
+                    <p key={i} className="text-sm leading-relaxed mb-1 last:mb-0">
+                      {line}
+                    </p>
+                  ))}
+                </div>
+
+                {/* User Badge */}
+                {msg.role === 'user' && (
+                  <div className="w-8 h-8 rounded-lg bg-brand-orange/20 border border-brand-orange/30 flex items-center justify-center flex-shrink-0">
+                    <span className="text-xs font-bold text-brand-orange">U</span>
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {/* Streaming Response */}
+            {streamingText && (
+              <div className="flex gap-4">
+                <div className="w-8 h-8 rounded-lg bg-surface border border-border flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="w-4 h-4 text-brand-orange animate-pulse" />
+                </div>
+                <div className="text-text-primary max-w-[85%]">
+                  {streamingText.split('\n').map((line, i) => (
+                    <p key={i} className="text-sm leading-relaxed mb-1 last:mb-0">{line}</p>
+                  ))}
+                  <span className="inline-block w-2 h-4 bg-brand-orange animate-pulse ml-1 rounded-sm" />
+                </div>
+              </div>
+            )}
+
+            {/* Loading Indicator */}
+            {isLoading && !streamingText && (
+              <div className="flex gap-4">
+                <div className="w-8 h-8 rounded-lg bg-surface border border-border flex items-center justify-center flex-shrink-0 animate-pulse">
+                  <Brain className="w-4 h-4 text-brand-orange" />
+                </div>
+                <div className="flex items-center gap-1 pt-2">
+                  {[0, 75, 150].map((delay) => (
+                    <span 
+                      key={delay}
+                      className="w-2 h-2 bg-text-muted rounded-full animate-bounce"
+                      style={{ animationDelay: `${delay}ms` }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Toggle Sidebar Button */}
-      <button
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-surface border border-border p-1.5 rounded-r-lg hover:bg-[#333] transition-colors"
-        style={{ left: sidebarOpen ? '256px' : '0' }}
-      >
-        {sidebarOpen ? <ChevronLeft size={14} /> : <ChevronRight size={14} />}
-      </button>
-
-      {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col max-w-3xl mx-auto w-full">
-        
-        {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 scroll-smooth" ref={scrollRef}>
-          {messages.length === 0 && (
-            <div className="flex flex-col items-center justify-center h-full text-center opacity-40 mt-20">
-              <div className="w-16 h-16 bg-brand-orange rounded-2xl flex items-center justify-center mb-6">
-                <span className="text-3xl font-bold text-white">E</span>
-              </div>
-              <h2 className="text-2xl font-semibold text-white mb-2">How can I help with the garage today?</h2>
-              <p className="text-text-secondary">Create job cards, diagnose issues, or check inventory.</p>
-            </div>
-          )}
-          
-          {messages.map((msg, idx) => (
-             <div key={idx} className={`flex gap-4 ${msg.role === 'user' ? 'justify-end' : ''}`}>
-               {msg.role === 'model' && (
-                 <div className="w-8 h-8 rounded-full bg-surface border border-border flex items-center justify-center text-xs font-bold text-brand-orange flex-shrink-0">
-                   <Brain size={14} />
-                 </div>
-               )}
-               <div className={`px-4 py-3 rounded-2xl max-w-[85%] leading-relaxed text-sm ${
-                 msg.role === 'user' 
-                   ? 'bg-surface text-text-primary border border-border' 
-                   : 'text-text-primary'
-               }`}>
-                 {msg.parts[0].text.split('\n').map((line, i) => (
-                   <p key={i} className="mb-1 last:mb-0">{line}</p>
-                 ))}
-               </div>
-             </div>
-          ))}
-
-          {/* Streaming Response */}
-          {streamingText && (
-            <div className="flex gap-4">
-              <div className="w-8 h-8 rounded-full bg-surface border border-border flex items-center justify-center text-xs">
-                <Sparkles size={14} className="text-brand-orange animate-pulse" />
-              </div>
-              <div className="text-text-primary text-sm max-w-[85%]">
-                {streamingText.split('\n').map((line, i) => (
-                  <p key={i} className="mb-1 last:mb-0">{line}</p>
-                ))}
-                <span className="inline-block w-2 h-4 bg-brand-orange animate-pulse ml-1"></span>
-              </div>
-            </div>
-          )}
-
-          {isLoading && !streamingText && (
-             <div className="flex gap-4">
-               <div className="w-8 h-8 rounded-full bg-surface border border-border flex items-center justify-center text-xs animate-pulse">
-                 <Brain size={14} className="text-brand-orange" />
-               </div>
-               <div className="text-text-secondary text-sm flex items-center gap-1">
-                 <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
-                 <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '75ms' }}></span>
-                 <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-               </div>
-             </div>
-          )}
-        </div>
-
-        {/* Input Area */}
-        <div className="p-4 pb-6">
-          {/* Mode Toggle */}
-          <div className="flex items-center justify-between mb-2 px-1 max-w-3xl mx-auto">
-            <div className="flex items-center gap-2">
-              <button 
-                onClick={() => setMode(mode === 'FAST' ? 'THINKING' : 'FAST')}
-                className="flex items-center gap-2 text-xs font-medium text-text-secondary bg-surface px-3 py-1.5 rounded-full hover:bg-[#333] transition-colors border border-border"
-              >
-                {mode === 'FAST' ? '⚡ FAST (Gemini)' : '🧠 THINKING (Claude)'}
-              </button>
-              <button 
-                onClick={() => setUseStreaming(!useStreaming)}
-                className={`flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full transition-colors border ${
-                  useStreaming 
-                    ? 'bg-brand-orange/20 text-brand-orange border-brand-orange/30' 
-                    : 'bg-surface text-text-secondary border-border hover:bg-[#333]'
-                }`}
-                title={useStreaming ? 'SSE Streaming enabled' : 'Standard mode'}
-              >
-                <Zap size={12} className={useStreaming ? 'animate-pulse' : ''} />
-                {useStreaming ? 'Streaming' : 'Standard'}
-              </button>
-            </div>
+      {/* Vehicle Context Strip */}
+      {vehicleContext.brand && (
+        <div className="px-4 py-2 border-t border-border bg-background-alt">
+          <div className="max-w-3xl mx-auto flex items-center gap-3 text-sm">
+            <Car className="w-4 h-4 text-text-secondary" />
+            <span className="text-text-primary font-medium">
+              {vehicleContext.brand} {vehicleContext.model} {vehicleContext.year}
+            </span>
+            {vehicleContext.registrationNumber && (
+              <span className="text-text-secondary font-mono text-xs bg-surface px-2 py-0.5 rounded border border-border">
+                {vehicleContext.registrationNumber}
+              </span>
+            )}
+            <button 
+              onClick={() => setVehicleContext({ vehicleType: '', brand: '', model: '', year: '', fuelType: '' })}
+              className="ml-auto text-text-muted hover:text-text-primary transition-colors"
+              data-testid="clear-vehicle-context"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
+        </div>
+      )}
 
+      {/* Input Area */}
+      <div className="p-4 pb-6 border-t border-border bg-background">
+        <div className="max-w-3xl mx-auto">
           {/* Attached File Preview */}
           {attachedFile && (
-            <div className="mb-2 flex items-center gap-2 bg-surface px-3 py-2 rounded-lg border border-border max-w-3xl mx-auto">
+            <div className="mb-3 flex items-center gap-2 bg-surface px-3 py-2 rounded-lg border border-border">
               {attachedFile.name.match(/\.(jpg|jpeg|png|gif|webp)$/i) 
-                ? <ImageIcon size={16} className="text-blue-400" />
-                : <FileText size={16} className="text-orange-400" />
+                ? <ImageIcon className="w-4 h-4 text-blue-400" />
+                : <FileText className="w-4 h-4 text-brand-orange" />
               }
               <span className="text-sm text-text-primary flex-1 truncate">{attachedFile.name}</span>
-              <button onClick={() => setAttachedFile(null)} className="p-1 hover:bg-red-500/20 rounded">
-                <X size={14} className="text-red-400" />
+              <button 
+                onClick={() => setAttachedFile(null)} 
+                className="p-1 hover:bg-red-500/20 rounded transition-colors"
+              >
+                <X className="w-4 h-4 text-red-400" />
               </button>
             </div>
           )}
 
-          <div className="bg-surface border border-border rounded-2xl shadow-lg p-2 focus-within:ring-1 focus-within:ring-brand-orange transition-all max-w-3xl mx-auto">
+          {/* Input Container */}
+          <div className="bg-surface border border-border rounded-2xl focus-within:border-brand-orange/50 transition-colors">
             <textarea
+              ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), handleSend())}
+              onKeyDown={handleKeyDown}
               placeholder="Describe the vehicle issue or ask a question..."
-              className="w-full bg-transparent text-white placeholder-text-muted px-3 py-2 outline-none resize-none min-h-[60px] max-h-[200px] text-sm"
+              className="w-full bg-transparent text-text-primary placeholder-text-muted px-4 py-3 outline-none resize-none min-h-[60px] max-h-[200px] text-sm"
               rows={1}
+              data-testid="chat-input"
             />
-            <div className="flex justify-between items-center px-2 pb-1">
-              <div className="flex gap-2">
+            
+            {/* Input Actions */}
+            <div className="flex justify-between items-center px-3 pb-2">
+              <div className="flex gap-1">
                 <input
                   type="file"
                   ref={fileInputRef}
@@ -494,34 +494,45 @@ const ChatPage = () => {
                 <button 
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploadingFile}
-                  className="p-2 text-text-muted hover:text-white transition-colors rounded-lg hover:bg-[#333] disabled:opacity-50"
+                  className="p-2 text-text-muted hover:text-text-primary hover:bg-background-alt rounded-lg transition-colors disabled:opacity-50"
                   title="Attach file"
+                  data-testid="attach-file-btn"
                 >
                   {uploadingFile ? (
-                    <Upload size={18} className="animate-pulse" />
+                    <Upload className="w-5 h-5 animate-pulse" />
                   ) : (
-                    <Paperclip size={18} />
+                    <Paperclip className="w-5 h-5" />
                   )}
                 </button>
-                <button className="p-2 text-text-muted hover:text-white transition-colors rounded-lg hover:bg-[#333]">
-                  <Mic size={18} />
+                <button 
+                  className="p-2 text-text-muted hover:text-text-primary hover:bg-background-alt rounded-lg transition-colors"
+                  title="Voice input"
+                  data-testid="voice-input-btn"
+                >
+                  <Mic className="w-5 h-5" />
                 </button>
               </div>
+              
               <button 
                 onClick={handleSend}
-                disabled={!input.trim() && !attachedFile}
-                className={`p-2 rounded-lg transition-colors ${
-                  (input.trim() || attachedFile) ? 'bg-brand-orange text-white hover:bg-brand-hover' : 'bg-[#333] text-text-muted'
-                }`}
+                disabled={(!input.trim() && !attachedFile) || isLoading}
+                className={clsx(
+                  "p-2 rounded-lg transition-colors",
+                  (input.trim() || attachedFile) && !isLoading
+                    ? "bg-brand-orange text-white hover:bg-brand-hover" 
+                    : "bg-surface text-text-muted cursor-not-allowed"
+                )}
                 data-testid="send-message-btn"
               >
-                <Send size={18} />
+                <Send className="w-5 h-5" />
               </button>
             </div>
           </div>
-          <div className="text-center mt-2">
-             <p className="text-[10px] text-text-muted">EKA-AI can make mistakes. Please verify critical diagnostics.</p>
-          </div>
+          
+          {/* Disclaimer */}
+          <p className="text-center mt-2 text-[10px] text-text-muted">
+            EKA-AI can make mistakes. Please verify critical diagnostics.
+          </p>
         </div>
       </div>
     </div>
