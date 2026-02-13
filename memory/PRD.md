@@ -127,29 +127,43 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 - `GET /api/health` - Health check
 - `POST /api/chat` - AI chat with Gemini (standard)
 - `POST /api/chat/stream` - AI chat with SSE streaming
+- `POST /api/chat/sessions` - Create chat session
+- `GET /api/chat/sessions` - List chat sessions
+- `GET /api/chat/sessions/{id}` - Get single session with messages
+- `POST /api/chat/sessions/{id}/messages` - Add message to session
+- `DELETE /api/chat/sessions/{id}` - Delete chat session
 - `GET/POST/PUT/DELETE /api/job-cards` - Job cards CRUD
 - `GET /api/job-cards/stats` - Job card statistics
 - `GET/POST /api/invoices` - Invoice management
+- `GET /api/invoices/{id}/pdf` - Generate invoice PDF
+- `POST /api/invoices/{id}/mark-paid` - Mark invoice as paid
+- `POST /api/files/upload` - Upload file (image/document/video)
+- `GET /api/files` - List files with filters
+- `GET /api/files/{id}` - Download file
+- `DELETE /api/files/{id}` - Delete file
+- `POST /api/files/upload-chunk` - Chunked file upload
 - `GET/POST /api/mg/contracts` - MG Fleet contracts
 - `GET /api/dashboard/metrics` - Dashboard metrics
 
 ## Backlog (P0/P1/P2)
 ### P0 - Critical
 - [x] ~~Real SSE streaming for AI responses~~ ✅ COMPLETED
+- [x] ~~Database-backed chat session persistence~~ ✅ COMPLETED
+- [x] ~~PDF invoice generation~~ ✅ COMPLETED
+- [x] ~~File upload capability~~ ✅ COMPLETED
 
 ### P1 - Important  
-- [ ] File upload to cloud storage
-- [ ] PDF invoice generation
 - [ ] WhatsApp integration for notifications
-- [ ] Session persistence for chat (database-backed)
+- [ ] Voice input transcription (OpenAI Whisper)
+- [ ] Email invoice to customers (SendGrid/Resend)
 
 ### P2 - Nice to Have
-- [ ] Voice input transcription
 - [ ] Advanced analytics dashboard
 - [ ] Multi-language support
 - [ ] Custom system prompts
 - [ ] Export demos to MP4
 - [ ] Product tour for first-time users
+- [ ] Cloud storage for files (S3/GCS)
 
 ## Next Tasks
 1. Implement real SSE streaming for AI chat
