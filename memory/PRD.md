@@ -292,8 +292,8 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 - [x] ~~Add password hashing for production security~~ ✅ COMPLETED (Update 14)
 - [x] ~~WhatsApp integration for notifications~~ ✅ COMPLETED - MOCKED (Update 15)
 - [x] ~~Voice input transcription (OpenAI Whisper)~~ ✅ COMPLETED (Update 15)
+- [x] ~~Guided product tour for first-time users~~ ✅ COMPLETED (Update 16)
 - [ ] Email invoice to customers (SendGrid/Resend)
-- [ ] Guided product tour for first-time users
 
 ### P2 - Nice to Have
 - [ ] Advanced analytics dashboard
