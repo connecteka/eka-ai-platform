@@ -332,34 +332,31 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 - [ ] Enhanced sign-up with workshop details (GST, address)
 
 ## Next Tasks
-1. **Digital Signature Capture** - Wire SignaturePad component to POST /api/job-cards/:id/signature
-2. **Photo Upload** - Connect Vehicle Documentation UI to file upload endpoint
-3. **Email Invoice to Customers** - Implement with SendGrid/Resend (awaiting user choice)
-4. Enable real WhatsApp notifications (requires Twilio credentials)
-5. Refactor large JobCardDetailPage.tsx into smaller component files
+1. **Configure Resend API Key** - Set RESEND_API_KEY in backend/.env to enable email invoice sending
+2. Enable real WhatsApp notifications (requires Twilio credentials)
+3. Refactor large JobCardDetailPage.tsx into smaller component files
 
 ## Completed Tasks (Latest)
-### February 13, 2026 - Update 18 (Job Card Detail Page API Integration)
-47. ✅ **Frontend Build Fix**:
-    - Fixed syntax error in ActivityTimelineSection (incomplete array definition)
-    - Added complete sampleTimelineItems fallback data
-    - Fixed notes array structure to match API format (snake_case properties)
-48. ✅ **API Integration Verified**:
-    - GET /api/job-cards/{id}/detail - Returns comprehensive job card data
-    - GET /api/job-cards/{id}/insights - Returns AI insights with health scores
-    - POST /api/job-cards/{id}/notes - Adds internal notes
-    - POST /api/job-cards/{id}/signature - Saves customer signature
-    - GET /api/job-cards/{id}/timeline - Returns activity timeline
-49. ✅ **Backend Tests**: 16/16 pytest tests passing (100%)
-50. ✅ **Frontend Sections Verified**:
-    - Section 1: Top Nav with Go4Garage branding
-    - Section 2: Job Card Header with SLA Timer (live countdown)
-    - Section 3: Quick Actions bar with workflow steps
-    - Section 4: Vehicle & Customer Info cards
-    - All 17 sections implemented and rendering
-51. ✅ **Property Name Compatibility**: Tables support both snake_case (API) and camelCase (sample data)
-
-**Note**: Backend APIs return MOCKED data (not connected to real DB records for services/parts)
+### February 13, 2026 - Update 19 (P1 Features Complete)
+52. ✅ **Digital Signature Capture**:
+    - SignaturePad component wired to `POST /api/job-cards/{id}/signature`
+    - Canvas-based signature drawing with Clear/Save buttons
+    - Saving state with loading feedback
+    - Signature persists in MongoDB and displays in UI
+53. ✅ **Photo Upload**:
+    - Vehicle Documentation section has working "Upload More Photos" button
+    - Hidden file input with validation (5MB max, images only)
+    - Progress indicator during upload
+    - Uploaded photos displayed in grid
+    - Files stored via `POST /api/files/upload` endpoint
+54. ✅ **Email Invoice with Resend**:
+    - Created `services/email_service.py` with Resend integration
+    - Added `POST /api/invoices/{id}/email` endpoint
+    - Generates PDF invoice and sends as email attachment
+    - Professional HTML email template with Go4Garage branding
+    - Status check endpoint: `GET /api/invoices/email/status`
+    - **NOTE**: Requires `RESEND_API_KEY` in backend/.env to enable
+55. ✅ **Backend Tests**: 15/15 tests passing for P1/P2 features
 
 ## Backend Architecture (v3.0)
 ```
