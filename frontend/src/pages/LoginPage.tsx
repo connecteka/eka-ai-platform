@@ -2,6 +2,26 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Loader2, ChevronDown, Menu, X } from 'lucide-react';
 
+// Daily rotating taglines
+const TAGLINES = [
+  { main: "The AI for", highlight: "problem solvers" },
+  { main: "Your intelligent", highlight: "workshop assistant" },
+  { main: "Diagnose smarter,", highlight: "repair faster" },
+  { main: "The future of", highlight: "auto service" },
+  { main: "AI-powered", highlight: "garage intelligence" },
+  { main: "Transform your", highlight: "workshop today" },
+  { main: "Smart diagnostics for", highlight: "modern garages" },
+];
+
+// Get tagline based on day of year
+const getDailyTagline = () => {
+  const start = new Date(new Date().getFullYear(), 0, 0);
+  const diff = Number(new Date()) - Number(start);
+  const oneDay = 1000 * 60 * 60 * 24;
+  const dayOfYear = Math.floor(diff / oneDay);
+  return TAGLINES[dayOfYear % TAGLINES.length];
+};
+
 const LoginPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -11,12 +31,41 @@ const LoginPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  
+  // Typing animation state
+  const [displayedMain, setDisplayedMain] = useState('');
+  const [displayedHighlight, setDisplayedHighlight] = useState('');
+  const [isTypingMain, setIsTypingMain] = useState(true);
+  const [typingComplete, setTypingComplete] = useState(false);
+  
+  const tagline = getDailyTagline();
 
-  // Real working video URL from Pexels
-  const videoUrl = "https://videos.pexels.com/video-files/5752729/5752729-uhd_2732_1440_24fps.mp4";
+  // Typing animation effect
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    
+    if (isTypingMain) {
+      if (displayedMain.length < tagline.main.length) {
+        timeout = setTimeout(() => {
+          setDisplayedMain(tagline.main.slice(0, displayedMain.length + 1));
+        }, 80);
+      } else {
+        setIsTypingMain(false);
+      }
+    } else {
+      if (displayedHighlight.length < tagline.highlight.length) {
+        timeout = setTimeout(() => {
+          setDisplayedHighlight(tagline.highlight.slice(0, displayedHighlight.length + 1));
+        }, 80);
+      } else {
+        setTypingComplete(true);
+      }
+    }
+    
+    return () => clearTimeout(timeout);
+  }, [displayedMain, displayedHighlight, isTypingMain, tagline]);
 
   const handleGoogleLogin = () => {
-    // Placeholder for Google OAuth
     alert('Google login coming soon! Use email login for now.');
   };
 
@@ -31,7 +80,6 @@ const LoginPage = () => {
     setError(null);
 
     try {
-      // Call backend API for login
       const apiUrl = import.meta.env.VITE_API_URL || '';
       const response = await fetch(`${apiUrl}/api/auth/login`, {
         method: 'POST',
@@ -45,7 +93,6 @@ const LoginPage = () => {
         throw new Error(data.detail || 'Login failed');
       }
 
-      // Store user info and navigate
       localStorage.setItem('user', JSON.stringify(data.user));
       localStorage.setItem('token', data.token);
       navigate('/claude-chat');
@@ -64,17 +111,30 @@ const LoginPage = () => {
     { label: 'Learn', hasDropdown: true },
   ];
 
+  // Brand assets
+  const mascotUrl = "https://customer-assets.emergentagent.com/job_c888b364-381d-411f-9fb8-91dd9dd39bee/artifacts/0nsgjm67_MASCOT.jpg";
+  const logoUrl = "https://customer-assets.emergentagent.com/job_c888b364-381d-411f-9fb8-91dd9dd39bee/artifacts/n6x27w1i_IMG-20260129-WA0121.jpg";
+
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
       {/* LEFT SIDE - Beige/Cream Background */}
       <div className="w-full lg:w-1/2 bg-[#F5F1EB] flex flex-col min-h-screen lg:min-h-0">
         {/* Header */}
         <header className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4 lg:py-6">
-          {/* Logo */}
+          {/* Logo with Mascot */}
           <div className="flex items-center gap-2">
-            <div className="flex items-center">
-              <span className="text-[#E65C2E] text-2xl sm:text-3xl">✺</span>
-              <span className="text-xl sm:text-2xl font-medium text-[#1A1915] ml-1">EKA-AI</span>
+            <img 
+              src={mascotUrl} 
+              alt="EKA-AI Mascot" 
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-[#E65C2E]"
+            />
+            <div className="flex flex-col">
+              <span className="text-xl sm:text-2xl font-bold text-[#1A1915] tracking-tight">
+                eka-ai
+              </span>
+              <span className="text-[10px] text-[#6B6B6B] -mt-1 hidden sm:block">
+                Governed Automobile Intelligence
+              </span>
             </div>
           </div>
 
@@ -141,10 +201,16 @@ const LoginPage = () => {
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-8 py-8 lg:py-0">
-          {/* Tagline */}
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-serif text-[#1A1915] text-center leading-tight mb-8 lg:mb-12">
-            The AI for<br />
-            <span className="italic">problem solvers</span>
+          {/* Animated Tagline */}
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-serif text-[#1A1915] text-center leading-tight mb-8 lg:mb-12 min-h-[120px] sm:min-h-[160px] lg:min-h-[200px]">
+            <span className="block">
+              {displayedMain}
+              {isTypingMain && <span className="animate-pulse text-[#E65C2E]">|</span>}
+            </span>
+            <span className="italic block">
+              {displayedHighlight}
+              {!isTypingMain && !typingComplete && <span className="animate-pulse text-[#E65C2E]">|</span>}
+            </span>
           </h1>
 
           {/* Auth Card */}
@@ -255,12 +321,22 @@ const LoginPage = () => {
         </video>
         
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
         
-        {/* Cookie Banner (optional decorative element like in Claude) */}
+        {/* Welcome Card */}
         <div className="absolute bottom-8 right-8 left-8 max-w-md ml-auto">
           <div className="bg-[#1A1915]/90 backdrop-blur-sm rounded-xl p-6 text-white">
-            <h3 className="text-lg font-semibold mb-2">Welcome to EKA-AI</h3>
+            <div className="flex items-center gap-3 mb-3">
+              <img 
+                src={mascotUrl} 
+                alt="EKA-AI Mascot" 
+                className="w-12 h-12 rounded-full object-cover border-2 border-[#E65C2E]"
+              />
+              <div>
+                <h3 className="text-lg font-semibold">Welcome to EKA-AI</h3>
+                <p className="text-xs text-gray-400">Governed Automobile Intelligence</p>
+              </div>
+            </div>
             <p className="text-sm text-gray-300 mb-4">
               Your intelligent automobile assistant. Get instant diagnostics, 
               manage job cards, and streamline your workshop operations.
@@ -298,9 +374,16 @@ const LoginPage = () => {
           <source src="https://cdn.coverr.co/videos/coverr-typing-on-computer-keyboard-8668/1080p.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-        <div className="absolute bottom-4 left-4 right-4">
-          <h3 className="text-white font-semibold">Intelligent Workshop Management</h3>
-          <p className="text-gray-300 text-sm mt-1">AI-powered diagnostics for your garage</p>
+        <div className="absolute bottom-4 left-4 right-4 flex items-center gap-3">
+          <img 
+            src={mascotUrl} 
+            alt="EKA-AI Mascot" 
+            className="w-10 h-10 rounded-full object-cover border-2 border-[#E65C2E]"
+          />
+          <div>
+            <h3 className="text-white font-semibold">Intelligent Workshop Management</h3>
+            <p className="text-gray-300 text-sm">AI-powered diagnostics for your garage</p>
+          </div>
         </div>
       </div>
     </div>
