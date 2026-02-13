@@ -260,7 +260,7 @@ const JobCardTable: React.FC<JobCardTableProps> = ({
                         </div>
                         <div className="min-w-0">
                           <p className="font-medium text-white truncate">
-                            {job.registration_number || 'N/A'}
+                            {job.registration_number || (job as any).vehicle_registration || 'N/A'}
                           </p>
                           <p className="text-sm text-gray-400 truncate">
                             {job.customer_name || 'Unknown Customer'}
