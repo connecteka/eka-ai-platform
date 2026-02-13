@@ -254,15 +254,19 @@ const FeatureVideoCarousel: React.FC = () => {
       {/* Navigation Arrows */}
       <button 
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 transition-all"
+        data-testid="carousel-prev-btn"
+        className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 transition-all z-10"
+        aria-label="Previous slide"
       >
-        <ChevronLeft className="w-5 h-5" />
+        <ChevronLeft className="w-6 h-6" />
       </button>
       <button 
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 transition-all"
+        data-testid="carousel-next-btn"
+        className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 transition-all z-10"
+        aria-label="Next slide"
       >
-        <ChevronRight className="w-5 h-5" />
+        <ChevronRight className="w-6 h-6" />
       </button>
 
       {/* Slide Indicators with Progress */}
