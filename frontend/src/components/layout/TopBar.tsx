@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Bell, Zap, Brain, Search, ChevronDown, LogOut, Settings, User } from 'lucide-react';
+import { Bell, Zap, Brain, Search, ChevronDown, LogOut, Settings, HelpCircle } from 'lucide-react';
 import { IntelligenceMode } from '../../types';
 import { clsx } from 'clsx';
 
