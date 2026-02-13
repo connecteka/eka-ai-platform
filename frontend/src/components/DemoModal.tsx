@@ -8,6 +8,8 @@ interface DemoStep {
   highlight?: string;
   screenshot?: string;
   hotspot?: { x: number; y: number; label: string };
+  zoom?: { scale: number; x: number; y: number }; // Zoom effect
+  highlightArea?: { x: number; y: number; width: number; height: number }; // Highlight rectangle
 }
 
 interface FeatureDemo {
