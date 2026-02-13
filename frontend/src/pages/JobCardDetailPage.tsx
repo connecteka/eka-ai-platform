@@ -456,7 +456,7 @@ const JobCardHeader: React.FC<{ jobCard: JobCardDetail }> = ({ jobCard }) => {
           Job Cards
         </span>
         <span style={{ color: styles.gray300 }}> / </span>
-        <span style={{ color: styles.gray700, fontWeight: 500 }}>JC-2025-00847</span>
+        <span style={{ color: styles.gray700, fontWeight: 500 }}>{jobCard.job_card_number}</span>
       </div>
 
       {/* Title + SLA */}
@@ -470,14 +470,14 @@ const JobCardHeader: React.FC<{ jobCard: JobCardDetail }> = ({ jobCard }) => {
               margin: 0,
               fontFamily: styles.fontPrimary,
             }}>
-              JC-2025-00847
+              {jobCard.job_card_number}
             </h1>
-            <Badge variant="orange" pulse>In Progress</Badge>
-            <Badge variant="error">High Priority</Badge>
+            <Badge variant="orange" pulse>{jobCard.status}</Badge>
+            {jobCard.priority === 'high' && <Badge variant="error">High Priority</Badge>}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             <span style={{ color: styles.gray400, fontSize: '13px' }}>
-              Created: 15 Jan 2025, 10:30 AM by Priya (Front Desk)
+              Created: {new Date(jobCard.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}, {new Date(jobCard.created_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })} by {jobCard.created_by}
             </span>
             <span style={{ color: styles.gray500, fontSize: '13px' }}>
               Bay #3 • Senior Technician: Rajesh Kumar
