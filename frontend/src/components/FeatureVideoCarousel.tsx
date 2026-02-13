@@ -165,12 +165,6 @@ const FeatureVideoCarousel: React.FC = () => {
     };
   }, [isDemoOpen]);
 
-    return () => {
-      clearInterval(progressInterval);
-      clearInterval(slideInterval);
-    };
-  }, [currentSlide]);
-
   const goToSlide = (index: number) => {
     if (index !== currentSlide) {
       setIsAnimating(true);
