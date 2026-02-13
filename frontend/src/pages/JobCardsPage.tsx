@@ -39,10 +39,13 @@ export default function JobCardsPage() {
   const fetchJobCards = async () => {
     try {
       setLoading(true);
-      const data = await jobCardService.listJobCards({ limit: 50 });
-      setJobCards(data.job_cards);
+      const response = await jobCardService.listJobCards({ limit: 50 });
+      // Handle both response formats
+      const cards = response?.job_cards || response?.data || [];
+      setJobCards(Array.isArray(cards) ? cards : []);
     } catch (error) {
       console.error('Error fetching job cards:', error);
+      setJobCards([]);
     } finally {
       setLoading(false);
     }
