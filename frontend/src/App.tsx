@@ -68,10 +68,12 @@ const AppRouter: React.FC = () => {
         
         {/* Job Cards */}
         <Route path="/app/job-cards" element={<JobCardsPage />} />
+        <Route path="/app/job-cards/:id" element={<JobCardDetailPage />} />
         <Route path="/job-cards" element={<JobCardsPage />} />
+        <Route path="/job-cards/:id" element={<JobCardDetailPage />} />
         
         {/* PDI Checklist */}
-        <Route path="/app/pdi" element={<ArtifactsPage />} />
+        <Route path="/app/pdi" element={<PDIPage />} />
         
         {/* Fleet Management */}
         <Route path="/app/fleet" element={<MGFleetPage />} />
