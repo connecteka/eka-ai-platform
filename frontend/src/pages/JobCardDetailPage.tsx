@@ -411,7 +411,7 @@ const TopNavBar: React.FC = () => {
 // SECTION 2: JOB CARD HEADER + SLA TIMER
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const JobCardHeader: React.FC = () => {
+const JobCardHeader: React.FC<{ jobCard: JobCardDetail }> = ({ jobCard }) => {
   const [timeLeft, setTimeLeft] = useState({ hours: 4, minutes: 32, seconds: 15 });
 
   useEffect(() => {
