@@ -97,7 +97,8 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 
 ## API Endpoints
 - `GET /api/health` - Health check
-- `POST /api/chat` - AI chat with Gemini
+- `POST /api/chat` - AI chat with Gemini (standard)
+- `POST /api/chat/stream` - AI chat with SSE streaming
 - `GET/POST/PUT/DELETE /api/job-cards` - Job cards CRUD
 - `GET /api/job-cards/stats` - Job card statistics
 - `GET/POST /api/invoices` - Invoice management
@@ -106,13 +107,13 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 
 ## Backlog (P0/P1/P2)
 ### P0 - Critical
-- [ ] Real SSE streaming for AI responses
+- [x] ~~Real SSE streaming for AI responses~~ ✅ COMPLETED
 
 ### P1 - Important  
 - [ ] File upload to cloud storage
 - [ ] PDF invoice generation
 - [ ] WhatsApp integration for notifications
-- [ ] Session persistence for chat
+- [ ] Session persistence for chat (database-backed)
 
 ### P2 - Nice to Have
 - [ ] Voice input transcription
