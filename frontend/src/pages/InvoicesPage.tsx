@@ -386,7 +386,13 @@ export default function InvoicesPage() {
                               {formatCurrency(item.total_amount)}
                             </td>
                           </tr>
-                        ))}
+                        )) || (
+                          <tr>
+                            <td colSpan={6} className="px-3 py-4 text-center text-gray-400">
+                              No line items
+                            </td>
+                          </tr>
+                        )}
                       </tbody>
                       <tfoot className="bg-gray-50">
                         <tr>
@@ -394,7 +400,7 @@ export default function InvoicesPage() {
                             Taxable Value:
                           </td>
                           <td className="px-3 py-2 text-right">
-                            {formatCurrency(invoice.total_taxable_value)}
+                            {formatCurrency(getTaxableValue(invoice))}
                           </td>
                         </tr>
                         <tr>
@@ -402,7 +408,7 @@ export default function InvoicesPage() {
                             Tax Amount:
                           </td>
                           <td className="px-3 py-2 text-right">
-                            {formatCurrency(invoice.total_tax_amount)}
+                            {formatCurrency(getTaxAmount(invoice))}
                           </td>
                         </tr>
                         <tr>
@@ -410,7 +416,7 @@ export default function InvoicesPage() {
                             Grand Total:
                           </td>
                           <td className="px-3 py-2 text-right font-bold text-lg text-[#f18a22]">
-                            {formatCurrency(invoice.grand_total)}
+                            {formatCurrency(getGrandTotal(invoice))}
                           </td>
                         </tr>
                       </tfoot>
