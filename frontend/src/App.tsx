@@ -88,6 +88,13 @@ const AppRouter: React.FC = () => {
         {/* Public Pages (outside MainLayout) */}
         <Route path="/public/approval" element={<PublicApprovalPage />} />
       </Routes>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <BrowserRouter>
+      <AppRouter />
     </BrowserRouter>
   );
 };
