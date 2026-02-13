@@ -139,15 +139,28 @@ export default function InvoicesPage() {
   };
 
   const filteredInvoices = invoices.filter(inv => 
-    inv.invoice_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    inv.customer_name.toLowerCase().includes(searchQuery.toLowerCase())
+    (inv.invoice_number || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (inv.customer_name || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = (amount: number | undefined) => {
+    const value = amount || 0;
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR'
-    }).format(amount);
+    }).format(value);
+  };
+
+  const getGrandTotal = (inv: Invoice) => {
+    return inv.grand_total || inv.total_amount || (inv.amount || 0) + (inv.cgst || 0) + (inv.sgst || 0) + (inv.igst || 0);
+  };
+
+  const getTaxableValue = (inv: Invoice) => {
+    return inv.total_taxable_value || inv.amount || 0;
+  };
+
+  const getTaxAmount = (inv: Invoice) => {
+    return inv.total_tax_amount || ((inv.cgst || 0) + (inv.sgst || 0) + (inv.igst || 0));
   };
 
   return (
