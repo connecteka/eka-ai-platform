@@ -74,27 +74,29 @@ const AppShell: React.FC = () => {
 
   return (
     <AppShellContext.Provider value={contextValue}>
-      <div className="flex h-screen bg-background overflow-hidden">
-        {/* Sidebar */}
-        <Sidebar 
-          collapsed={sidebarCollapsed} 
-          onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
-        />
-        
-        {/* Main Content Area */}
-        <div className="flex flex-col flex-1 overflow-hidden">
-          {/* Top Bar */}
-          <TopBar 
-            intelligenceMode={intelligenceMode} 
-            onModeChange={setIntelligenceMode} 
+      <ProductTour>
+        <div className="flex h-screen bg-background overflow-hidden">
+          {/* Sidebar */}
+          <Sidebar 
+            collapsed={sidebarCollapsed} 
+            onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
           />
           
-          {/* Page Content */}
-          <main className="flex-1 overflow-y-auto">
-            <Outlet context={{ intelligenceMode, setIntelligenceMode }} />
-          </main>
+          {/* Main Content Area */}
+          <div className="flex flex-col flex-1 overflow-hidden">
+            {/* Top Bar */}
+            <TopBar 
+              intelligenceMode={intelligenceMode} 
+              onModeChange={setIntelligenceMode} 
+            />
+            
+            {/* Page Content */}
+            <main className="flex-1 overflow-y-auto">
+              <Outlet context={{ intelligenceMode, setIntelligenceMode }} />
+            </main>
+          </div>
         </div>
-      </div>
+      </ProductTour>
     </AppShellContext.Provider>
   );
 };
