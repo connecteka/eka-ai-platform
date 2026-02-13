@@ -332,10 +332,11 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 - [ ] Enhanced sign-up with workshop details (GST, address)
 
 ## Next Tasks
-1. Email invoice to customers (SendGrid/Resend)
-2. Enable real WhatsApp notifications (requires Twilio credentials)
-3. Multi-language UI support
-4. Export demos to MP4
+1. **Connect Job Card Detail Page to Backend API** - Replace hardcoded data with real API calls
+2. Email invoice to customers (SendGrid/Resend)
+3. Enable real WhatsApp notifications (requires Twilio credentials)
+4. Digital signature capture implementation (canvas-based)
+5. Photo upload integration with file service
 
 ## Backend Architecture (v3.0)
 ```
