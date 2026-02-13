@@ -274,11 +274,29 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 - [ ] Enhanced sign-up with workshop details (GST, address)
 
 ## Next Tasks
-1. Refactor backend server.py into separate routers using FastAPI APIRouter
-2. Add password hashing for production security
-3. Implement guided product tour for first-time users
-4. WhatsApp integration for notifications
-5. Voice input transcription (OpenAI Whisper)
+1. WhatsApp integration for notifications
+2. Voice input transcription (OpenAI Whisper)
+3. Guided product tour for first-time users
+4. Email invoice to customers (SendGrid/Resend)
+
+## Backend Architecture (v3.0)
+```
+/app/backend/
+├── server.py                # Main FastAPI app (minimal, includes routers)
+├── routers/
+│   ├── auth.py             # Authentication (login, register, OAuth)
+│   ├── job_cards.py        # Job cards CRUD & stats
+│   ├── chat.py             # AI chat & sessions
+│   ├── invoices.py         # Invoice CRUD & PDF
+│   ├── mg_fleet.py         # MG Fleet contracts
+│   ├── files.py            # File upload/download
+│   └── dashboard.py        # Dashboard metrics
+├── models/
+│   └── schemas.py          # Pydantic models
+└── utils/
+    ├── database.py         # MongoDB config & utilities
+    └── security.py         # Password hashing (bcrypt)
+```
 
 ## Test Credentials
 - **Working**: `testuser@test.com` / `test123456`
