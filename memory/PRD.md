@@ -139,6 +139,52 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
     - Each carousel slide now shows the actual app in action
     - Videos loop continuously with muted audio
 
+### February 13, 2026 - Update 12 (Claude.ai-Style Frontend Rebuild)
+40. ✅ **Phase 1: Claude.ai-Style Layout Architecture** (User Build Request):
+    - **AppShell.tsx**: New master authenticated layout component
+      - Wraps all protected routes with sidebar + topbar + content area
+      - Context provider for intelligenceMode and sidebar state
+      - Loading screen while checking authentication
+      - Auto-redirect to login if not authenticated
+    - **Sidebar.tsx**: Complete Claude.ai-style sidebar rebuild
+      - Collapsible design (260px → 64px icon-only mode)
+      - Toggle button with smooth animation
+      - EKA AI branding with orange logo
+      - "New Chat" button that creates session and navigates to /chat
+      - Recent chats section grouped by Today/Yesterday/This Week
+      - Active chat highlight with orange left border
+      - Navigation items with badges (Job Cards shows count)
+      - Pro Plan upgrade CTA section
+      - User profile display with avatar, name, and email
+      - Settings button at bottom
+    - **TopBar.tsx**: New minimal sticky header
+      - Dynamic page title based on route
+      - Model selector dropdown (only visible on /chat)
+        - Gemini Flash, Gemini Pro, RAG + Agent options
+      - Notification bell with orange indicator
+      - User avatar dropdown with Settings and Sign out
+    - **DashboardPage.tsx**: Complete rebuild with Recharts
+      - 4 KPI cards (Open Job Cards, Completed Today, Revenue, AI Queries)
+      - Revenue Trend area chart (30-day data)
+      - Job Status donut chart with legend
+      - Recent Job Cards table with status badges
+      - AI Activity feed
+      - "Start AI Chat" button
+    - **ChatPage.tsx**: Claude.ai-style chat interface
+      - Welcome screen with EKA logo
+      - "How can I help with the garage today?" title
+      - 4 suggestion chips with icons
+      - Messages area with user/AI message bubbles
+      - Vehicle context strip (when vehicle detected)
+      - Input area with attach, voice, and send buttons
+      - SSE streaming integration maintained
+      - Model selector in topbar
+    - **App.tsx**: Updated routing structure
+      - Public routes outside AppShell (/, /login, /pricing, etc.)
+      - Protected routes inside AppShell (/app/*, /chat, etc.)
+      - OAuth callback handling maintained
+    - **Testing**: All 42 features verified working (100% pass rate)
+
 ## Routes
 ### App Routes (Sidebar Navigation)
 - `/` - Login Page (default)
