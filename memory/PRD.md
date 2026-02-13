@@ -85,6 +85,34 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
     - Session persistence for conversations
     - Animated cursor while streaming
 
+### February 13, 2026 - Update 9 (Major Features)
+35. ✅ **Database-backed Chat Session Persistence**:
+    - MongoDB collection for chat sessions
+    - CRUD endpoints: `/api/chat/sessions` (create, list, get, delete)
+    - Add messages to sessions: `/api/chat/sessions/{id}/messages`
+    - Auto-title generation from first user message
+    - Collapsible sidebar in chat UI showing session history
+    - "New Chat" button for creating new sessions
+    - Delete sessions with confirmation
+36. ✅ **PDF Invoice Generation**:
+    - New endpoint: `GET /api/invoices/{id}/pdf`
+    - Professional GST invoice format with EKA branding
+    - Supports CGST/SGST and IGST tax types
+    - Line items table with HSN/SAC codes
+    - Auto-calculated totals and tax breakdown
+    - Download as attachment with invoice number filename
+    - Uses reportlab library
+37. ✅ **File Upload Capability**:
+    - Upload endpoint: `POST /api/files/upload`
+    - Supports images (jpg, png, gif, webp), documents (pdf, doc, docx, xls, xlsx, txt, csv), videos (mp4, mov, avi, webm)
+    - 50MB max file size
+    - File type detection and validation
+    - List files: `GET /api/files` with filters (job_card_id, category, file_type)
+    - Download files: `GET /api/files/{id}`
+    - Delete files: `DELETE /api/files/{id}`
+    - Chunked upload support for large files
+    - UI: Paperclip button in chat to attach files
+
 ## Routes
 ### App Routes (Sidebar Navigation)
 - `/app` - Dashboard
