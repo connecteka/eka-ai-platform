@@ -108,7 +108,8 @@ const FEATURE_SLIDES: FeatureSlide[] = [
       "Brand performance analytics"
     ],
     gradient: "from-cyan-500 to-blue-500",
-    accentColor: "#06B6D4"
+    accentColor: "#06B6D4",
+    videoUrl: "/videos/dashboard-demo.webm"
   },
   {
     id: 6,
@@ -124,7 +125,8 @@ const FEATURE_SLIDES: FeatureSlide[] = [
       "Local language support"
     ],
     gradient: "from-amber-500 to-orange-500",
-    accentColor: "#F59E0B"
+    accentColor: "#F59E0B",
+    videoUrl: "/videos/dashboard-demo.webm"
   }
 ];
 
