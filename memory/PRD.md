@@ -185,28 +185,27 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
       - OAuth callback handling maintained
     - **Testing**: All 42 features verified working (100% pass rate)
 
-### February 13, 2026 - Update 13 (Phase 4 Polish - Complete)
-41. ✅ **Phase 4: UI Polish Tasks** (User Build Request):
-    - **LoginPage.tsx**: Dark theme alignment
-      - Changed from cream (#F5F1EB) to dark (#0D0D0D) background
-      - Updated all form inputs and buttons to dark theme styling
-      - Gradient overlay for visual interest
-      - Mobile feature showcase with dark theme
-      - Split layout maintained with feature carousel on right
-    - **ChatsPage.tsx**: Date grouping and search
-      - Date-based chat grouping (Today, Yesterday, Previous 7 Days, Previous 30 Days, Older)
-      - Real-time search/filter across title and preview
-      - Dark theme with proper styling
-      - New Chat button navigates to /chat
-      - Hover actions (More options, Delete)
-      - Chat item cards with icons and timestamps
-    - **JobCardTable.tsx**: Row clickability
-      - Entire job card row now clickable (navigates to detail page)
-      - Added data-testid attributes for testing
-      - stopPropagation on action buttons to prevent row click
-      - Hover effect shows orange text on registration number
-    - **StatCard.tsx**: Already had trend indicators (TrendingUp/TrendingDown icons, percentage change)
-    - **Testing**: All 24 Phase 4 features verified working (100% pass rate)
+### February 13, 2026 - Update 14 (Backend Refactoring & Security)
+42. ✅ **Backend Refactoring - Modular APIRouter Structure**:
+    - Refactored 1500-line monolithic `server.py` into modular structure
+    - **Routers Created**:
+      - `routers/auth.py` - Authentication (login, register, Google OAuth, sessions)
+      - `routers/job_cards.py` - Job cards CRUD and stats
+      - `routers/chat.py` - AI chat and session management
+      - `routers/invoices.py` - Invoice CRUD and PDF generation
+      - `routers/mg_fleet.py` - MG Fleet contracts
+      - `routers/files.py` - File upload/download
+      - `routers/dashboard.py` - Dashboard metrics
+    - **Utils Created**:
+      - `utils/database.py` - MongoDB config, collections, serialize functions
+      - `utils/security.py` - Password hashing with bcrypt
+    - **Models Created**:
+      - `models/schemas.py` - All Pydantic models (JobCard, Invoice, Chat, User, etc.)
+43. ✅ **Password Hashing with bcrypt**:
+    - New users get passwords hashed with bcrypt (12 rounds)
+    - Backward compatible - legacy plain text passwords still work
+    - Secure verification with `verify_password()` function
+    - **Testing**: All 24 backend API tests passed (100% success rate)
 
 ## Routes
 ### App Routes (Sidebar Navigation)
