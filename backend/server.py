@@ -455,30 +455,6 @@ def transition_job_card(job_card_id: str, transition: JobCardTransition):
         raise HTTPException(status_code=400, detail="Invalid job card ID format")
 
 
-@app.get("/api/job-cards/stats/overview")
-@app.get("/api/job-cards/stats")
-def get_job_card_stats():
-    """Get job card statistics."""
-    statuses = ["Pending", "In-Progress", "Completed", "Cancelled"]
-    stats = {}
-    
-    for status in statuses:
-        count = job_cards_collection.count_documents({"status": status})
-        stats[status.lower().replace("-", "_")] = count
-    
-    stats["total"] = job_cards_collection.count_documents({})
-    
-    # Add additional stats for frontend
-    stats["active"] = stats.get("pending", 0) + stats.get("in_progress", 0)
-    stats["by_status"] = {
-        "CUSTOMER_APPROVAL": job_cards_collection.count_documents({"status": "CUSTOMER_APPROVAL"}),
-        "PDI": job_cards_collection.count_documents({"status": "PDI"}),
-        "PDI_COMPLETED": job_cards_collection.count_documents({"status": "PDI_COMPLETED"}),
-    }
-    
-    return {"success": True, "data": stats, **stats}
-
-
 # ==================== INVOICES CRUD ====================
 
 @app.post("/api/invoices", status_code=201)
