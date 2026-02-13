@@ -332,11 +332,34 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 - [ ] Enhanced sign-up with workshop details (GST, address)
 
 ## Next Tasks
-1. **Connect Job Card Detail Page to Backend API** - Replace hardcoded data with real API calls
-2. Email invoice to customers (SendGrid/Resend)
-3. Enable real WhatsApp notifications (requires Twilio credentials)
-4. Digital signature capture implementation (canvas-based)
-5. Photo upload integration with file service
+1. **Digital Signature Capture** - Wire SignaturePad component to POST /api/job-cards/:id/signature
+2. **Photo Upload** - Connect Vehicle Documentation UI to file upload endpoint
+3. **Email Invoice to Customers** - Implement with SendGrid/Resend (awaiting user choice)
+4. Enable real WhatsApp notifications (requires Twilio credentials)
+5. Refactor large JobCardDetailPage.tsx into smaller component files
+
+## Completed Tasks (Latest)
+### February 13, 2026 - Update 18 (Job Card Detail Page API Integration)
+47. ✅ **Frontend Build Fix**:
+    - Fixed syntax error in ActivityTimelineSection (incomplete array definition)
+    - Added complete sampleTimelineItems fallback data
+    - Fixed notes array structure to match API format (snake_case properties)
+48. ✅ **API Integration Verified**:
+    - GET /api/job-cards/{id}/detail - Returns comprehensive job card data
+    - GET /api/job-cards/{id}/insights - Returns AI insights with health scores
+    - POST /api/job-cards/{id}/notes - Adds internal notes
+    - POST /api/job-cards/{id}/signature - Saves customer signature
+    - GET /api/job-cards/{id}/timeline - Returns activity timeline
+49. ✅ **Backend Tests**: 16/16 pytest tests passing (100%)
+50. ✅ **Frontend Sections Verified**:
+    - Section 1: Top Nav with Go4Garage branding
+    - Section 2: Job Card Header with SLA Timer (live countdown)
+    - Section 3: Quick Actions bar with workflow steps
+    - Section 4: Vehicle & Customer Info cards
+    - All 17 sections implemented and rendering
+51. ✅ **Property Name Compatibility**: Tables support both snake_case (API) and camelCase (sample data)
+
+**Note**: Backend APIs return MOCKED data (not connected to real DB records for services/parts)
 
 ## Backend Architecture (v3.0)
 ```
