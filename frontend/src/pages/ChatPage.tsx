@@ -312,125 +312,216 @@ const ChatPage = () => {
   const handleSend = useStreaming ? handleStreamingSend : handleStandardSend;
 
   return (
-    <div className="flex flex-col h-full max-w-3xl mx-auto w-full">
-      
-      {/* 1. Messages Area */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 scroll-smooth" ref={scrollRef}>
-        {messages.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full text-center opacity-40 mt-20">
-            <div className="w-16 h-16 bg-brand-orange rounded-2xl flex items-center justify-center mb-6">
-              <span className="text-3xl font-bold text-white">E</span>
+    <div className="flex h-full">
+      {/* Chat History Sidebar */}
+      <div className={`bg-[#1A1A1C] border-r border-border transition-all duration-300 flex flex-col ${sidebarOpen ? 'w-64' : 'w-0'}`}>
+        {sidebarOpen && (
+          <>
+            <div className="p-3 border-b border-border">
+              <button
+                onClick={createNewSession}
+                className="w-full flex items-center justify-center gap-2 py-2.5 bg-brand-orange text-white rounded-lg hover:bg-brand-hover transition-colors text-sm font-medium"
+                data-testid="new-chat-btn"
+              >
+                <Plus size={16} />
+                New Chat
+              </button>
             </div>
-            <h2 className="text-2xl font-semibold text-white mb-2">How can I help with the garage today?</h2>
-            <p className="text-text-secondary">Create job cards, diagnose issues, or check inventory.</p>
-          </div>
-        )}
-        
-        {messages.map((msg, idx) => (
-           <div key={idx} className={`flex gap-4 ${msg.role === 'user' ? 'justify-end' : ''}`}>
-             {msg.role === 'model' && (
-               <div className="w-8 h-8 rounded-full bg-surface border border-border flex items-center justify-center text-xs font-bold text-brand-orange flex-shrink-0">
-                 <Brain size={14} />
-               </div>
-             )}
-             <div className={`px-4 py-3 rounded-2xl max-w-[85%] leading-relaxed text-sm ${
-               msg.role === 'user' 
-                 ? 'bg-surface text-text-primary border border-border' 
-                 : 'text-text-primary'
-             }`}>
-               {msg.parts[0].text.split('\n').map((line, i) => (
-                 <p key={i} className="mb-1 last:mb-0">{line}</p>
-               ))}
-             </div>
-           </div>
-        ))}
-
-        {/* Streaming Response */}
-        {streamingText && (
-          <div className="flex gap-4">
-            <div className="w-8 h-8 rounded-full bg-surface border border-border flex items-center justify-center text-xs">
-              <Sparkles size={14} className="text-brand-orange animate-pulse" />
-            </div>
-            <div className="text-text-primary text-sm max-w-[85%]">
-              {streamingText.split('\n').map((line, i) => (
-                <p key={i} className="mb-1 last:mb-0">{line}</p>
+            
+            <div className="flex-1 overflow-y-auto p-2 space-y-1">
+              {sessions.map(session => (
+                <div
+                  key={session.session_id}
+                  onClick={() => loadSession(session)}
+                  className={`group flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-colors ${
+                    sessionId === session.session_id 
+                      ? 'bg-brand-orange/20 text-white' 
+                      : 'text-text-secondary hover:bg-surface hover:text-white'
+                  }`}
+                  data-testid={`session-${session.session_id}`}
+                >
+                  <MessageSquare size={14} className="flex-shrink-0" />
+                  <span className="flex-1 text-sm truncate">{session.title}</span>
+                  <button
+                    onClick={(e) => deleteSession(session.session_id, e)}
+                    className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-500/20 rounded transition-all"
+                  >
+                    <Trash2 size={12} className="text-red-400" />
+                  </button>
+                </div>
               ))}
-              <span className="inline-block w-2 h-4 bg-brand-orange animate-pulse ml-1"></span>
+              
+              {sessions.length === 0 && (
+                <div className="text-center py-8 text-text-muted text-sm">
+                  No conversations yet
+                </div>
+              )}
             </div>
-          </div>
-        )}
-
-        {isLoading && !streamingText && (
-           <div className="flex gap-4">
-             <div className="w-8 h-8 rounded-full bg-surface border border-border flex items-center justify-center text-xs animate-pulse">
-               <Brain size={14} className="text-brand-orange" />
-             </div>
-             <div className="text-text-secondary text-sm flex items-center gap-1">
-               <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
-               <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '75ms' }}></span>
-               <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-             </div>
-           </div>
+          </>
         )}
       </div>
 
-      {/* 2. Input Area (Floating at bottom) */}
-      <div className="p-4 pb-6">
-        {/* Mode Toggle */}
-        <div className="flex items-center justify-between mb-2 px-1 max-w-3xl mx-auto">
-          <div className="flex items-center gap-2">
-            <button 
-              onClick={() => setMode(mode === 'FAST' ? 'THINKING' : 'FAST')}
-              className="flex items-center gap-2 text-xs font-medium text-text-secondary bg-surface px-3 py-1.5 rounded-full hover:bg-[#333] transition-colors border border-border"
-            >
-              {mode === 'FAST' ? '⚡ FAST (Gemini)' : '🧠 THINKING (Claude)'}
-            </button>
-            <button 
-              onClick={() => setUseStreaming(!useStreaming)}
-              className={`flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full transition-colors border ${
-                useStreaming 
-                  ? 'bg-brand-orange/20 text-brand-orange border-brand-orange/30' 
-                  : 'bg-surface text-text-secondary border-border hover:bg-[#333]'
-              }`}
-              title={useStreaming ? 'SSE Streaming enabled' : 'Standard mode'}
-            >
-              <Zap size={12} className={useStreaming ? 'animate-pulse' : ''} />
-              {useStreaming ? 'Streaming' : 'Standard'}
-            </button>
-          </div>
+      {/* Toggle Sidebar Button */}
+      <button
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-surface border border-border p-1.5 rounded-r-lg hover:bg-[#333] transition-colors"
+        style={{ left: sidebarOpen ? '256px' : '0' }}
+      >
+        {sidebarOpen ? <ChevronLeft size={14} /> : <ChevronRight size={14} />}
+      </button>
+
+      {/* Main Chat Area */}
+      <div className="flex-1 flex flex-col max-w-3xl mx-auto w-full">
+        
+        {/* Messages Area */}
+        <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 scroll-smooth" ref={scrollRef}>
+          {messages.length === 0 && (
+            <div className="flex flex-col items-center justify-center h-full text-center opacity-40 mt-20">
+              <div className="w-16 h-16 bg-brand-orange rounded-2xl flex items-center justify-center mb-6">
+                <span className="text-3xl font-bold text-white">E</span>
+              </div>
+              <h2 className="text-2xl font-semibold text-white mb-2">How can I help with the garage today?</h2>
+              <p className="text-text-secondary">Create job cards, diagnose issues, or check inventory.</p>
+            </div>
+          )}
+          
+          {messages.map((msg, idx) => (
+             <div key={idx} className={`flex gap-4 ${msg.role === 'user' ? 'justify-end' : ''}`}>
+               {msg.role === 'model' && (
+                 <div className="w-8 h-8 rounded-full bg-surface border border-border flex items-center justify-center text-xs font-bold text-brand-orange flex-shrink-0">
+                   <Brain size={14} />
+                 </div>
+               )}
+               <div className={`px-4 py-3 rounded-2xl max-w-[85%] leading-relaxed text-sm ${
+                 msg.role === 'user' 
+                   ? 'bg-surface text-text-primary border border-border' 
+                   : 'text-text-primary'
+               }`}>
+                 {msg.parts[0].text.split('\n').map((line, i) => (
+                   <p key={i} className="mb-1 last:mb-0">{line}</p>
+                 ))}
+               </div>
+             </div>
+          ))}
+
+          {/* Streaming Response */}
+          {streamingText && (
+            <div className="flex gap-4">
+              <div className="w-8 h-8 rounded-full bg-surface border border-border flex items-center justify-center text-xs">
+                <Sparkles size={14} className="text-brand-orange animate-pulse" />
+              </div>
+              <div className="text-text-primary text-sm max-w-[85%]">
+                {streamingText.split('\n').map((line, i) => (
+                  <p key={i} className="mb-1 last:mb-0">{line}</p>
+                ))}
+                <span className="inline-block w-2 h-4 bg-brand-orange animate-pulse ml-1"></span>
+              </div>
+            </div>
+          )}
+
+          {isLoading && !streamingText && (
+             <div className="flex gap-4">
+               <div className="w-8 h-8 rounded-full bg-surface border border-border flex items-center justify-center text-xs animate-pulse">
+                 <Brain size={14} className="text-brand-orange" />
+               </div>
+               <div className="text-text-secondary text-sm flex items-center gap-1">
+                 <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
+                 <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '75ms' }}></span>
+                 <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+               </div>
+             </div>
+          )}
         </div>
 
-        <div className="bg-surface border border-border rounded-2xl shadow-lg p-2 focus-within:ring-1 focus-within:ring-brand-orange transition-all max-w-3xl mx-auto">
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), handleSend())}
-            placeholder="Describe the vehicle issue or ask a question..."
-            className="w-full bg-transparent text-white placeholder-text-muted px-3 py-2 outline-none resize-none min-h-[60px] max-h-[200px] text-sm"
-            rows={1}
-          />
-          <div className="flex justify-between items-center px-2 pb-1">
-            <div className="flex gap-2">
-              <button className="p-2 text-text-muted hover:text-white transition-colors rounded-lg hover:bg-[#333]">
-                <Paperclip size={18} />
+        {/* Input Area */}
+        <div className="p-4 pb-6">
+          {/* Mode Toggle */}
+          <div className="flex items-center justify-between mb-2 px-1 max-w-3xl mx-auto">
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => setMode(mode === 'FAST' ? 'THINKING' : 'FAST')}
+                className="flex items-center gap-2 text-xs font-medium text-text-secondary bg-surface px-3 py-1.5 rounded-full hover:bg-[#333] transition-colors border border-border"
+              >
+                {mode === 'FAST' ? '⚡ FAST (Gemini)' : '🧠 THINKING (Claude)'}
               </button>
-              <button className="p-2 text-text-muted hover:text-white transition-colors rounded-lg hover:bg-[#333]">
-                <Mic size={18} />
+              <button 
+                onClick={() => setUseStreaming(!useStreaming)}
+                className={`flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full transition-colors border ${
+                  useStreaming 
+                    ? 'bg-brand-orange/20 text-brand-orange border-brand-orange/30' 
+                    : 'bg-surface text-text-secondary border-border hover:bg-[#333]'
+                }`}
+                title={useStreaming ? 'SSE Streaming enabled' : 'Standard mode'}
+              >
+                <Zap size={12} className={useStreaming ? 'animate-pulse' : ''} />
+                {useStreaming ? 'Streaming' : 'Standard'}
               </button>
             </div>
-            <button 
-              onClick={handleSend}
-              disabled={!input.trim()}
-              className={`p-2 rounded-lg transition-colors ${
-                input.trim() ? 'bg-brand-orange text-white hover:bg-brand-hover' : 'bg-[#333] text-text-muted'
-              }`}
-            >
-              <Send size={18} />
-            </button>
           </div>
-        </div>
-        <div className="text-center mt-2">
-           <p className="text-[10px] text-text-muted">EKA-AI can make mistakes. Please verify critical diagnostics.</p>
+
+          {/* Attached File Preview */}
+          {attachedFile && (
+            <div className="mb-2 flex items-center gap-2 bg-surface px-3 py-2 rounded-lg border border-border max-w-3xl mx-auto">
+              {attachedFile.name.match(/\.(jpg|jpeg|png|gif|webp)$/i) 
+                ? <ImageIcon size={16} className="text-blue-400" />
+                : <FileText size={16} className="text-orange-400" />
+              }
+              <span className="text-sm text-text-primary flex-1 truncate">{attachedFile.name}</span>
+              <button onClick={() => setAttachedFile(null)} className="p-1 hover:bg-red-500/20 rounded">
+                <X size={14} className="text-red-400" />
+              </button>
+            </div>
+          )}
+
+          <div className="bg-surface border border-border rounded-2xl shadow-lg p-2 focus-within:ring-1 focus-within:ring-brand-orange transition-all max-w-3xl mx-auto">
+            <textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), handleSend())}
+              placeholder="Describe the vehicle issue or ask a question..."
+              className="w-full bg-transparent text-white placeholder-text-muted px-3 py-2 outline-none resize-none min-h-[60px] max-h-[200px] text-sm"
+              rows={1}
+            />
+            <div className="flex justify-between items-center px-2 pb-1">
+              <div className="flex gap-2">
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileUpload}
+                  className="hidden"
+                  accept="image/*,.pdf,.doc,.docx,.txt"
+                />
+                <button 
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploadingFile}
+                  className="p-2 text-text-muted hover:text-white transition-colors rounded-lg hover:bg-[#333] disabled:opacity-50"
+                  title="Attach file"
+                >
+                  {uploadingFile ? (
+                    <Upload size={18} className="animate-pulse" />
+                  ) : (
+                    <Paperclip size={18} />
+                  )}
+                </button>
+                <button className="p-2 text-text-muted hover:text-white transition-colors rounded-lg hover:bg-[#333]">
+                  <Mic size={18} />
+                </button>
+              </div>
+              <button 
+                onClick={handleSend}
+                disabled={!input.trim() && !attachedFile}
+                className={`p-2 rounded-lg transition-colors ${
+                  (input.trim() || attachedFile) ? 'bg-brand-orange text-white hover:bg-brand-hover' : 'bg-[#333] text-text-muted'
+                }`}
+                data-testid="send-message-btn"
+              >
+                <Send size={18} />
+              </button>
+            </div>
+          </div>
+          <div className="text-center mt-2">
+             <p className="text-[10px] text-text-muted">EKA-AI can make mistakes. Please verify critical diagnostics.</p>
+          </div>
         </div>
       </div>
     </div>
