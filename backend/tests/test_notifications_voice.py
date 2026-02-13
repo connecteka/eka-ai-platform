@@ -6,7 +6,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = os.environ.get("VITE_API_URL", "https://job-card-detail.preview.emergentagent.com")
+BASE_URL = os.environ.get("VITE_API_URL", "https://job-insights-page.preview.emergentagent.com")
 
 
 class TestNotificationStatus:
