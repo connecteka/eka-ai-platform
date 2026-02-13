@@ -19,7 +19,7 @@ load_dotenv()
 from utils.database import create_indexes, close_connection
 
 # Import routers
-from routers import auth, job_cards, chat, invoices, mg_fleet, files, dashboard
+from routers import auth, job_cards, chat, invoices, mg_fleet, files, dashboard, notifications, voice
 
 # Environment
 EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
@@ -63,6 +63,8 @@ app.include_router(invoices.router)
 app.include_router(mg_fleet.router)
 app.include_router(files.router)
 app.include_router(dashboard.router)
+app.include_router(notifications.router)
+app.include_router(voice.router)
 
 
 # ==================== ROOT & HEALTH ENDPOINTS ====================
