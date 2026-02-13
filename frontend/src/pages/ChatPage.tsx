@@ -556,7 +556,7 @@ const ChatPage: React.FC = () => {
       )}
 
       {/* Input Area */}
-      <div className="p-4 pb-6 border-t border-border bg-background">
+      <div className="p-4 pb-6 border-t border-border bg-background" data-testid="chat-input-area">
         <div className="max-w-3xl mx-auto">
           {/* Attached File Preview */}
           {attachedFile && (
