@@ -46,12 +46,21 @@ const App: React.FC = () => {
           {/* Auth Pages */}
           <Route path="/login" element={<LoginPage />} />
 
-          {/* Feature Pages */}
+          {/* Feature Pages - Support both /path and /app/path */}
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/chats" element={<ChatsPage />} />
           <Route path="/job-cards" element={<JobCardsPage />} />
           <Route path="/invoices" element={<InvoicesPage />} />
           <Route path="/mg-fleet" element={<MGFleetPage />} />
+          
+          {/* /app/* Routes (sidebar navigation) */}
+          <Route path="/app" element={<DashboardPage />} />
+          <Route path="/app/job-cards" element={<JobCardsPage />} />
+          <Route path="/app/pdi" element={<ArtifactsPage />} />
+          <Route path="/app/fleet" element={<MGFleetPage />} />
+          <Route path="/app/invoices" element={<InvoicesPage />} />
+          <Route path="/app/settings" element={<SettingsPage />} />
+          <Route path="/app/pricing" element={<PricingPage />} />
           
           {/* Marketing Pages */}
           <Route path="/landing" element={<LandingPage />} />
