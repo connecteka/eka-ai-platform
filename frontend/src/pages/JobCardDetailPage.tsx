@@ -480,10 +480,10 @@ const JobCardHeader: React.FC<{ jobCard: JobCardDetail }> = ({ jobCard }) => {
               Created: {new Date(jobCard.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}, {new Date(jobCard.created_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })} by {jobCard.created_by}
             </span>
             <span style={{ color: styles.gray500, fontSize: '13px' }}>
-              Bay #3 • Senior Technician: Rajesh Kumar
+              {jobCard.bay_number || 'Bay #3'} • Senior Technician: {jobCard.technician || 'Unassigned'}
             </span>
             <span style={{ color: styles.gray400, fontSize: '12px', fontStyle: 'italic' }}>
-              Last Updated: 2 min ago
+              Last Updated: {jobCard.updated_at ? new Date(jobCard.updated_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }) : 'N/A'}
             </span>
           </div>
         </div>
