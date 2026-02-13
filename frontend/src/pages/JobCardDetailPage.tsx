@@ -917,7 +917,12 @@ const PreInspectionSection: React.FC<PreInspectionSectionProps> = ({ preInspecti
 // SECTION 6: SERVICE DETAILS / WORK LOG
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const ServiceDetailsSection: React.FC = () => {
+interface ServiceDetailsSectionProps {
+  services: JobCardDetail['services'];
+}
+
+const ServiceDetailsSection: React.FC<ServiceDetailsSectionProps> = ({ services }) => {
+  const sampleServices = services.length > 0 ? services : [
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'completed': return <Badge variant="success"><Check size={10} /> Completed</Badge>;
