@@ -233,7 +233,7 @@ const DashboardPage: React.FC = () => {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Revenue Area Chart */}
-        <div className="lg:col-span-2 bg-background-alt rounded-xl p-5 border border-border">
+        <div className="lg:col-span-2 bg-background-alt rounded-xl p-5 border border-border" data-testid="revenue-chart">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-text-primary">Revenue Trend</h3>
             <span className="text-xs text-text-muted">Last 30 days</span>
