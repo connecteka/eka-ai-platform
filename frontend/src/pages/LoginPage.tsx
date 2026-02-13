@@ -174,33 +174,36 @@ const LoginPage = () => {
   // Show loading while checking auth
   if (checkingAuth) {
     return (
-      <div className="min-h-screen bg-[#F5F1EB] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-10 h-10 animate-spin text-[#E65C2E] mx-auto mb-3" />
-          <p className="text-[#6B6B6B]">Loading...</p>
+          <Loader2 className="w-10 h-10 animate-spin text-brand-orange mx-auto mb-3" />
+          <p className="text-gray-400">Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
-      {/* LEFT SIDE - Beige/Cream Background */}
-      <div className="w-full lg:w-1/2 bg-[#F5F1EB] flex flex-col min-h-screen lg:min-h-0">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-[#0D0D0D]" data-testid="login-page">
+      {/* LEFT SIDE - Dark Theme Auth Section */}
+      <div className="w-full lg:w-1/2 flex flex-col min-h-screen lg:min-h-0 relative">
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-orange/5 via-transparent to-purple-500/5 pointer-events-none" />
+        
         {/* Header */}
-        <header className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4 lg:py-6">
+        <header className="relative flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4 lg:py-6 border-b border-white/5">
           {/* Logo with Mascot */}
           <div className="flex items-center gap-2">
             <img 
               src={mascotUrl} 
               alt="EKA-AI Mascot" 
-              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-[#E65C2E]"
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-brand-orange"
             />
             <div className="flex flex-col">
-              <span className="text-xl sm:text-2xl font-bold text-[#1A1915] tracking-tight">
+              <span className="text-xl sm:text-2xl font-bold text-white tracking-tight">
                 eka-ai
               </span>
-              <span className="text-[10px] text-[#6B6B6B] -mt-1 hidden sm:block">
+              <span className="text-[10px] text-gray-500 -mt-1 hidden sm:block">
                 Governed Automobile Intelligence
               </span>
             </div>
@@ -211,7 +214,7 @@ const LoginPage = () => {
             {navItems.map((item, index) => (
               <button
                 key={index}
-                className="flex items-center gap-1 px-3 py-2 text-sm text-[#1A1915] hover:bg-black/5 rounded-md transition-colors"
+                className="flex items-center gap-1 px-3 py-2 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded-md transition-colors"
               >
                 {item.label}
                 {item.hasDropdown && <ChevronDown className="w-4 h-4" />}
@@ -221,12 +224,12 @@ const LoginPage = () => {
 
           {/* Right Side Buttons */}
           <div className="hidden lg:flex items-center gap-3">
-            <button className="px-4 py-2 text-sm text-[#1A1915] hover:bg-black/5 rounded-md transition-colors">
+            <button className="px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded-md transition-colors">
               Contact sales
             </button>
             <Link
               to="/app/dashboard"
-              className="px-4 py-2 text-sm text-white bg-[#1A1915] rounded-md hover:bg-[#2D2B26] transition-colors"
+              className="px-4 py-2 text-sm text-white bg-brand-orange rounded-md hover:bg-brand-hover transition-colors"
             >
               Try EKA-AI
             </Link>
@@ -234,7 +237,7 @@ const LoginPage = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden p-2 text-[#1A1915]"
+            className="lg:hidden p-2 text-gray-400 hover:text-white"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             data-testid="mobile-menu-toggle"
           >
@@ -244,23 +247,23 @@ const LoginPage = () => {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-[#F5F1EB] border-t border-[#E5E1DB] px-4 py-4">
+          <div className="lg:hidden bg-[#0D0D0D] border-b border-white/5 px-4 py-4 relative z-20">
             {navItems.map((item, index) => (
               <button
                 key={index}
-                className="flex items-center justify-between w-full px-3 py-3 text-sm text-[#1A1915] hover:bg-black/5 rounded-md"
+                className="flex items-center justify-between w-full px-3 py-3 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded-md"
               >
                 {item.label}
                 {item.hasDropdown && <ChevronDown className="w-4 h-4" />}
               </button>
             ))}
-            <div className="border-t border-[#E5E1DB] mt-3 pt-3 space-y-2">
-              <button className="w-full px-3 py-3 text-sm text-[#1A1915] hover:bg-black/5 rounded-md text-left">
+            <div className="border-t border-white/5 mt-3 pt-3 space-y-2">
+              <button className="w-full px-3 py-3 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded-md text-left">
                 Contact sales
               </button>
               <Link
                 to="/app/dashboard"
-                className="block w-full px-3 py-3 text-sm text-white bg-[#1A1915] rounded-md text-center"
+                className="block w-full px-3 py-3 text-sm text-white bg-brand-orange rounded-md text-center hover:bg-brand-hover"
               >
                 Try EKA-AI
               </Link>
@@ -269,16 +272,16 @@ const LoginPage = () => {
         )}
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-8 py-8 lg:py-0">
+        <div className="relative flex-1 flex flex-col items-center justify-center px-4 sm:px-8 py-8 lg:py-0">
           {/* Animated Tagline */}
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-serif text-[#1A1915] text-center leading-tight mb-8 lg:mb-12 min-h-[120px] sm:min-h-[160px] lg:min-h-[200px]">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-serif text-white text-center leading-tight mb-8 lg:mb-12 min-h-[120px] sm:min-h-[160px] lg:min-h-[200px]">
             <span className="block">
               {displayedMain}
-              {isTypingMain && <span className="animate-pulse text-[#E65C2E]">|</span>}
+              {isTypingMain && <span className="animate-pulse text-brand-orange">|</span>}
             </span>
-            <span className="italic block">
+            <span className="italic block text-brand-orange">
               {displayedHighlight}
-              {!isTypingMain && !typingComplete && <span className="animate-pulse text-[#E65C2E]">|</span>}
+              {!isTypingMain && !typingComplete && <span className="animate-pulse text-brand-orange">|</span>}
             </span>
           </h1>
 
@@ -289,10 +292,10 @@ const LoginPage = () => {
               onClick={handleGoogleLogin}
               disabled={isGoogleLoading}
               data-testid="google-login-btn"
-              className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white border border-[#D4D0C8] rounded-lg hover:bg-gray-50 transition-colors mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-3 px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-white/20 transition-all mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isGoogleLoading ? (
-                <Loader2 className="w-5 h-5 animate-spin text-[#1A1915]" />
+                <Loader2 className="w-5 h-5 animate-spin text-white" />
               ) : (
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -301,23 +304,23 @@ const LoginPage = () => {
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                 </svg>
               )}
-              <span className="text-[#1A1915] font-medium">
+              <span className="text-white font-medium">
                 {isGoogleLoading ? 'Connecting...' : 'Continue with Google'}
               </span>
             </button>
 
             {/* Divider */}
             <div className="flex items-center gap-4 my-6">
-              <div className="flex-1 h-px bg-[#D4D0C8]"></div>
-              <span className="text-sm text-[#6B6B6B]">OR</span>
-              <div className="flex-1 h-px bg-[#D4D0C8]"></div>
+              <div className="flex-1 h-px bg-white/10"></div>
+              <span className="text-sm text-gray-500">OR</span>
+              <div className="flex-1 h-px bg-white/10"></div>
             </div>
 
             {/* Email Form */}
             <form onSubmit={handleEmailSubmit} className="space-y-4">
               {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-3" data-testid="auth-error">
-                  <p className="text-sm text-red-600">{error}</p>
+                <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3" data-testid="auth-error">
+                  <p className="text-sm text-red-400">{error}</p>
                 </div>
               )}
 
@@ -329,21 +332,21 @@ const LoginPage = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     data-testid="name-input"
-                    className="w-full px-4 py-3 bg-white border border-[#D4D0C8] rounded-lg text-[#1A1915] placeholder-[#9B9B9B] focus:outline-none focus:ring-2 focus:ring-[#1A1915] focus:border-transparent"
+                    className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-orange/50 focus:border-brand-orange/50 transition-all"
                     placeholder="Your name"
                   />
                 </div>
               )}
 
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#9B9B9B]" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   data-testid="email-input"
-                  className="w-full pl-12 pr-4 py-3 bg-white border border-[#D4D0C8] rounded-lg text-[#1A1915] placeholder-[#9B9B9B] focus:outline-none focus:ring-2 focus:ring-[#1A1915] focus:border-transparent"
+                  className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-orange/50 focus:border-brand-orange/50 transition-all"
                   placeholder="Enter your email"
                 />
               </div>
@@ -357,13 +360,13 @@ const LoginPage = () => {
                     required
                     minLength={6}
                     data-testid="password-input"
-                    className="w-full px-4 py-3 pr-12 bg-white border border-[#D4D0C8] rounded-lg text-[#1A1915] placeholder-[#9B9B9B] focus:outline-none focus:ring-2 focus:ring-[#1A1915] focus:border-transparent"
+                    className="w-full px-4 py-3.5 pr-12 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-orange/50 focus:border-brand-orange/50 transition-all"
                     placeholder={isSignUp ? 'Create a password (min 6 characters)' : 'Enter your password'}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9B9B9B] hover:text-[#1A1915] transition-colors"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -374,7 +377,7 @@ const LoginPage = () => {
                 type="submit"
                 disabled={isLoading}
                 data-testid="email-submit-btn"
-                className="w-full px-4 py-3 bg-[#1A1915] text-white font-medium rounded-lg hover:bg-[#2D2B26] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full px-4 py-3.5 bg-brand-orange text-white font-medium rounded-xl hover:bg-brand-hover transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -393,29 +396,29 @@ const LoginPage = () => {
                   type="button"
                   onClick={toggleAuthMode}
                   data-testid="toggle-auth-mode"
-                  className="text-sm text-[#6B6B6B] hover:text-[#1A1915] transition-colors"
+                  className="text-sm text-gray-500 hover:text-white transition-colors"
                 >
                   {isSignUp ? (
-                    <>Already have an account? <span className="font-medium text-[#E65C2E]">Sign in</span></>
+                    <>Already have an account? <span className="font-medium text-brand-orange">Sign in</span></>
                   ) : (
-                    <>Don't have an account? <span className="font-medium text-[#E65C2E]">Sign up</span></>
+                    <>Don't have an account? <span className="font-medium text-brand-orange">Sign up</span></>
                   )}
                 </button>
               </div>
             )}
 
             {/* Terms */}
-            <p className="text-xs text-[#6B6B6B] text-center mt-6 leading-relaxed">
+            <p className="text-xs text-gray-500 text-center mt-6 leading-relaxed">
               By continuing, you agree to EKA-AI's{' '}
-              <a href="/legal#terms" className="underline hover:text-[#1A1915]">
+              <a href="/legal#terms" className="underline hover:text-gray-300 transition-colors">
                 Consumer Terms
               </a>{' '}
               and{' '}
-              <a href="/legal#privacy" className="underline hover:text-[#1A1915]">
+              <a href="/legal#privacy" className="underline hover:text-gray-300 transition-colors">
                 Usage Policy
               </a>
               , and acknowledge their{' '}
-              <a href="/legal#privacy" className="underline hover:text-[#1A1915]">
+              <a href="/legal#privacy" className="underline hover:text-gray-300 transition-colors">
                 Privacy Policy
               </a>
               .
@@ -425,12 +428,12 @@ const LoginPage = () => {
       </div>
 
       {/* RIGHT SIDE - Feature Video Carousel */}
-      <div className="hidden lg:block w-1/2 bg-[#0A0A0B] relative overflow-hidden">
+      <div className="hidden lg:block w-1/2 bg-[#0A0A0B] relative overflow-hidden border-l border-white/5">
         <FeatureVideoCarousel />
       </div>
 
       {/* Mobile Feature Showcase Section */}
-      <div className="lg:hidden w-full bg-[#0A0A0B] relative overflow-hidden">
+      <div className="lg:hidden w-full bg-[#0A0A0B] relative overflow-hidden border-t border-white/5">
         <MobileFeatureShowcase />
       </div>
     </div>
@@ -486,7 +489,7 @@ const MobileFeatureShowcase: React.FC = () => {
             data-testid={`mobile-dot-${index}`}
             aria-label={`Go to feature ${index + 1}`}
             className={`h-2 rounded-full transition-all ${
-              index === currentSlide ? 'w-6 bg-[#E65C2E]' : 'w-2 bg-white/30'
+              index === currentSlide ? 'w-6 bg-brand-orange' : 'w-2 bg-white/30'
             }`}
           />
         ))}
