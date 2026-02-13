@@ -2244,8 +2244,8 @@ const RelatedJobCardsSection: React.FC<RelatedJobCardsSectionProps> = ({ related
                 e.currentTarget.style.transform = 'none';
               }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-                <span style={{ fontFamily: styles.fontMono, fontWeight: 600, color: styles.gray900, fontSize: '14px' }}>{card.jobCard}</span>
-                <Badge variant={card.badgeVariant} size="sm">{card.badge}</Badge>
+                <span style={{ fontFamily: styles.fontMono, fontWeight: 600, color: styles.gray900, fontSize: '14px' }}>{card.job_card_number || card.jobCard}</span>
+                <Badge variant={(card.badge_variant || card.badgeVariant || 'info') as any} size="sm">{card.badge}</Badge>
               </div>
               <div style={{ fontSize: '12px', color: styles.gray500, marginBottom: '4px' }}>
                 {card.date} | {card.service}
