@@ -45,15 +45,15 @@ const FEATURE_DEMOS: Record<string, FeatureDemo> = {
     subtitle: 'Maintenance Guarantee Setup',
     duration: '1:45',
     color: '#3B82F6',
-    hasRealRecording: false,
+    hasRealRecording: true,
     steps: [
-      { title: 'Select Plan', description: 'Choose from Basic, Premium, or Elite MG packages', action: 'Select', highlight: '3 Plans' },
-      { title: 'Vehicle Selection', description: 'Add vehicles to the MG contract', action: 'Add', highlight: 'Multi-vehicle' },
-      { title: 'Set KM Limit', description: 'Define monthly kilometer allowance', action: 'Configure', highlight: '1000-5000 km' },
-      { title: 'Add Services', description: 'Include oil change, filters, brake service', action: 'Checklist', highlight: '15+ services' },
-      { title: 'Set Duration', description: 'Choose contract period: 12, 24, or 36 months', action: 'Select', highlight: 'Flexible' },
-      { title: 'Calculate Price', description: 'AI calculates optimal monthly subscription', action: 'Auto', highlight: '₹2,999/month' },
-      { title: 'Generate Contract', description: 'Legal contract with terms auto-generated', action: 'Generate', highlight: 'Digital contract' },
+      { title: 'Access MG Fleet', description: 'Open the MG Fleet management dashboard', action: 'Navigate', highlight: 'MG Fleet', screenshot: '/recordings/mg-1.png' },
+      { title: 'View Contracts', description: 'See all active MG contracts and their status', action: 'View', highlight: 'Active Contracts', screenshot: '/recordings/mg-1.png' },
+      { title: 'Create Contract', description: 'Click "New Contract" to start a new MG subscription', action: 'Click', highlight: '+ New Contract', screenshot: '/recordings/mg-1.png', hotspot: { x: 92, y: 12, label: 'New Contract' } },
+      { title: 'Fleet Details', description: 'Enter fleet name and contract period', action: 'Form', highlight: 'Fleet Name', screenshot: '/recordings/mg-2.png', hotspot: { x: 50, y: 20, label: 'Enter Details' } },
+      { title: 'Set KM Limit', description: 'Define assured KM per year and excess rates', action: 'Configure', highlight: 'KM Limits', screenshot: '/recordings/mg-2.png', hotspot: { x: 50, y: 45, label: 'Set Limits' } },
+      { title: 'Set Billing', description: 'Choose billing cycle and rate per KM', action: 'Configure', highlight: 'Billing Cycle', screenshot: '/recordings/mg-2.png', hotspot: { x: 50, y: 65, label: 'Set Billing' } },
+      { title: 'Generate Contract', description: 'Create the MG contract with all terms', action: 'Generate', highlight: 'Digital contract', screenshot: '/recordings/mg-2.png', hotspot: { x: 75, y: 85, label: 'Create Contract' } },
     ]
   },
   jobcard: {
