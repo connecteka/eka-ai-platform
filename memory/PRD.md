@@ -113,6 +113,22 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
     - Chunked upload support for large files
     - UI: Paperclip button in chat to attach files
 
+### February 13, 2026 - Update 10 (Authentication System)
+38. ✅ **Complete Login/Signup Flow** (User Video Request):
+    - Fully functional "Continue with Google" using Emergent-managed Google OAuth
+    - Fully functional "Continue with email" with login/signup toggle
+    - Google OAuth redirects to `https://auth.emergentagent.com` and exchanges session via `/api/auth/google/session`
+    - Email auth with `/api/auth/register` and `/api/auth/login` endpoints
+    - Session management with httpOnly cookies and Authorization header fallback
+    - `/api/auth/me` endpoint to get current authenticated user
+    - `/api/auth/logout` endpoint to clear session
+    - MongoDB collections: `users` (with custom `user_id`), `user_sessions`
+    - AuthCallback component handles OAuth redirect with session_id
+    - Login page checks existing auth and auto-redirects to dashboard
+    - Password visibility toggle and sign-in/sign-up mode toggle
+    - Error handling with user-friendly messages
+    - All tests passed (11/11 backend, all frontend UI flows)
+
 ## Routes
 ### App Routes (Sidebar Navigation)
 - `/app` - Dashboard
