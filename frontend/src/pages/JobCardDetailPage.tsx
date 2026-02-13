@@ -1990,13 +1990,24 @@ const CustomerApprovalSection: React.FC<CustomerApprovalSectionProps> = ({
 }) => {
   const [showSignaturePad, setShowSignaturePad] = useState(false);
   const [savedSignature, setSavedSignature] = useState<string | null>(signature?.signature_image || null);
+  const [saving, setSaving] = useState(false);
   
   const handleSaveSignature = async (signatureData: string) => {
     if (onSaveSignature) {
-      const success = await onSaveSignature(signatureData, customer.name, 'manual', false);
-      if (success) {
-        setSavedSignature(signatureData);
-        setShowSignaturePad(false);
+      setSaving(true);
+      try {
+        const success = await onSaveSignature(signatureData, customer.name, 'manual', false);
+        if (success) {
+          setSavedSignature(signatureData);
+          setShowSignaturePad(false);
+        } else {
+          alert('Failed to save signature. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error saving signature:', error);
+        alert('Error saving signature. Please try again.');
+      } finally {
+        setSaving(false);
       }
     } else {
       setSavedSignature(signatureData);
