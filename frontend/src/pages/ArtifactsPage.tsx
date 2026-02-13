@@ -1,9 +1,56 @@
 import React, { useState } from 'react';
-import { Plus, FileText, CheckSquare, BarChart3, Calculator, Car } from 'lucide-react';
+import { Plus, FileText, CheckSquare, BarChart3, Calculator, Car, X, Camera, Upload } from 'lucide-react';
+
+interface PDIItem {
+  id: string;
+  name: string;
+  category: string;
+  status: 'pending' | 'passed' | 'failed';
+  notes: string;
+}
 
 const ArtifactsPage = () => {
   // Tab state - content filtering to be implemented when user artifacts data is available
   const [activeTab, setActiveTab] = useState('inspiration');
+  const [showPDIModal, setShowPDIModal] = useState(false);
+  const [selectedTool, setSelectedTool] = useState<string | null>(null);
+  
+  // PDI Checklist state
+  const [pdiItems, setPdiItems] = useState<PDIItem[]>([
+    { id: '1', name: 'Exterior Body Condition', category: 'Exterior', status: 'pending', notes: '' },
+    { id: '2', name: 'Paint Quality & Finish', category: 'Exterior', status: 'pending', notes: '' },
+    { id: '3', name: 'Windshield & Windows', category: 'Exterior', status: 'pending', notes: '' },
+    { id: '4', name: 'Tyres & Wheels', category: 'Exterior', status: 'pending', notes: '' },
+    { id: '5', name: 'Engine Bay Inspection', category: 'Mechanical', status: 'pending', notes: '' },
+    { id: '6', name: 'Fluid Levels', category: 'Mechanical', status: 'pending', notes: '' },
+    { id: '7', name: 'Battery Condition', category: 'Electrical', status: 'pending', notes: '' },
+    { id: '8', name: 'All Lights Functional', category: 'Electrical', status: 'pending', notes: '' },
+    { id: '9', name: 'Infotainment System', category: 'Interior', status: 'pending', notes: '' },
+    { id: '10', name: 'AC/Heating System', category: 'Interior', status: 'pending', notes: '' },
+  ]);
+  const [vehicleReg, setVehicleReg] = useState('');
+  const [technicianName, setTechnicianName] = useState('');
+
+  const handleToolClick = (toolName: string) => {
+    setSelectedTool(toolName);
+    if (toolName === 'PDI Checklist Generator') {
+      setShowPDIModal(true);
+    }
+    // Add other tool handlers as needed
+  };
+
+  const updatePDIItem = (id: string, status: 'passed' | 'failed', notes?: string) => {
+    setPdiItems(items => 
+      items.map(item => 
+        item.id === id 
+          ? { ...item, status, notes: notes ?? item.notes }
+          : item
+      )
+    );
+  };
+
+  const completedCount = pdiItems.filter(item => item.status !== 'pending').length;
+  const passedCount = pdiItems.filter(item => item.status === 'passed').length;
 
   return (
     <main className="flex-1 overflow-y-auto bg-[#fafaf9] h-screen">
