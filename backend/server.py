@@ -311,6 +311,88 @@ Vehicle Context:
         }
 
 
+# ==================== AI CHAT SSE STREAMING ====================
+from fastapi.responses import StreamingResponse
+import asyncio
+import json
+
+class ChatStreamRequest(BaseModel):
+    message: str
+    context: Optional[Dict[str, Any]] = None
+    session_id: Optional[str] = None
+
+
+@app.post("/api/chat/stream")
+async def chat_stream(request: ChatStreamRequest):
+    """SSE streaming endpoint for AI chat responses"""
+    
+    async def generate_stream():
+        if not EMERGENT_LLM_KEY:
+            yield f"data: {json.dumps({'type': 'error', 'content': 'AI service not configured'})}\n\n"
+            return
+        
+        try:
+            from emergentintegrations.llm.chat import LlmChat, UserMessage
+            
+            # Build system prompt
+            system_prompt = """You are EKA-AI, an expert automobile intelligence assistant for Go4Garage. 
+            
+Your expertise includes vehicle diagnostics, job card management, service estimates, and MG Fleet management.
+Be professional yet friendly. Provide accurate automotive advice with cost estimates in INR when relevant."""
+            
+            if request.context:
+                system_prompt += f"\n\nVehicle Context: {json.dumps(request.context)}"
+            
+            # Initialize chat
+            session_id = request.session_id or f"eka-stream-{uuid.uuid4().hex[:8]}"
+            chat = LlmChat(
+                api_key=EMERGENT_LLM_KEY,
+                session_id=session_id,
+                system_message=system_prompt
+            ).with_model("gemini", "gemini-2.0-flash")
+            
+            # Send start event
+            yield f"data: {json.dumps({'type': 'start', 'session_id': session_id})}\n\n"
+            
+            # Get full response
+            user_message = UserMessage(text=request.message)
+            response_text = await chat.send_message(user_message)
+            
+            # Stream response character by character (simulated streaming)
+            words = response_text.split(' ')
+            buffer = ""
+            
+            for i, word in enumerate(words):
+                buffer += word + " "
+                # Send chunks of ~5 words
+                if (i + 1) % 5 == 0 or i == len(words) - 1:
+                    yield f"data: {json.dumps({'type': 'chunk', 'content': buffer})}\n\n"
+                    buffer = ""
+                    await asyncio.sleep(0.05)  # Small delay for streaming effect
+            
+            # Detect vehicle registration
+            import re
+            reg_pattern = r'([A-Z]{2}[\s-]?\d{1,2}[\s-]?[A-Z]{0,2}[\s-]?\d{1,4})'
+            show_orange_border = bool(re.search(reg_pattern, request.message, re.IGNORECASE))
+            
+            # Send completion event
+            yield f"data: {json.dumps({'type': 'done', 'full_text': response_text, 'show_orange_border': show_orange_border})}\n\n"
+            
+        except Exception as e:
+            print(f"SSE Chat Error: {str(e)}")
+            yield f"data: {json.dumps({'type': 'error', 'content': str(e)})}\n\n"
+    
+    return StreamingResponse(
+        generate_stream(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"
+        }
+    )
+
+
 # ==================== JOB CARDS CRUD ====================
 
 # Stats endpoint must come before the {job_card_id} route
