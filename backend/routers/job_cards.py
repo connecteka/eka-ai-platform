@@ -3,15 +3,40 @@ Job Cards routes for EKA-AI Backend.
 Handles CRUD operations for workshop job cards.
 """
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Optional, List
+import random
+import string
 
-from fastapi import APIRouter, HTTPException, Query, BackgroundTasks
+from fastapi import APIRouter, HTTPException, Query, BackgroundTasks, Request
 from bson import ObjectId
 
-from models.schemas import JobCardCreate, JobCardUpdate, JobCardTransition
-from utils.database import job_cards_collection, serialize_doc, serialize_docs
+from models.schemas import (
+    JobCardCreate, JobCardUpdate, JobCardTransition,
+    InternalNoteCreate, SignatureData
+)
+from utils.database import (
+    job_cards_collection, serialize_doc, serialize_docs,
+    vehicles_collection, customers_collection, services_collection,
+    parts_collection, job_card_notes_collection, job_card_timeline_collection,
+    signatures_collection, files_collection, invoices_collection
+)
 
 router = APIRouter(prefix="/api/job-cards", tags=["Job Cards"])
+
+
+def generate_job_card_number():
+    """Generate a unique job card number."""
+    year = datetime.now().year
+    count = job_cards_collection.count_documents({}) + 1
+    return f"JC-{year}-{count:05d}"
+
+
+def get_client_ip(request: Request) -> str:
+    """Get client IP address from request."""
+    forwarded = request.headers.get("X-Forwarded-For")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    return request.client.host if request.client else "unknown"
 
 
 @router.get("/stats/overview")
