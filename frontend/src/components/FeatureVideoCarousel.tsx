@@ -223,18 +223,45 @@ const FeatureVideoCarousel: React.FC = () => {
 
       {/* Main Content */}
       <div className={`relative h-full flex flex-col items-center justify-center p-8 lg:p-12 transition-all duration-300 ${isAnimating ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
-        {/* Feature Icon with Glow */}
-        <div className="relative mb-6">
-          <div 
-            className={`absolute inset-0 bg-gradient-to-br ${slide.gradient} blur-2xl opacity-50 scale-150`}
-          ></div>
-          <div 
-            className={`relative p-6 rounded-2xl bg-gradient-to-br ${slide.gradient} text-white shadow-2xl`}
-            style={{ boxShadow: `0 0 60px ${slide.accentColor}40` }}
-          >
-            {slide.icon}
+        
+        {/* Video Preview - Auto-playing demo video */}
+        {slide.videoUrl && (
+          <div className="relative mb-6 w-full max-w-md aspect-video rounded-xl overflow-hidden shadow-2xl border border-white/10">
+            <video
+              key={slide.videoUrl}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full h-full object-cover"
+              style={{ boxShadow: `0 0 40px ${slide.accentColor}30` }}
+            >
+              <source src={slide.videoUrl} type="video/webm" />
+            </video>
+            {/* Video overlay with gradient */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
+            {/* Live Recording badge */}
+            <div className="absolute top-3 left-3 flex items-center gap-2 px-2 py-1 bg-red-500/80 backdrop-blur-sm rounded-full">
+              <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+              <span className="text-xs text-white font-medium">Live Recording</span>
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Feature Icon with Glow - Show only if no video */}
+        {!slide.videoUrl && (
+          <div className="relative mb-6">
+            <div 
+              className={`absolute inset-0 bg-gradient-to-br ${slide.gradient} blur-2xl opacity-50 scale-150`}
+            ></div>
+            <div 
+              className={`relative p-6 rounded-2xl bg-gradient-to-br ${slide.gradient} text-white shadow-2xl`}
+              style={{ boxShadow: `0 0 60px ${slide.accentColor}40` }}
+            >
+              {slide.icon}
+            </div>
+          </div>
+        )}
 
         {/* Title */}
         <h2 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-white text-center mb-2">
