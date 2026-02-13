@@ -620,7 +620,16 @@ const QuickActionsBar: React.FC = () => {
 // SECTION 4: VEHICLE & CUSTOMER INFO
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const VehicleCustomerInfo: React.FC = () => {
+interface VehicleCustomerInfoProps {
+  vehicle: JobCardDetail['vehicle'];
+  customer: JobCardDetail['customer'];
+}
+
+const VehicleCustomerInfo: React.FC<VehicleCustomerInfoProps> = ({ vehicle, customer }) => {
+  const formatCurrencyValue = (amount: number): string => {
+    return '₹' + amount.toLocaleString('en-IN');
+  };
+
   return (
     <div style={{
       padding: '24px 32px',
@@ -643,11 +652,11 @@ const VehicleCustomerInfo: React.FC = () => {
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
           {[
-            { label: 'Registration No.', value: 'KA 01 AB 1234' },
-            { label: 'Make & Model', value: 'Maruti Suzuki Swift VXi' },
-            { label: 'Manufacturing Year', value: '2022' },
-            { label: 'Fuel Type', value: <><span style={{ width: '8px', height: '8px', borderRadius: '50%', background: styles.success, display: 'inline-block', marginRight: '6px' }} />Petrol</> },
-            { label: 'Chassis/VIN', value: <span style={{ fontFamily: styles.fontMono }}>MA3FJEB1S00XXXXXX</span> },
+            { label: 'Registration No.', value: vehicle.registration_number },
+            { label: 'Make & Model', value: `${vehicle.make} ${vehicle.model}` },
+            { label: 'Manufacturing Year', value: vehicle.year?.toString() || 'N/A' },
+            { label: 'Fuel Type', value: <><span style={{ width: '8px', height: '8px', borderRadius: '50%', background: styles.success, display: 'inline-block', marginRight: '6px' }} />{vehicle.fuel_type}</> },
+            { label: 'Chassis/VIN', value: <span style={{ fontFamily: styles.fontMono }}>{vehicle.chassis_vin || 'N/A'}</span> },
             { label: 'Engine No.', value: <span style={{ fontFamily: styles.fontMono }}>K12MN-XXXXXXX</span> },
             { label: 'Odometer Reading', value: '32,450 km' },
             { label: 'Color', value: <><span style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#F5F5F5', border: `1px solid ${styles.gray300}`, display: 'inline-block', marginRight: '6px' }} />Pearl White</> },
