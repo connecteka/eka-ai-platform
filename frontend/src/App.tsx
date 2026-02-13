@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout';
 import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
@@ -23,11 +23,20 @@ import ArtifactsPage from './pages/ArtifactsPage';
 import WorldClockPage from './pages/WorldClockPage';
 import ClockDemoPage from './pages/ClockDemoPage';
 import ClaudeChatPage from './pages/ClaudeChatPage';
+import AuthCallback from './components/AuthCallback';
 
-const App: React.FC = () => {
+// Router wrapper that handles OAuth callback
+const AppRouter: React.FC = () => {
+  const location = useLocation();
+  
+  // Check URL fragment (not query params) for session_id - handle synchronously before routing
+  // This prevents race conditions by processing the OAuth callback FIRST
+  if (location.hash?.includes('session_id=')) {
+    return <AuthCallback />;
+  }
+  
   return (
-    <BrowserRouter>
-      <Routes>
+    <Routes>
         {/* Claude-like Chat (Full Screen, No Layout) */}
         <Route path="/claude-chat" element={<ClaudeChatPage />} />
 
