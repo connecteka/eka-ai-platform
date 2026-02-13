@@ -189,7 +189,7 @@ export default function InvoicesPage() {
           <p className="text-2xl font-bold text-gray-900">
             {formatCurrency(invoices
               .filter(inv => inv.status !== 'PAID' && inv.status !== 'CANCELLED')
-              .reduce((sum, inv) => sum + inv.grand_total, 0)
+              .reduce((sum, inv) => sum + getGrandTotal(inv), 0)
             )}
           </p>
         </div>
@@ -198,7 +198,7 @@ export default function InvoicesPage() {
           <p className="text-2xl font-bold text-green-600">
             {formatCurrency(invoices
               .filter(inv => inv.status === 'PAID')
-              .reduce((sum, inv) => sum + inv.grand_total, 0)
+              .reduce((sum, inv) => sum + getGrandTotal(inv), 0)
             )}
           </p>
         </div>
@@ -211,7 +211,7 @@ export default function InvoicesPage() {
         <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
           <p className="text-sm text-gray-500">Draft Invoices</p>
           <p className="text-2xl font-bold text-gray-600">
-            {invoices.filter(inv => inv.status === 'DRAFT').length}
+            {invoices.filter(inv => inv.status === 'DRAFT' || inv.status === 'Draft').length}
           </p>
         </div>
       </div>
