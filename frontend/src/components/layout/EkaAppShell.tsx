@@ -20,12 +20,15 @@ export const useShell = () => useContext(ShellContext);
 
 /* Fullscreen loading state while auth resolves */
 const Loader: React.FC = () => (
-  <div className="flex h-screen items-center justify-center bg-background">
+  <div className="flex h-screen items-center justify-center bg-white">
     <div className="relative">
-      <div className="w-12 h-12 rounded-xl bg-brand-orange flex items-center justify-center shadow-lg shadow-brand-orange/20">
-        <span className="text-white font-bold text-xl font-heading">E</span>
-      </div>
-      <div className="absolute inset-0 rounded-xl border-2 border-brand-orange animate-ping opacity-20" />
+      <img 
+        src="https://customer-assets.emergentagent.com/job_c888b364-381d-411f-9fb8-91dd9dd39bee/artifacts/0nsgjm67_MASCOT.jpg"
+        alt="eka-ai"
+        className="w-12 h-12 object-cover"
+        style={{ borderRadius: '8px' }}
+      />
+      <div className="absolute inset-0 rounded-lg border-2 border-[#F98906] animate-ping opacity-20" />
     </div>
   </div>
 );
@@ -45,11 +48,14 @@ const EkaAppShell: React.FC = () => {
 
   return (
     <ShellContext.Provider value={{ intelligenceMode: mode, setIntelligenceMode: setMode, sidebarCollapsed: collapsed }}>
-      <div className="flex h-screen overflow-hidden bg-background">
+      <div className="flex h-screen overflow-hidden bg-white" data-testid="eka-app-shell">
+        {/* Dark sidebar */}
         <EkaSidebar collapsed={collapsed} onToggle={() => setCollapsed(c => !c)} />
-        <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
+        
+        {/* White content area */}
+        <div className="flex flex-col flex-1 min-w-0 overflow-hidden bg-white">
           <EkaTopBar intelligenceMode={mode} onModeChange={setMode} />
-          <main className="flex-1 overflow-y-auto">
+          <main className="flex-1 overflow-y-auto bg-[#FAFAFA]">
             <Outlet context={{ intelligenceMode: mode, setIntelligenceMode: setMode }} />
           </main>
         </div>
