@@ -209,24 +209,24 @@ const LoginPage = () => {
   // Show loading while checking auth
   if (checkingAuth) {
     return (
-      <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-10 h-10 animate-spin text-brand-orange mx-auto mb-3" />
-          <p className="text-gray-400">Loading...</p>
+          <p className="text-text-muted">Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-[#0D0D0D]" data-testid="login-page">
-      {/* LEFT SIDE - Dark Theme Auth Section */}
+    <div className="min-h-screen flex flex-col lg:flex-row bg-background" data-testid="login-page">
+      {/* LEFT SIDE - Light Cream Theme Auth Section */}
       <div className="w-full lg:w-1/2 flex flex-col min-h-screen lg:min-h-0 relative">
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-orange/5 via-transparent to-purple-500/5 pointer-events-none" />
+        {/* Subtle gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-orange/5 via-transparent to-transparent pointer-events-none" />
         
         {/* Header */}
-        <header className="relative flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4 lg:py-6 border-b border-white/5">
+        <header className="relative flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4 lg:py-6 border-b border-border/10">
           {/* Logo with Mascot */}
           <div className="flex items-center gap-2">
             <img 
@@ -235,10 +235,10 @@ const LoginPage = () => {
               className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-brand-orange"
             />
             <div className="flex flex-col">
-              <span className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+              <span className="text-xl sm:text-2xl font-bold text-text-primary tracking-tight font-display">
                 eka-ai
               </span>
-              <span className="text-[10px] text-gray-500 -mt-1 hidden sm:block">
+              <span className="text-[10px] text-text-muted -mt-1 hidden sm:block">
                 Governed Automobile Intelligence
               </span>
             </div>
@@ -249,7 +249,7 @@ const LoginPage = () => {
             {navItems.map((item, index) => (
               <button
                 key={index}
-                className="flex items-center gap-1 px-3 py-2 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded-md transition-colors"
+                className="flex items-center gap-1 px-3 py-2 text-sm text-text-muted hover:text-text-primary hover:bg-border/5 rounded-md transition-colors font-serif"
               >
                 {item.label}
                 {item.hasDropdown && <ChevronDown className="w-4 h-4" />}
@@ -259,12 +259,12 @@ const LoginPage = () => {
 
           {/* Right Side Buttons */}
           <div className="hidden lg:flex items-center gap-3">
-            <button className="px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded-md transition-colors">
+            <button className="px-4 py-2 text-sm text-text-muted hover:text-text-primary hover:bg-border/5 rounded-md transition-colors font-serif">
               Contact sales
             </button>
             <Link
               to="/app/dashboard"
-              className="px-4 py-2 text-sm text-white bg-brand-orange rounded-md hover:bg-brand-hover transition-colors"
+              className="px-4 py-2 text-sm text-text-primary bg-brand-orange rounded-md hover:bg-brand-hover transition-colors font-medium"
             >
               Try EKA-AI
             </Link>
@@ -272,7 +272,7 @@ const LoginPage = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden p-2 text-gray-400 hover:text-white"
+            className="lg:hidden p-2 text-text-muted hover:text-text-primary"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             data-testid="mobile-menu-toggle"
           >
