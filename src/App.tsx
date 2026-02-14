@@ -24,6 +24,7 @@ import ArtifactsPage from './pages/ArtifactsPage';
 import WorldClockPage from './pages/WorldClockPage';
 import ClockDemoPage from './pages/ClockDemoPage';
 import ClaudeChatPage from './pages/ClaudeChatPage';
+import EkaAppRoutes from './EkaAppRouter';
 
 const App: React.FC = () => {
   return (
@@ -67,6 +68,8 @@ const App: React.FC = () => {
         
         {/* Public Pages (outside MainLayout) */}
         <Route path="/public/approval" element={<PublicApprovalPage />} />
+        {/* New EKA Claude.ai-style shell */}
+        <Route path="/app/*" element={<EkaAppRoutes />} />
       </Routes>
     </BrowserRouter>
   );
