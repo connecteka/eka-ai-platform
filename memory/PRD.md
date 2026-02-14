@@ -126,16 +126,28 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 ## Routes
 ### App Routes (Sidebar Navigation)
 - `/` - Login Page (default)
+- `/login` - Login Page (alias)
 - `/legal` - Legal Information (Privacy, Terms, Refund, Cookies, GDPR)
 - `/pricing` - Pricing Page
-- `/app` - Dashboard
-- `/app/dashboard` - Dashboard
-- `/app/job-cards` - Job Cards Management
-- `/app/job-cards/:id` - Job Card Detail (17 sections)
-- `/app/pdi` - PDI/Artifacts
-- `/app/fleet` - MG Fleet Management  
-- `/app/invoices` - Invoices
-- `/app/settings` - Settings
+
+### NEW: EKA Claude.ai-style UI Routes (`/app/*`)
+- `/app` - Redirects to `/app/dashboard`
+- `/app/dashboard` - EkaDashboardPage (4 KPI cards, charts)
+- `/app/chat` - EkaChatPage (AI chat interface)
+- `/app/chats` - ChatsPage (chat history)
+- `/app/job-cards/*` - JobCardsPage
+- `/app/invoices` - InvoicesPage
+- `/app/mg-fleet` - MGFleetPage
+- `/app/settings` - SettingsPage
+
+### Original Routes (Legacy)
+- `/dashboard` - Dashboard (original light theme)
+- `/job-cards` - Job Cards Management
+- `/job-cards/:id` - Job Card Detail (17 sections)
+- `/pdi` - PDI/Artifacts
+- `/fleet` - MG Fleet Management  
+- `/invoices` - Invoices
+- `/settings` - Settings
 
 ## API Endpoints
 
