@@ -19,7 +19,7 @@ import time
 import uuid
 
 # Get BASE_URL from environment
-BASE_URL = os.environ.get('VITE_API_URL', 'https://eka-chat-preview.preview.emergentagent.com')
+BASE_URL = os.environ.get('VITE_API_URL', 'https://chat-first-app.preview.emergentagent.com')
 BASE_URL = BASE_URL.rstrip('/')
 API_URL = f"{BASE_URL}/api"
 

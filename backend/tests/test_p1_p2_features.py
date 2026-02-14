@@ -10,7 +10,7 @@ import os
 import io
 import base64
 
-BASE_URL = os.environ.get('VITE_API_URL', 'https://eka-chat-preview.preview.emergentagent.com').rstrip('/')
+BASE_URL = os.environ.get('VITE_API_URL', 'https://chat-first-app.preview.emergentagent.com').rstrip('/')
 TEST_JOB_CARD_ID = "698f9f0ac18c7ff6345f7a7e"
 
 
