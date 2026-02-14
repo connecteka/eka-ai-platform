@@ -16,7 +16,7 @@ from models.schemas import UserLogin, UserRegister, GoogleAuthSession
 from utils.supabase_db import (
     get_user_by_email, get_user_by_id, create_user, update_user,
     create_session, get_session_by_token, delete_sessions_by_user, delete_session_by_token,
-    get_user_subscription, get_user_usage, check_usage_limit
+    get_user_subscription, get_user_usage, check_usage_limit, get_supabase
 )
 from utils.security import hash_password, verify_password
 
