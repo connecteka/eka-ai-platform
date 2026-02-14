@@ -1,9 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Bell, ChevronDown, Zap, Brain, Database } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
 import type { IntelligenceMode } from '../../types';
 import { cn } from '../../lib/utils';
+
+/* Custom User type */
+interface EkaUser {
+  user_id: string;
+  email: string;
+  name: string;
+}
+
+/* Simple hook to get user from localStorage */
+function useLocalUser() {
+  const [user, setUser] = useState<EkaUser | null>(null);
+  
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        setUser(null);
+      }
+    }
+  }, []);
+  
+  const signOut = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = '/login';
+  };
+  
+  return { user, signOut };
+}
 
 const TITLES: Record<string, string> = {
   '/app/dashboard':  'Dashboard',
