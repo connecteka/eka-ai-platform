@@ -77,8 +77,8 @@ def read_root():
     """Root endpoint for health checks."""
     return {
         "status": "EKA-AI Backend is running",
-        "version": "2.0.0",
-        "database": "MongoDB"
+        "version": "2.1.0",
+        "database": "Supabase"
     }
 
 
