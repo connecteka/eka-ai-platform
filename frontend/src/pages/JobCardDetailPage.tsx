@@ -154,7 +154,7 @@ const JobCardDetailPage: React.FC = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: styles.white,
+      background: styles.bgPrimary,
       fontFamily: styles.fontPrimary,
     }}>
       {/* Global Styles */}
