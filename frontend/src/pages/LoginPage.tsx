@@ -401,7 +401,7 @@ const LoginPage = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -412,7 +412,7 @@ const LoginPage = () => {
                 type="submit"
                 disabled={isLoading}
                 data-testid="email-submit-btn"
-                className="w-full px-4 py-3.5 bg-brand-orange text-white font-medium rounded-xl hover:bg-brand-hover transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full px-4 py-3.5 bg-brand-orange text-text-primary font-medium rounded-xl hover:bg-brand-hover transition-colors disabled:opacity-50 flex items-center justify-center gap-2 font-serif shadow-md"
               >
                 {isLoading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -431,7 +431,7 @@ const LoginPage = () => {
                   type="button"
                   onClick={toggleAuthMode}
                   data-testid="toggle-auth-mode"
-                  className="text-sm text-gray-500 hover:text-white transition-colors"
+                  className="text-sm text-text-muted hover:text-text-primary transition-colors font-serif"
                 >
                   {isSignUp ? (
                     <>Already have an account? <span className="font-medium text-brand-orange">Sign in</span></>
@@ -443,17 +443,17 @@ const LoginPage = () => {
             )}
 
             {/* Terms */}
-            <p className="text-xs text-gray-500 text-center mt-6 leading-relaxed">
+            <p className="text-xs text-text-muted text-center mt-6 leading-relaxed font-serif">
               By continuing, you agree to EKA-AI's{' '}
-              <a href="/legal#terms" className="underline hover:text-gray-300 transition-colors">
+              <a href="/legal#terms" className="underline hover:text-text-primary transition-colors">
                 Consumer Terms
               </a>{' '}
               and{' '}
-              <a href="/legal#privacy" className="underline hover:text-gray-300 transition-colors">
+              <a href="/legal#privacy" className="underline hover:text-text-primary transition-colors">
                 Usage Policy
               </a>
               , and acknowledge their{' '}
-              <a href="/legal#privacy" className="underline hover:text-gray-300 transition-colors">
+              <a href="/legal#privacy" className="underline hover:text-text-primary transition-colors">
                 Privacy Policy
               </a>
               .
@@ -463,12 +463,12 @@ const LoginPage = () => {
       </div>
 
       {/* RIGHT SIDE - Feature Video Carousel */}
-      <div className="hidden lg:block w-1/2 bg-[#0A0A0B] relative overflow-hidden border-l border-white/5">
+      <div className="hidden lg:block w-1/2 bg-background-alt relative overflow-hidden border-l border-border/10">
         <FeatureVideoCarousel />
       </div>
 
       {/* Mobile Feature Showcase Section */}
-      <div className="lg:hidden w-full bg-[#0A0A0B] relative overflow-hidden border-t border-white/5">
+      <div className="lg:hidden w-full bg-background-alt relative overflow-hidden border-t border-border/10">
         <MobileFeatureShowcase />
       </div>
     </div>
