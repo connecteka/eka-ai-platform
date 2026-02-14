@@ -14,21 +14,48 @@ const badgeVariants = cva(
         destructive:
           'border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80',
         outline: 'text-foreground',
+        // Color variants
+        orange: 'border-transparent bg-orange-100 text-orange-700 hover:bg-orange-200',
+        green: 'border-transparent bg-green-100 text-green-700 hover:bg-green-200',
+        red: 'border-transparent bg-red-100 text-red-700 hover:bg-red-200',
+        yellow: 'border-transparent bg-yellow-100 text-yellow-700 hover:bg-yellow-200',
+        blue: 'border-transparent bg-blue-100 text-blue-700 hover:bg-blue-200',
+        purple: 'border-transparent bg-purple-100 text-purple-700 hover:bg-purple-200',
+        gray: 'border-transparent bg-gray-100 text-gray-700 hover:bg-gray-200',
+        // Aliases for backward compatibility
+        primary: 'border-transparent bg-orange-100 text-orange-700 hover:bg-orange-200',
+        success: 'border-transparent bg-green-100 text-green-700 hover:bg-green-200',
+        warning: 'border-transparent bg-yellow-100 text-yellow-700 hover:bg-yellow-200',
+        error: 'border-transparent bg-red-100 text-red-700 hover:bg-red-200',
+        info: 'border-transparent bg-blue-100 text-blue-700 hover:bg-blue-200',
+        amber: 'border-transparent bg-orange-100 text-orange-700 hover:bg-orange-200',
+      },
+      size: {
+        default: 'px-2.5 py-0.5 text-xs',
+        sm: 'px-2 py-0.5 text-[10px]',
+        md: 'px-3 py-1 text-sm',
+        lg: 'px-4 py-1.5 text-base',
       },
     },
     defaultVariants: {
       variant: 'default',
+      size: 'default',
     },
   }
 );
 
 export interface BadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof badgeVariants> {}
+    VariantProps<typeof badgeVariants> {
+  icon?: React.ReactNode;
+}
 
-function Badge({ className, variant, ...props }: BadgeProps) {
+function Badge({ className, variant, size, icon, children, ...props }: BadgeProps) {
   return (
-    <div className={cn(badgeVariants({ variant }), className)} {...props} />
+    <div className={cn(badgeVariants({ variant, size }), className)} {...props}>
+      {icon && <span className="mr-1">{icon}</span>}
+      {children}
+    </div>
   );
 }
 
@@ -66,3 +93,4 @@ export const PriorityBadge: React.FC<{ priority: string }> = ({ priority }) => {
 };
 
 export { Badge, badgeVariants };
+export default Badge;
