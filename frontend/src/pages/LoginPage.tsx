@@ -4,7 +4,7 @@ import { Loader2, Mail, Eye, EyeOff, Play, ChevronLeft, ChevronRight, Shield, Lo
 import { useGoogleLogin } from '@react-oauth/google';
 import DemoModal from '../components/DemoModal';
 
-// Feature slides for the carousel
+// Feature slides for the carousel with animated preview content
 const FEATURE_SLIDES = [
   {
     id: 'ai-chat',
@@ -12,9 +12,9 @@ const FEATURE_SLIDES = [
     subtitle: 'Intelligent Diagnostics',
     description: 'Get instant vehicle diagnostics and repair recommendations powered by advanced AI technology.',
     features: ['Natural language queries', 'Real-time diagnostics', 'Repair suggestions', 'Cost estimates'],
-    videoUrl: '/demos/ai-chat-demo.webm',
-    demoId: 'ai-chat',
-    accentColor: '#F98906'
+    demoId: 'chat',
+    accentColor: '#F98906',
+    previewType: 'chat'
   },
   {
     id: 'job-cards',
@@ -22,9 +22,9 @@ const FEATURE_SLIDES = [
     subtitle: 'Complete Workflow',
     description: 'Seamless transition from job creation to GST-compliant invoicing with automatic calculations.',
     features: ['One-click job card creation', 'Real-time status tracking', 'Auto GST calculation', 'Digital invoice delivery'],
-    videoUrl: '/demos/job-card-demo.webm',
-    demoId: 'job-cards',
-    accentColor: '#F98906'
+    demoId: 'jobcard',
+    accentColor: '#F98906',
+    previewType: 'jobcard'
   },
   {
     id: 'pdi',
@@ -32,9 +32,9 @@ const FEATURE_SLIDES = [
     subtitle: 'Pre-Delivery Inspection',
     description: 'Streamlined digital PDI workflow with AI-powered checklist verification and instant reporting.',
     features: ['120+ point inspection checklist', 'Photo & video documentation', 'Digital signatures', 'Instant PDF reports'],
-    videoUrl: '/demos/pdi-demo.webm',
     demoId: 'pdi',
-    accentColor: '#F98906'
+    accentColor: '#F98906',
+    previewType: 'pdi'
   },
   {
     id: 'fleet',
@@ -42,9 +42,9 @@ const FEATURE_SLIDES = [
     subtitle: 'Enterprise Solutions',
     description: 'Comprehensive fleet tracking and management for dealerships and service centers.',
     features: ['Multi-vehicle tracking', 'Service scheduling', 'Performance analytics', 'Cost optimization'],
-    videoUrl: '/demos/fleet-demo.webm',
-    demoId: 'fleet',
-    accentColor: '#F98906'
+    demoId: 'mg',
+    accentColor: '#F98906',
+    previewType: 'fleet'
   },
   {
     id: 'invoicing',
@@ -52,9 +52,9 @@ const FEATURE_SLIDES = [
     subtitle: 'GST Compliant',
     description: 'Automatic GST calculations, digital delivery, and complete payment tracking.',
     features: ['Auto tax calculation', 'Email delivery', 'Payment tracking', 'Report generation'],
-    videoUrl: '/demos/invoice-demo.webm',
-    demoId: 'invoicing',
-    accentColor: '#F98906'
+    demoId: 'jobcard',
+    accentColor: '#F98906',
+    previewType: 'invoice'
   },
   {
     id: 'analytics',
@@ -62,11 +62,196 @@ const FEATURE_SLIDES = [
     subtitle: 'Data-Driven Insights',
     description: 'Real-time dashboards and reports to track your workshop performance.',
     features: ['Revenue tracking', 'Customer insights', 'Service analytics', 'Growth metrics'],
-    videoUrl: '/demos/analytics-demo.webm',
-    demoId: 'analytics',
-    accentColor: '#F98906'
+    demoId: 'brand',
+    accentColor: '#F98906',
+    previewType: 'analytics'
   }
 ];
+
+// Animated Preview Components for each feature
+const AnimatedPreview: React.FC<{ type: string }> = ({ type }) => {
+  const [frame, setFrame] = useState(0);
+  
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setFrame(f => (f + 1) % 100);
+    }, 100);
+    return () => clearInterval(timer);
+  }, []);
+
+  switch (type) {
+    case 'chat':
+      return (
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1A1A1C] to-[#0D0D0F] p-4 overflow-hidden">
+          <div className="h-8 bg-white/5 rounded-lg mb-3 flex items-center px-3">
+            <div className="w-6 h-6 rounded-full bg-[#F98906]/30" />
+            <span className="ml-2 text-xs text-white/50">eka-aı Assistant</span>
+          </div>
+          <div className="space-y-3">
+            <div className="flex justify-end">
+              <div className="bg-[#F98906]/20 rounded-2xl rounded-br-sm px-4 py-2 max-w-[80%]">
+                <p className="text-xs text-white/80">Engine warning light on Swift 2020</p>
+              </div>
+            </div>
+            <div className="flex">
+              <div className="bg-white/10 rounded-2xl rounded-bl-sm px-4 py-2 max-w-[85%]">
+                <p className="text-xs text-white/60 mb-2">🔍 Analyzing your vehicle...</p>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 text-[10px]">
+                    <span className="w-2 h-2 bg-red-500 rounded-full" />
+                    <span className="text-white/70">O2 Sensor (65%) - ₹3,500</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-[10px]">
+                    <span className="w-2 h-2 bg-yellow-500 rounded-full" />
+                    <span className="text-white/70">MAF Sensor (25%) - ₹2,500</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="absolute bottom-4 left-4 right-4 h-10 bg-white/5 rounded-xl flex items-center px-3">
+            <span className="text-xs text-white/30 flex items-center">
+              <span className="animate-pulse">|</span> Type your question...
+            </span>
+          </div>
+        </div>
+      );
+      
+    case 'jobcard':
+      return (
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1A1A1C] to-[#0D0D0F] p-4 overflow-hidden">
+          <div className="flex gap-2 mb-3">
+            {['Total: 24', 'Active: 8', 'Done: 12'].map((s, i) => (
+              <div key={s} className={`flex-1 p-2 rounded-lg ${i === Math.floor(frame / 30) % 3 ? 'bg-[#F98906]/20 border border-[#F98906]/50' : 'bg-white/5'}`}>
+                <p className="text-[10px] text-white/60">{s.split(':')[0]}</p>
+                <p className="text-lg font-bold text-white">{s.split(':')[1]}</p>
+              </div>
+            ))}
+          </div>
+          <div className="space-y-2">
+            {[
+              { id: 'JC-0891', status: 'In Progress', color: '#F98906' },
+              { id: 'JC-0890', status: 'Completed', color: '#22C55E' },
+              { id: 'JC-0889', status: 'Pending', color: '#EAB308' },
+            ].map((j, i) => (
+              <div key={j.id} className={`p-2 rounded-lg bg-white/5 flex items-center justify-between ${i === Math.floor(frame / 25) % 3 ? 'ring-1 ring-[#F98906]/50' : ''}`}>
+                <div>
+                  <p className="text-xs text-white font-mono">{j.id}</p>
+                  <p className="text-[10px] text-white/50">Swift • Rahul</p>
+                </div>
+                <span className="px-2 py-0.5 rounded text-[10px]" style={{ backgroundColor: `${j.color}20`, color: j.color }}>{j.status}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+      
+    case 'pdi':
+      const progress = (frame % 50) * 2;
+      return (
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1A1A1C] to-[#0D0D0F] p-4 overflow-hidden">
+          <div className="flex justify-between items-center mb-3">
+            <p className="text-xs text-white font-medium">PDI Checklist</p>
+            <div className="flex items-center gap-2">
+              <div className="w-20 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                <div className="h-full bg-[#F98906] rounded-full transition-all" style={{ width: `${progress}%` }} />
+              </div>
+              <span className="text-[10px] text-[#F98906]">{progress}%</span>
+            </div>
+          </div>
+          <div className="space-y-2">
+            {['Exterior Check', 'Interior Check', 'Engine Bay', 'Electrical'].map((item, i) => (
+              <div key={item} className="flex items-center gap-2 p-2 rounded-lg bg-white/5">
+                <div className={`w-4 h-4 rounded border ${progress > (i + 1) * 20 ? 'bg-[#F98906] border-[#F98906]' : 'border-white/30'} flex items-center justify-center`}>
+                  {progress > (i + 1) * 20 && <span className="text-[10px] text-white">✓</span>}
+                </div>
+                <span className="text-xs text-white/70">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+      
+    case 'fleet':
+      return (
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1A1A1C] to-[#0D0D0F] p-4 overflow-hidden">
+          <p className="text-xs text-white font-medium mb-3">Fleet Overview</p>
+          <div className="grid grid-cols-3 gap-2 mb-3">
+            {['🚗 12', '🔧 3', '✅ 8'].map((v, i) => (
+              <div key={i} className="p-2 rounded-lg bg-white/5 text-center">
+                <p className="text-lg">{v.split(' ')[0]}</p>
+                <p className="text-white text-sm font-bold">{v.split(' ')[1]}</p>
+              </div>
+            ))}
+          </div>
+          <div className="space-y-1.5">
+            {['MH01AB1234 • Active', 'MH02CD5678 • Service', 'MH03EF9012 • Ready'].map((v, i) => (
+              <div key={i} className={`p-2 rounded-lg bg-white/5 text-xs ${i === Math.floor(frame / 20) % 3 ? 'border border-[#F98906]/50' : ''}`}>
+                <span className="text-white/70">{v}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+      
+    case 'invoice':
+      return (
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1A1A1C] to-[#0D0D0F] p-4 overflow-hidden">
+          <div className="bg-white/5 rounded-lg p-3 mb-3">
+            <div className="flex justify-between items-start mb-2">
+              <div>
+                <p className="text-xs text-white font-medium">INV-0024</p>
+                <p className="text-[10px] text-white/50">Swift Service</p>
+              </div>
+              <span className="px-2 py-0.5 bg-green-500/20 text-green-400 rounded text-[10px]">Paid</span>
+            </div>
+            <div className="space-y-1 text-[10px] text-white/60">
+              <div className="flex justify-between"><span>Labour</span><span>₹2,500</span></div>
+              <div className="flex justify-between"><span>Parts</span><span>₹3,200</span></div>
+              <div className="flex justify-between"><span>GST (18%)</span><span>₹1,026</span></div>
+              <div className="flex justify-between text-white font-bold pt-1 border-t border-white/10">
+                <span>Total</span><span>₹6,726</span>
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <button className="flex-1 py-2 bg-[#F98906]/20 text-[#F98906] rounded-lg text-[10px]">📧 Email</button>
+            <button className="flex-1 py-2 bg-white/5 text-white/50 rounded-lg text-[10px]">📄 PDF</button>
+          </div>
+        </div>
+      );
+      
+    case 'analytics':
+      return (
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1A1A1C] to-[#0D0D0F] p-4 overflow-hidden">
+          <p className="text-xs text-white font-medium mb-3">Revenue This Month</p>
+          <p className="text-2xl font-bold text-[#F98906] mb-3">₹2,45,000</p>
+          <div className="flex items-end gap-1 h-20 mb-3">
+            {[40, 65, 45, 80, 55, 70, 90, 60, 75].map((h, i) => (
+              <div 
+                key={i} 
+                className="flex-1 rounded-t transition-all duration-300"
+                style={{ 
+                  height: `${h + (i === Math.floor(frame / 10) % 9 ? 10 : 0)}%`,
+                  backgroundColor: i === Math.floor(frame / 10) % 9 ? '#F98906' : 'rgba(249, 137, 6, 0.3)'
+                }}
+              />
+            ))}
+          </div>
+          <div className="flex justify-between text-[10px] text-white/50">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+          </div>
+        </div>
+      );
+      
+    default:
+      return (
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+          <Play className="w-16 h-16 text-white/20" />
+        </div>
+      );
+  }
+};
 
 // Daily rotating taglines
 const TAGLINES = [
