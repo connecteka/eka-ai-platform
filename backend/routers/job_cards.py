@@ -2,6 +2,7 @@
 Job Cards routes for EKA-AI Backend.
 Handles CRUD operations for workshop job cards.
 """
+import os
 from datetime import datetime, timezone
 from typing import Optional, List
 import random
