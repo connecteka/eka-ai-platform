@@ -696,18 +696,16 @@ const LoginPage = () => {
           {/* Main Content */}
           <div className="flex-1 flex flex-col items-center justify-center px-8 relative">
             
-            {/* Video Preview Area */}
-            <div className="relative w-full max-w-md aspect-video mb-8 rounded-2xl overflow-hidden bg-white/5 shadow-2xl">
+            {/* Video Preview Area - Animated Demo */}
+            <div className="relative w-full max-w-md aspect-video mb-8 rounded-2xl overflow-hidden bg-[#0D0D0D] shadow-2xl border border-white/10">
               {/* Live Recording Badge */}
               <div className="absolute top-4 left-4 z-10 flex items-center gap-2 px-3 py-1.5 bg-red-500 rounded-full">
                 <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-                <span className="text-xs text-white font-medium">Live Recording</span>
+                <span className="text-xs text-white font-medium">Live Preview</span>
               </div>
               
-              {/* Placeholder for video/demo */}
-              <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-                <Play className="w-16 h-16 text-white/20" />
-              </div>
+              {/* Animated Preview */}
+              <AnimatedPreview type={currentFeature.previewType} />
             </div>
 
             {/* Feature Title */}
