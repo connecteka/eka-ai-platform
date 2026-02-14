@@ -1,6 +1,11 @@
 -- EKA-AI Supabase Schema Migration
 -- Run this in Supabase SQL Editor to create missing tables
 
+-- ==================== ADD PASSWORD HASH TO USER_PROFILES ====================
+ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS password_hash TEXT;
+ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS auth_provider TEXT DEFAULT 'email';
+ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS picture TEXT;
+
 -- ==================== USER SESSIONS ====================
 CREATE TABLE IF NOT EXISTS user_sessions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
