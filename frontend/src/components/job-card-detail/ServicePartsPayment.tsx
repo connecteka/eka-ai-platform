@@ -244,16 +244,16 @@ export const CostPaymentSection: React.FC<CostPaymentSectionProps> = ({ payment 
           <div style={{ background: styles.gray50, borderRadius: '12px', padding: '20px' }}>
             <div style={{ marginBottom: '16px' }}>
               <div style={{ fontSize: '12px', color: styles.gray500, marginBottom: '4px' }}>Amount Paid</div>
-              <div style={{ fontSize: '24px', fontWeight: 700, color: styles.success }}>{formatCurrency(payment.amount_paid)}</div>
+              <div style={{ fontSize: '24px', fontWeight: 700, color: styles.success }}>{formatCurrency(safePayment.amount_paid || 0)}</div>
             </div>
             <div style={{ marginBottom: '16px' }}>
               <div style={{ fontSize: '12px', color: styles.gray500, marginBottom: '4px' }}>Balance Due</div>
-              <div style={{ fontSize: '24px', fontWeight: 700, color: payment.grand_total - payment.amount_paid > 0 ? styles.error : styles.success }}>
-                {formatCurrency(payment.grand_total - payment.amount_paid)}
+              <div style={{ fontSize: '24px', fontWeight: 700, color: (safePayment.grand_total || 0) - (safePayment.amount_paid || 0) > 0 ? styles.error : styles.success }}>
+                {formatCurrency((safePayment.grand_total || 0) - (safePayment.amount_paid || 0))}
               </div>
             </div>
             <div style={{ fontSize: '12px', color: styles.gray500 }}>
-              Payment Mode: {payment.payment_mode || 'N/A'}
+              Payment Mode: {safePayment.payment_mode || 'N/A'}
             </div>
           </div>
         </div>
