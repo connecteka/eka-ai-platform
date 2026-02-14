@@ -174,6 +174,7 @@ const LoginPage = () => {
   // Google OAuth
   const googleLogin = useGoogleLogin({
     flow: 'auth-code',
+    ux_mode: 'popup',
     onSuccess: async (codeResponse) => {
       setIsGoogleLoading(true);
       setError(null);
