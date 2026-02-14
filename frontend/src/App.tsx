@@ -60,7 +60,10 @@ const AppRouter: React.FC = () => {
       <Route path="/public/approval" element={<PublicApprovalPage />} />
 
       {/* ==================== AUTHENTICATED APP ROUTES ==================== */}
-      {/* All routes under AppShell require authentication */}
+      {/* New Claude.ai-style UI at /app/* */}
+      <Route path="/app/*" element={<EkaAppRoutes />} />
+      
+      {/* Legacy routes under old AppShell */}
       <Route element={<AppShell />}>
         {/* Dashboard */}
         <Route path="/app" element={<DashboardPage />} />
