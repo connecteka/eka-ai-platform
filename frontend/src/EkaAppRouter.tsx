@@ -12,7 +12,8 @@ import SettingsPage  from './pages/SettingsPage';
 const EkaAppRoutes: React.FC = () => (
   <Routes>
     <Route element={<EkaAppShell />}>
-      <Route index                element={<Navigate to="dashboard" replace />} />
+      {/* Default to Chat (Dashboard is PRO) */}
+      <Route index                element={<Navigate to="chat" replace />} />
       <Route path="dashboard"     element={<EkaDashboardPage />} />
       <Route path="chat"          element={<EkaChatPage />}      />
       <Route path="chats"         element={<ChatsPage />}        />
