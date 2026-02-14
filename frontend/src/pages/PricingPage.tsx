@@ -246,19 +246,19 @@ const PricingPage: React.FC = () => {
         </div>
 
         {/* Pay-Per-Job Add-on */}
-        <div className="mt-8 p-6 rounded-2xl bg-[#111113] border border-[#1A1A1A] flex items-center justify-between">
+        <div className="mt-8 p-4 sm:p-6 rounded-2xl bg-[#111113] border border-[#1A1A1A] flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-[#1A1A1A] flex items-center justify-center">
+            <div className="w-12 h-12 rounded-xl bg-[#1A1A1A] flex items-center justify-center flex-shrink-0">
               <FileText className="w-6 h-6 text-[#F98906]" />
             </div>
-            <div>
+            <div className="text-center sm:text-left">
               <h4 className="text-white font-semibold">Pay-Per-Job Add-on</h4>
               <p className="text-sm text-gray-500">Exceeded your limit? No problem.</p>
             </div>
           </div>
-          <div className="text-right">
+          <div className="text-center sm:text-right">
             <span className="text-2xl font-bold text-white">₹49</span>
-            <span className="text-gray-500 text-sm"> per additional job card</span>
+            <span className="text-gray-500 text-sm"> per job card</span>
           </div>
         </div>
       </div>
