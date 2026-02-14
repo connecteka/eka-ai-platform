@@ -331,7 +331,7 @@ export const ProductTour: React.FC<ProductTourProps> = ({ children }) => {
             overlayColor: 'rgba(0, 0, 0, 0.75)',
             primaryColor: '#da7756',
             textColor: '#FFFFFF',
-            spotlightShadow: '0 0 20px rgba(244, 93, 61, 0.5)',
+            spotlightShadow: '0 0 20px rgba(218, 119, 86, 0.5)',
             zIndex: 10000,
           },
           spotlight: {
