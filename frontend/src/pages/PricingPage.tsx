@@ -347,20 +347,20 @@ const PricingPage: React.FC = () => {
       </div>
 
       {/* FAQs */}
-      <div className="py-16 px-6">
+      <div className="py-16 px-4 sm:px-6">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-2xl font-bold text-white text-center mb-8" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
             Frequently Asked Questions
           </h2>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             {FAQS.map((faq, idx) => (
               <details key={idx} className="group bg-[#111113] border border-[#1A1A1A] rounded-xl">
-                <summary className="flex items-center justify-between px-6 py-4 cursor-pointer text-white font-medium">
+                <summary className="flex items-center justify-between px-4 sm:px-6 py-4 cursor-pointer text-white font-medium text-sm sm:text-base">
                   {faq.q}
-                  <span className="text-[#F98906] group-open:rotate-180 transition-transform">▼</span>
+                  <span className="text-[#F98906] group-open:rotate-180 transition-transform ml-2 flex-shrink-0">▼</span>
                 </summary>
-                <div className="px-6 pb-4 text-gray-400 text-sm leading-relaxed">
+                <div className="px-4 sm:px-6 pb-4 text-gray-400 text-sm leading-relaxed">
                   {faq.a}
                 </div>
               </details>
@@ -370,19 +370,19 @@ const PricingPage: React.FC = () => {
           <p className="text-center text-gray-500 text-sm mt-8">
             Still have questions?{' '}
             <a href="mailto:connect@go4garage.in" className="text-[#F98906] hover:underline">
-              Contact us at connect@go4garage.in
+              Contact us
             </a>
           </p>
         </div>
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-[#1A1A1A] py-8 px-6">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
+      <footer className="border-t border-[#1A1A1A] py-6 sm:py-8 px-4 sm:px-6">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <img src={MASCOT_URL} alt="eka-ai" className="w-8 h-8 object-cover" style={{ borderRadius: '4px' }} />
-            <span className="text-sm text-gray-500">
-              © {new Date().getFullYear()} Go4Garage Private Limited. All rights reserved.
+            <span className="text-xs sm:text-sm text-gray-500 text-center sm:text-left">
+              © {new Date().getFullYear()} Go4Garage Pvt. Ltd.
             </span>
           </div>
           <div className="flex items-center gap-4">
