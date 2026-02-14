@@ -287,20 +287,20 @@ async def process_google_session(session_data: GoogleAuthSession, response: Resp
         
         if existing_user:
             update_user(email, {"name": name, "picture": picture})
-            user_id = existing_user.get("user_id")
+            user_id = existing_user.get("user_id") or existing_user.get("id")
         else:
-            user_id = f"user_{uuid.uuid4().hex[:12]}"
-            create_user({
-                "user_id": user_id,
+            new_user = create_user({
                 "email": email,
                 "name": name,
                 "picture": picture,
                 "role": "user",
                 "auth_provider": "google"
             })
+            user_id = new_user.get("user_id") or new_user.get("id") if new_user else f"user_{uuid.uuid4().hex[:12]}"
         
         expires_at = datetime.now(timezone.utc) + timedelta(days=7)
-        delete_sessions_by_user(user_id)
+        if user_id:
+            delete_sessions_by_user(user_id)
         create_session({
             "user_id": user_id,
             "session_token": session_token,
