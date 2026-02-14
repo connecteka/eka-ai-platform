@@ -652,7 +652,7 @@ const LoginPage = () => {
                   className="w-8 h-8 rounded-full object-cover border border-[#F98906]"
                 />
                 <span className="text-lg font-bold text-white" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
-                  eka-ai
+                  eka<span className="text-[#F98906]">-</span>a<span className="text-[#F98906]">ı</span>
                 </span>
               </div>
               <p className="text-sm text-gray-500 mb-4">
