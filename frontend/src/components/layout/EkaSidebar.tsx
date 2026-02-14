@@ -1,12 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
 import {
   LayoutDashboard, Wrench, ClipboardCheck, Truck, FileText,
   Settings, ChevronLeft, ChevronRight, Plus, MessageSquare,
   MoreHorizontal, Zap,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
+
+/* Custom User type */
+interface EkaUser {
+  user_id: string;
+  email: string;
+  name: string;
+}
+
+/* Simple hook to get user from localStorage */
+function useLocalUser() {
+  const [user, setUser] = useState<EkaUser | null>(null);
+  
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        setUser(null);
+      }
+    }
+  }, []);
+  
+  const signOut = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = '/login';
+  };
+  
+  return { user, signOut };
+}
 
 /* Navigation items — paths match /app/* routes in EkaAppRouter */
 const NAV = [
