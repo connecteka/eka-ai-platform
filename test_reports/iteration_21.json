@@ -1,0 +1,65 @@
+{
+  "summary": "RETEST PASSED: App.tsx routing fix verified. All /app/* pages now consistently use dark sidebar (EkaAppShell). Previously /app/job-cards, /app/invoices, /app/settings were showing light sidebar due to duplicate route definitions in AppShell block - now fixed.",
+  
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  
+  "passed_tests": [
+    "/app/chat - Dark sidebar (rgb(13, 13, 13)) ✓",
+    "/app/job-cards - Dark sidebar (rgb(13, 13, 13)) ✓",
+    "/app/invoices - Dark sidebar (rgb(13, 13, 13)) ✓",
+    "/app/settings - Dark sidebar (rgb(13, 13, 13)) ✓",
+    "/app/job-cards/:id - Dark sidebar (rgb(13, 13, 13)) ✓",
+    "Navigation via sidebar maintains correct shell ✓",
+    "Direct URL navigation maintains correct shell ✓",
+    "Consistent 'eka-aı' branding across all pages ✓",
+    "TopBar consistent (white background) across all pages ✓"
+  ],
+  
+  "test_report_links": [
+    "/app/test_reports/iteration_21.json"
+  ],
+  
+  "action_items": [],
+  
+  "critical_code_review_comments": [
+    "App.tsx routing fix applied correctly - /app/* routes now handled exclusively by EkaAppRoutes (line 65)",
+    "Legacy routes (without /app prefix) remain in AppShell block for backwards compatibility"
+  ],
+  
+  "updated_files": [],
+  
+  "success_rate": {
+    "backend": "N/A - Frontend only testing",
+    "frontend": "100% - All sidebar consistency tests passed"
+  },
+  
+  "test_credentials": {
+    "email": "testuser@test.com",
+    "password": "test123456"
+  },
+  
+  "seed_data_creation": "None - used existing test user",
+  
+  "theme_verification": {
+    "expected_sidebar_color": "rgb(13, 13, 13) (#0D0D0D)",
+    "chat_page": "PASS - rgb(13, 13, 13)",
+    "job_cards_page": "PASS - rgb(13, 13, 13) (was rgb(255,251,245) before fix)",
+    "invoices_page": "PASS - rgb(13, 13, 13) (was rgb(255,251,245) before fix)",
+    "settings_page": "PASS - rgb(13, 13, 13) (was rgb(255,251,245) before fix)",
+    "job_card_detail_page": "PASS - rgb(13, 13, 13)"
+  },
+  
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  
+  "context_for_next_testing_agent": "Sidebar theme inconsistency FIXED. All /app/* pages now correctly use EkaAppShell with dark sidebar (#0D0D0D). The fix was removing duplicate /app/* routes from the AppShell block in App.tsx. EkaAppRoutes now exclusively handles all /app/* routes."
+}
