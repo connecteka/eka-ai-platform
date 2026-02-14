@@ -150,33 +150,33 @@ const PricingPage: React.FC = () => {
         </p>
 
         {/* Trust badges */}
-        <div className="flex items-center justify-center gap-6 mt-8">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 mt-8">
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <Shield className="w-4 h-4 text-[#F98906]" />
             <span>No Commission</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <Users className="w-4 h-4 text-[#F98906]" />
-            <span>No Customer App Required</span>
+            <span>No Customer App</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <BarChart3 className="w-4 h-4 text-[#F98906]" />
-            <span>Pay Only for Productivity</span>
+            <span>Pay for Productivity</span>
           </div>
         </div>
       </div>
 
       {/* Pricing Cards */}
-      <div className="max-w-6xl mx-auto px-6 pb-16">
-        <div className="grid md:grid-cols-3 gap-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-6">
           {PLANS.map((plan) => {
             const Icon = plan.icon;
             return (
               <div
                 key={plan.id}
-                className={`relative rounded-2xl p-6 flex flex-col transition-all duration-300 ${
+                className={`relative rounded-2xl p-5 sm:p-6 flex flex-col transition-all duration-300 ${
                   plan.popular
-                    ? 'bg-gradient-to-b from-[#1A0A00] to-[#0D0D0D] border-2 border-[#F98906] shadow-2xl shadow-[#F98906]/10 scale-105'
+                    ? 'bg-gradient-to-b from-[#1A0A00] to-[#0D0D0D] border-2 border-[#F98906] shadow-2xl shadow-[#F98906]/10 md:scale-105 order-first md:order-none'
                     : 'bg-[#111113] border border-[#1A1A1A] hover:border-[#F98906]/30'
                 }`}
                 data-testid={`plan-${plan.id}`}
