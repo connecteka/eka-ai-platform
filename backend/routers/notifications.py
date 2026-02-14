@@ -16,7 +16,7 @@ from enum import Enum
 from fastapi import APIRouter, HTTPException, BackgroundTasks
 from pydantic import BaseModel
 
-from utils.database import job_cards_collection, users_collection, serialize_doc
+from utils.database import job_cards_collection, users_collection, notifications_collection, serialize_doc
 
 router = APIRouter(prefix="/api/notifications", tags=["Notifications"])
 
@@ -25,10 +25,6 @@ TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.environ.get("TWILIO_AUTH_TOKEN")
 TWILIO_WHATSAPP_NUMBER = os.environ.get("TWILIO_WHATSAPP_NUMBER", "whatsapp:+14155238886")
 NOTIFICATIONS_ENABLED = os.environ.get("NOTIFICATIONS_ENABLED", "false").lower() == "true"
-
-# Notification log collection
-from utils.database import db
-notifications_collection = db["notifications"]
 
 
 class NotificationType(str, Enum):
