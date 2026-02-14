@@ -1,5 +1,6 @@
 import React, { useState, createContext, useContext } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
+import { Menu, X } from 'lucide-react';
 import { useLocalUser } from '../../hooks/useLocalUser';
 import EkaSidebar from './EkaSidebar';
 import EkaTopBar  from './EkaTopBar';
@@ -10,11 +11,15 @@ interface ShellCtx {
   intelligenceMode: IntelligenceMode;
   setIntelligenceMode: (m: IntelligenceMode) => void;
   sidebarCollapsed: boolean;
+  mobileMenuOpen: boolean;
+  setMobileMenuOpen: (open: boolean) => void;
 }
 export const ShellContext = createContext<ShellCtx>({
   intelligenceMode: 'FAST',
   setIntelligenceMode: () => {},
   sidebarCollapsed: false,
+  mobileMenuOpen: false,
+  setMobileMenuOpen: () => {},
 });
 export const useShell = () => useContext(ShellContext);
 
@@ -38,6 +43,7 @@ const EkaAppShell: React.FC = () => {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const [mode, setMode] = useState<IntelligenceMode>('FAST');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   React.useEffect(() => {
     if (!loading && !user) navigate('/login');
@@ -47,19 +53,63 @@ const EkaAppShell: React.FC = () => {
   if (!user)   return null;
 
   return (
-    <ShellContext.Provider value={{ intelligenceMode: mode, setIntelligenceMode: setMode, sidebarCollapsed: collapsed }}>
+    <ShellContext.Provider value={{ 
+      intelligenceMode: mode, 
+      setIntelligenceMode: setMode, 
+      sidebarCollapsed: collapsed,
+      mobileMenuOpen,
+      setMobileMenuOpen
+    }}>
       <div className="flex h-screen overflow-hidden bg-white" data-testid="eka-app-shell">
-        {/* Dark sidebar */}
-        <EkaSidebar collapsed={collapsed} onToggle={() => setCollapsed(c => !c)} />
+        {/* Desktop sidebar - hidden on mobile */}
+        <div className="hidden md:block">
+          <EkaSidebar collapsed={collapsed} onToggle={() => setCollapsed(c => !c)} />
+        </div>
+        
+        {/* Mobile sidebar overlay */}
+        {mobileMenuOpen && (
+          <div className="fixed inset-0 z-50 md:hidden">
+            {/* Backdrop */}
+            <div 
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            {/* Sidebar */}
+            <div className="absolute left-0 top-0 bottom-0 w-[280px] animate-slide-in">
+              <EkaSidebar collapsed={false} onToggle={() => setMobileMenuOpen(false)} />
+            </div>
+            {/* Close button */}
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="absolute top-4 right-4 p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+        )}
         
         {/* White content area */}
         <div className="flex flex-col flex-1 min-w-0 overflow-hidden bg-white">
-          <EkaTopBar intelligenceMode={mode} onModeChange={setMode} />
+          <EkaTopBar 
+            intelligenceMode={mode} 
+            onModeChange={setMode}
+          />
           <main className="flex-1 overflow-y-auto bg-[#FAFAFA]">
             <Outlet context={{ intelligenceMode: mode, setIntelligenceMode: setMode }} />
           </main>
         </div>
       </div>
+      
+      {/* Mobile menu animation */}
+      <style>{`
+        @keyframes slide-in {
+          from { transform: translateX(-100%); }
+          to { transform: translateX(0); }
+        }
+        .animate-slide-in {
+          animation: slide-in 0.2s ease-out;
+        }
+      `}</style>
     </ShellContext.Provider>
   );
 };
