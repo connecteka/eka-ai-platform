@@ -264,53 +264,85 @@ const PricingPage: React.FC = () => {
       </div>
 
       {/* Feature Comparison */}
-      <div className="bg-[#0A0A0A] py-16 px-6">
+      <div className="bg-[#0A0A0A] py-16 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-2xl font-bold text-white text-center mb-8" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
             What's included in each plan
           </h2>
 
-          <div className="grid grid-cols-4 gap-4 text-center mb-4">
-            <div></div>
-            <div className="text-sm font-semibold text-gray-400">STARTER</div>
-            <div className="text-sm font-semibold text-[#F98906]">GROWTH</div>
-            <div className="text-sm font-semibold text-gray-400">ELITE</div>
+          {/* Desktop table - hidden on mobile */}
+          <div className="hidden sm:block">
+            <div className="grid grid-cols-4 gap-4 text-center mb-4">
+              <div></div>
+              <div className="text-sm font-semibold text-gray-400">STARTER</div>
+              <div className="text-sm font-semibold text-[#F98906]">GROWTH</div>
+              <div className="text-sm font-semibold text-gray-400">ELITE</div>
+            </div>
+
+            {[
+              { feature: 'Job Cards', starter: '40/mo', growth: '120/mo', elite: 'Unlimited' },
+              { feature: 'AI Queries', starter: '100/mo', growth: '500/mo', elite: 'Unlimited' },
+              { feature: 'Dashboard Analytics', starter: false, growth: true, elite: true },
+              { feature: 'Fleet Management', starter: false, growth: false, elite: true },
+              { feature: 'WhatsApp Integration', starter: false, growth: true, elite: true },
+              { feature: 'Priority Support', starter: false, growth: true, elite: true },
+              { feature: 'Multi-technician', starter: false, growth: false, elite: true },
+            ].map((row, idx) => (
+              <div key={idx} className="grid grid-cols-4 gap-4 py-3 border-t border-[#1A1A1A]">
+                <div className="text-sm text-gray-400 text-left">{row.feature}</div>
+                <div className="text-sm text-center">
+                  {typeof row.starter === 'boolean' ? (
+                    row.starter ? <Check className="w-4 h-4 text-[#F98906] mx-auto" /> : <span className="text-gray-600">—</span>
+                  ) : (
+                    <span className="text-white">{row.starter}</span>
+                  )}
+                </div>
+                <div className="text-sm text-center">
+                  {typeof row.growth === 'boolean' ? (
+                    row.growth ? <Check className="w-4 h-4 text-[#F98906] mx-auto" /> : <span className="text-gray-600">—</span>
+                  ) : (
+                    <span className="text-[#F98906] font-semibold">{row.growth}</span>
+                  )}
+                </div>
+                <div className="text-sm text-center">
+                  {typeof row.elite === 'boolean' ? (
+                    row.elite ? <Check className="w-4 h-4 text-[#F98906] mx-auto" /> : <span className="text-gray-600">—</span>
+                  ) : (
+                    <span className="text-white">{row.elite}</span>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
 
-          {[
-            { feature: 'Job Cards', starter: '40/mo', growth: '120/mo', elite: 'Unlimited' },
-            { feature: 'AI Queries', starter: '100/mo', growth: '500/mo', elite: 'Unlimited' },
-            { feature: 'Dashboard Analytics', starter: false, growth: true, elite: true },
-            { feature: 'Fleet Management', starter: false, growth: false, elite: true },
-            { feature: 'WhatsApp Integration', starter: false, growth: true, elite: true },
-            { feature: 'Priority Support', starter: false, growth: true, elite: true },
-            { feature: 'Multi-technician', starter: false, growth: false, elite: true },
-          ].map((row, idx) => (
-            <div key={idx} className="grid grid-cols-4 gap-4 py-3 border-t border-[#1A1A1A]">
-              <div className="text-sm text-gray-400 text-left">{row.feature}</div>
-              <div className="text-sm text-center">
-                {typeof row.starter === 'boolean' ? (
-                  row.starter ? <Check className="w-4 h-4 text-[#F98906] mx-auto" /> : <span className="text-gray-600">—</span>
-                ) : (
-                  <span className="text-white">{row.starter}</span>
-                )}
+          {/* Mobile view - simple list */}
+          <div className="sm:hidden space-y-4">
+            {[
+              { feature: 'Job Cards', starter: '40/mo', growth: '120/mo', elite: 'Unlimited' },
+              { feature: 'AI Queries', starter: '100/mo', growth: '500/mo', elite: 'Unlimited' },
+              { feature: 'Dashboard Analytics', starter: '✗', growth: '✓', elite: '✓' },
+              { feature: 'Fleet Management', starter: '✗', growth: '✗', elite: '✓' },
+              { feature: 'WhatsApp Integration', starter: '✗', growth: '✓', elite: '✓' },
+            ].map((row, idx) => (
+              <div key={idx} className="bg-[#111113] rounded-xl p-4 border border-[#1A1A1A]">
+                <h4 className="text-white font-medium mb-3">{row.feature}</h4>
+                <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                  <div>
+                    <span className="text-gray-500 block mb-1">Starter</span>
+                    <span className="text-white">{row.starter}</span>
+                  </div>
+                  <div>
+                    <span className="text-[#F98906] block mb-1">Growth</span>
+                    <span className="text-[#F98906] font-semibold">{row.growth}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500 block mb-1">Elite</span>
+                    <span className="text-white">{row.elite}</span>
+                  </div>
+                </div>
               </div>
-              <div className="text-sm text-center">
-                {typeof row.growth === 'boolean' ? (
-                  row.growth ? <Check className="w-4 h-4 text-[#F98906] mx-auto" /> : <span className="text-gray-600">—</span>
-                ) : (
-                  <span className="text-[#F98906] font-semibold">{row.growth}</span>
-                )}
-              </div>
-              <div className="text-sm text-center">
-                {typeof row.elite === 'boolean' ? (
-                  row.elite ? <Check className="w-4 h-4 text-[#F98906] mx-auto" /> : <span className="text-gray-600">—</span>
-                ) : (
-                  <span className="text-white">{row.elite}</span>
-                )}
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 
