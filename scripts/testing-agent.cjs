@@ -9,7 +9,7 @@ const fs = require('fs');
 const path = require('path');
 
 const CONFIG = {
-  baseUrl: 'https://eka-ai-c9d24.web.app',
+  baseUrl: 'https://eka-chat-preview.preview.emergentagent.com',
   apiUrl: process.env.VITE_API_URL || 'https://named-dialect-486912-c7.el.r.appspot.com',
   timeout: 10000,
 };

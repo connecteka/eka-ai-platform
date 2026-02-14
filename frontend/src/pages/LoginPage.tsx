@@ -14,7 +14,7 @@ const FEATURE_SLIDES = [
     features: ['Natural language queries', 'Real-time diagnostics', 'Repair suggestions', 'Cost estimates'],
     videoUrl: '/demos/ai-chat-demo.webm',
     demoId: 'ai-chat',
-    accentColor: '#F98906'
+    accentColor: '#F45D3D'
   },
   {
     id: 'job-cards',
@@ -24,7 +24,7 @@ const FEATURE_SLIDES = [
     features: ['One-click job card creation', 'Real-time status tracking', 'Auto GST calculation', 'Digital invoice delivery'],
     videoUrl: '/demos/job-card-demo.webm',
     demoId: 'job-cards',
-    accentColor: '#F98906'
+    accentColor: '#F45D3D'
   },
   {
     id: 'pdi',
@@ -34,7 +34,7 @@ const FEATURE_SLIDES = [
     features: ['120+ point inspection checklist', 'Photo & video documentation', 'Digital signatures', 'Instant PDF reports'],
     videoUrl: '/demos/pdi-demo.webm',
     demoId: 'pdi',
-    accentColor: '#F98906'
+    accentColor: '#F45D3D'
   },
   {
     id: 'fleet',
@@ -44,7 +44,7 @@ const FEATURE_SLIDES = [
     features: ['Multi-vehicle tracking', 'Service scheduling', 'Performance analytics', 'Cost optimization'],
     videoUrl: '/demos/fleet-demo.webm',
     demoId: 'fleet',
-    accentColor: '#F98906'
+    accentColor: '#F45D3D'
   },
   {
     id: 'invoicing',
@@ -54,7 +54,7 @@ const FEATURE_SLIDES = [
     features: ['Auto tax calculation', 'Email delivery', 'Payment tracking', 'Report generation'],
     videoUrl: '/demos/invoice-demo.webm',
     demoId: 'invoicing',
-    accentColor: '#F98906'
+    accentColor: '#F45D3D'
   },
   {
     id: 'analytics',
@@ -64,7 +64,7 @@ const FEATURE_SLIDES = [
     features: ['Revenue tracking', 'Customer insights', 'Service analytics', 'Growth metrics'],
     videoUrl: '/demos/analytics-demo.webm',
     demoId: 'analytics',
-    accentColor: '#F98906'
+    accentColor: '#F45D3D'
   }
 ];
 
@@ -271,9 +271,9 @@ const LoginPage = () => {
   // Loading state
   if (checkingAuth) {
     return (
-      <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-10 h-10 animate-spin text-[#F98906] mx-auto mb-3" />
+          <Loader2 className="w-10 h-10 animate-spin text-brand-orange mx-auto mb-3" />
           <p className="text-gray-400">Loading...</p>
         </div>
       </div>
@@ -281,7 +281,7 @@ const LoginPage = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0D0D0D]" data-testid="login-page">
+    <div className="min-h-screen flex flex-col bg-background" data-testid="login-page">
       
       {/* ═══════════════════════════════════════════════════════════════════
           FULL-WIDTH HEADER
@@ -292,10 +292,10 @@ const LoginPage = () => {
           <img 
             src={mascotUrl} 
             alt="EKA-AI" 
-            className="w-10 h-10 rounded-full object-cover border-2 border-[#F98906]"
+            className="w-10 h-10 rounded-full object-cover border-2 border-brand-orange"
           />
           <div className="flex flex-col">
-            <span className="text-xl font-bold text-white tracking-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+            <span className="text-xl font-bold text-white tracking-tight font-heading">
               eka-ai
             </span>
             <span className="text-[10px] text-gray-500 -mt-0.5">
@@ -311,7 +311,7 @@ const LoginPage = () => {
           <a href="#contact" className="text-sm text-gray-400 hover:text-white transition-colors">Contact sales</a>
           <button
             onClick={() => document.getElementById('auth-section')?.scrollIntoView({ behavior: 'smooth' })}
-            className="px-5 py-2 text-sm font-medium text-black bg-[#F98906] rounded-lg hover:bg-[#E07A00] transition-colors"
+            className="px-5 py-2 text-sm font-medium text-black bg-brand-orange rounded-lg hover:bg-brand-orange/90 transition-colors"
             data-testid="try-eka-ai-btn"
           >
             Try EKA-AI
@@ -336,13 +336,13 @@ const LoginPage = () => {
           
           {/* Tagline */}
           <div className="text-center lg:text-left mb-10 max-w-md mx-auto lg:mx-0">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight font-heading">
               {displayedMain}
-              {isTypingMain && <span className="animate-pulse text-[#F98906]">|</span>}
+              {isTypingMain && <span className="animate-pulse text-brand-orange">|</span>}
             </h1>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold italic text-[#F98906] leading-tight mt-1" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold italic text-brand-orange leading-tight mt-1 font-heading">
               {displayedHighlight}
-              {!isTypingMain && !typingComplete && <span className="animate-pulse text-[#F98906]">|</span>}
+              {!isTypingMain && !typingComplete && <span className="animate-pulse text-brand-orange">|</span>}
             </h2>
           </div>
 
@@ -391,7 +391,7 @@ const LoginPage = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   data-testid="name-input"
-                  className="w-full px-4 py-4 bg-[#1A1A1A] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#F98906] transition-colors"
+                  className="w-full px-4 py-4 bg-[#1A1A1A] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-brand-orange transition-colors"
                   placeholder="Your name"
                 />
               )}
@@ -405,7 +405,7 @@ const LoginPage = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   data-testid="email-input"
-                  className="w-full pl-12 pr-4 py-4 bg-[#1A1A1A] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#F98906] transition-colors"
+                  className="w-full pl-12 pr-4 py-4 bg-[#1A1A1A] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-brand-orange transition-colors"
                   placeholder="Enter your email"
                 />
               </div>
@@ -420,7 +420,7 @@ const LoginPage = () => {
                     required
                     minLength={6}
                     data-testid="password-input"
-                    className="w-full px-4 py-4 pr-12 bg-[#1A1A1A] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#F98906] transition-colors"
+                    className="w-full px-4 py-4 pr-12 bg-[#1A1A1A] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-brand-orange transition-colors"
                     placeholder={isSignUp ? 'Create a password (min 6 characters)' : 'Enter your password'}
                   />
                   <button
@@ -438,7 +438,7 @@ const LoginPage = () => {
                 type="submit"
                 disabled={isLoading}
                 data-testid="email-submit-btn"
-                className="w-full px-4 py-4 bg-[#F98906] text-black font-semibold rounded-xl hover:bg-[#E07A00] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full px-4 py-4 bg-brand-orange text-black font-semibold rounded-xl hover:bg-brand-orange/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -460,9 +460,9 @@ const LoginPage = () => {
                   className="text-sm text-gray-500 hover:text-white transition-colors"
                 >
                   {isSignUp ? (
-                    <>Already have an account? <span className="text-[#F98906] font-medium">Sign in</span></>
+                    <>Already have an account? <span className="text-brand-orange font-medium">Sign in</span></>
                   ) : (
-                    <>Don't have an account? <span className="text-[#F98906] font-medium">Sign up</span></>
+                    <>Don't have an account? <span className="text-brand-orange font-medium">Sign up</span></>
                   )}
                 </button>
               </div>
@@ -479,14 +479,14 @@ const LoginPage = () => {
         </div>
 
         {/* RIGHT SIDE - Feature Carousel (Desktop Only) */}
-        <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-[#1A0A00] via-[#0D0D0D] to-[#0D0D0D] flex-col relative overflow-hidden" id="features">
+        <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-[#1A0A00] via-background to-background flex-col relative overflow-hidden" id="features">
           
           {/* Decorative particles */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             {[...Array(30)].map((_, i) => (
               <div
                 key={i}
-                className="absolute w-1 h-1 rounded-full bg-[#F98906] opacity-20"
+                className="absolute w-1 h-1 rounded-full bg-brand-orange opacity-20"
                 style={{
                   left: `${Math.random() * 100}%`,
                   top: `${Math.random() * 100}%`,
@@ -501,7 +501,7 @@ const LoginPage = () => {
           <div className="flex items-center justify-between px-8 py-5">
             <span className="text-sm text-gray-500 flex items-center gap-2">
               eka-ai features
-              <span className="w-1.5 h-1.5 rounded-full bg-[#F98906] animate-pulse"></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-brand-orange animate-pulse"></span>
             </span>
             <span className="text-sm text-gray-500">
               {String(currentSlide + 1).padStart(2, '0')} / {String(FEATURE_SLIDES.length).padStart(2, '0')}
@@ -526,7 +526,7 @@ const LoginPage = () => {
             </div>
 
             {/* Feature Title */}
-            <h2 className="text-3xl lg:text-4xl font-bold text-white text-center mb-2" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+            <h2 className="text-3xl lg:text-4xl font-bold text-white text-center mb-2 font-heading">
               {currentFeature.title}
             </h2>
             <p className="text-lg text-gray-400 mb-4">{currentFeature.subtitle}</p>
@@ -543,7 +543,7 @@ const LoginPage = () => {
                   key={index}
                   className="flex items-center gap-2 bg-white/5 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/10"
                 >
-                  <div className="w-2 h-2 rounded-full bg-[#F98906] flex-shrink-0"></div>
+                  <div className="w-2 h-2 rounded-full bg-brand-orange flex-shrink-0"></div>
                   <span className="text-white text-sm">{feature}</span>
                 </div>
               ))}
@@ -585,7 +585,7 @@ const LoginPage = () => {
                 aria-label={`Go to slide ${index + 1}`}
                 className={`h-2 rounded-full transition-all ${
                   index === currentSlide 
-                    ? 'w-8 bg-[#F98906]' 
+                    ? 'w-8 bg-brand-orange' 
                     : 'w-2 bg-white/30 hover:bg-white/50'
                 }`}
               />
@@ -604,7 +604,7 @@ const LoginPage = () => {
       {/* Mobile Feature Section */}
       <div className="lg:hidden w-full bg-[#0A0A0B] py-8 px-6">
         <div className="text-center">
-          <h3 className="text-xl font-bold text-white mb-2" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+          <h3 className="text-xl font-bold text-white mb-2 font-heading">
             {currentFeature.title}
           </h3>
           <p className="text-gray-400 text-sm mb-4">{currentFeature.subtitle}</p>
@@ -616,7 +616,7 @@ const LoginPage = () => {
                 key={index}
                 onClick={() => setCurrentSlide(index)}
                 className={`h-2 rounded-full transition-all ${
-                  index === currentSlide ? 'w-6 bg-[#F98906]' : 'w-2 bg-white/30'
+                  index === currentSlide ? 'w-6 bg-brand-orange' : 'w-2 bg-white/30'
                 }`}
               />
             ))}
@@ -626,7 +626,7 @@ const LoginPage = () => {
           <div className="flex flex-wrap justify-center gap-2">
             {currentFeature.features.slice(0, 2).map((feature, index) => (
               <div key={index} className="flex items-center gap-1.5 bg-white/5 rounded-full px-3 py-1.5 text-xs text-white">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#F98906]"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-brand-orange"></span>
                 {feature}
               </div>
             ))}
@@ -649,9 +649,9 @@ const LoginPage = () => {
                 <img 
                   src={mascotUrl} 
                   alt="EKA-AI" 
-                  className="w-8 h-8 rounded-full object-cover border border-[#F98906]"
+                  className="w-8 h-8 rounded-full object-cover border border-brand-orange"
                 />
-                <span className="text-lg font-bold text-white" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                <span className="text-lg font-bold text-white font-heading">
                   eka-ai
                 </span>
               </div>
