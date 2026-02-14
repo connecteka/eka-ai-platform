@@ -296,7 +296,7 @@ const LoginPage = () => {
           />
           <div className="flex flex-col">
             <span className="text-xl font-bold text-white tracking-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
-              eka-ai
+              eka<span className="text-[#F98906]">-</span>a<span className="text-[#F98906]">ı</span>
             </span>
             <span className="text-[10px] text-gray-500 -mt-0.5">
               Governed Automobile Intelligence
