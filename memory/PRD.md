@@ -46,8 +46,37 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 - [x] **Full-width header on Login Page**
 - [x] **Comprehensive legal footer with all compliance links**
 - [x] **Complete Legal Page (Privacy, Terms, Refund, Cookies, GDPR)**
+- [x] **NEW: EKA Claude.ai-style UI for /app/* routes**
+- [x] **NEW: useLocalUser hook (no Supabase dependency)**
 
 ## What's Been Implemented
+
+### February 14, 2026 - Update 25 (EKA Claude.ai-style UI Integration)
+64. **New EKA App Router (EkaAppRouter.tsx)**:
+    - Handles all `/app/*` routes with nested routing
+    - Routes: dashboard, chat, chats, job-cards, invoices, mg-fleet, settings
+    - Auto-redirect from `/app` to `/app/dashboard`
+
+65. **useLocalUser Hook (src/hooks/useLocalUser.ts)**:
+    - Custom authentication hook using localStorage
+    - Reads `token` and `user` from localStorage
+    - JSON parsing with error handling
+    - Multi-tab sync via storage events
+    - signOut clears storage and redirects to /login
+    - **No Supabase dependency**
+
+66. **EkaAppShell Updated**:
+    - Uses useLocalUser instead of useAuth
+    - Dark theme sidebar + topbar
+    - Proper auth flow with redirect to /login if not authenticated
+
+67. **EkaSidebar Updated**:
+    - Uses useLocalUser hook
+    - Sign out functionality clears localStorage
+
+68. **EkaTopBar Updated**:
+    - Uses useLocalUser hook  
+    - Displays user info from localStorage
 
 ### February 14, 2026 - Update 24 (Full-Width Header & Legal Compliance)
 61. **LoginPage Full-Width Header Implementation**:
