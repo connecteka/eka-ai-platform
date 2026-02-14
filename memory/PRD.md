@@ -46,6 +46,27 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 
 ## What's Been Implemented
 
+### February 14, 2026 - Update 22 (Primary Color Updated)
+59. **Brand Color Updated from Orange to Coral**:
+    - Primary color changed from `#E8952F` to `#da7756` (RGB: 218, 119, 86)
+    - Updated color variations:
+      - Hover: `#c45f40`
+      - Light: `#fdf3f0`
+      - Super Light: `#fffaf8`
+      - Border: `rgba(218, 119, 86, 0.2)`
+    - Files updated:
+      - `index.css` - CSS variables and animations
+      - `styles.ts` - Component design tokens
+      - `tailwind.config.js` - Tailwind theme colors
+      - `DashboardPage.tsx` - Chart colors
+      - `MGFleetPage.tsx` - Fleet chart colors
+      - `ProductTour.tsx` - Tour UI colors
+      - `SignaturePad.tsx` - Signature button colors
+      - `useJobCardDetail.ts` - Insight border colors
+      - `EkaAIInsightsPanel.tsx` - Panel styling
+      - `JobCardDetailPage.tsx` - Animation keyframes
+
+
 ### February 14, 2026 - Update 20 (Backend Data Integration Complete)
 56. **Backend Now Fully Connected to MongoDB**:
     - All 5 job cards seeded with complete data:
