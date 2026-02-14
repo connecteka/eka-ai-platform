@@ -61,39 +61,29 @@ const AppRouter: React.FC = () => {
       <Route path="/public/approval" element={<PublicApprovalPage />} />
 
       {/* ==================== AUTHENTICATED APP ROUTES ==================== */}
-      {/* New Claude.ai-style UI at /app/* */}
+      {/* New Claude.ai-style UI at /app/* - THIS HANDLES ALL /app/ ROUTES */}
       <Route path="/app/*" element={<EkaAppRoutes />} />
       
-      {/* Legacy routes under old AppShell */}
+      {/* Legacy routes (non-/app/ paths) under old AppShell */}
       <Route element={<AppShell />}>
-        {/* Dashboard */}
-        <Route path="/app" element={<DashboardPage />} />
-        <Route path="/app/dashboard" element={<DashboardPage />} />
+        {/* Dashboard (legacy path without /app prefix) */}
         <Route path="/dashboard" element={<DashboardPage />} />
         
-        {/* AI Chat */}
+        {/* AI Chat (legacy paths) */}
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/chats" element={<ChatsPage />} />
         
-        {/* Job Cards */}
-        <Route path="/app/job-cards" element={<JobCardsPage />} />
-        <Route path="/app/job-cards/:id" element={<JobCardDetailPage />} />
+        {/* Job Cards (legacy paths without /app prefix) */}
         <Route path="/job-cards" element={<JobCardsPage />} />
         <Route path="/job-cards/:id" element={<JobCardDetailPage />} />
         
-        {/* PDI Checklist */}
-        <Route path="/app/pdi" element={<PDIPage />} />
-        
-        {/* Fleet Management */}
-        <Route path="/app/fleet" element={<MGFleetPage />} />
+        {/* Fleet Management (legacy path) */}
         <Route path="/mg-fleet" element={<MGFleetPage />} />
         
-        {/* Invoices */}
-        <Route path="/app/invoices" element={<InvoicesPage />} />
+        {/* Invoices (legacy path) */}
         <Route path="/invoices" element={<InvoicesPage />} />
         
-        {/* Settings */}
-        <Route path="/app/settings" element={<SettingsPage />} />
+        {/* Settings (legacy path) */}
         <Route path="/settings" element={<SettingsPage />} />
         
         {/* Other App Pages */}
