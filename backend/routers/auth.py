@@ -23,6 +23,131 @@ class GoogleTokenRequest(BaseModel):
     access_token: str
 
 
+class GoogleCodeRequest(BaseModel):
+    """Request body for Google OAuth authorization code exchange."""
+    code: str
+
+
+# Google OAuth Client credentials
+GOOGLE_CLIENT_ID = "429173688791-h8le2ah2l4elcn1je494hdfqv5558nfi.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", "")
+
+
+@router.post("/google/callback")
+async def google_oauth_callback(request: GoogleCodeRequest, response: Response):
+    """
+    Exchange Google authorization code for tokens and create session.
+    This is used with the 'auth-code' flow from @react-oauth/google.
+    """
+    try:
+        # Exchange authorization code for tokens
+        async with httpx.AsyncClient() as client:
+            token_response = await client.post(
+                "https://oauth2.googleapis.com/token",
+                data={
+                    "code": request.code,
+                    "client_id": GOOGLE_CLIENT_ID,
+                    "client_secret": GOOGLE_CLIENT_SECRET,
+                    "redirect_uri": "postmessage",  # Required for popup flow
+                    "grant_type": "authorization_code"
+                },
+                timeout=10.0
+            )
+            
+            if token_response.status_code != 200:
+                error_data = token_response.json()
+                print(f"Token exchange failed: {error_data}")
+                raise HTTPException(status_code=401, detail="Failed to exchange authorization code")
+            
+            token_data = token_response.json()
+            access_token = token_data.get("access_token")
+            
+            if not access_token:
+                raise HTTPException(status_code=401, detail="No access token received")
+            
+            # Get user info with access token
+            userinfo_response = await client.get(
+                "https://www.googleapis.com/oauth2/v3/userinfo",
+                headers={"Authorization": f"Bearer {access_token}"},
+                timeout=10.0
+            )
+            
+            if userinfo_response.status_code != 200:
+                raise HTTPException(status_code=401, detail="Failed to get user info from Google")
+            
+            user_info = userinfo_response.json()
+        
+        email = user_info.get("email")
+        name = user_info.get("name", email.split("@")[0] if email else "User")
+        picture = user_info.get("picture", "")
+        
+        if not email:
+            raise HTTPException(status_code=400, detail="Email not provided by Google")
+        
+        # Check if user exists
+        existing_user = users_collection.find_one({"email": email}, {"_id": 0})
+        
+        if existing_user:
+            users_collection.update_one(
+                {"email": email},
+                {"$set": {
+                    "name": name,
+                    "picture": picture,
+                    "updated_at": datetime.now(timezone.utc)
+                }}
+            )
+            user_id = existing_user.get("user_id")
+        else:
+            user_id = f"user_{uuid.uuid4().hex[:12]}"
+            users_collection.insert_one({
+                "user_id": user_id,
+                "email": email,
+                "name": name,
+                "picture": picture,
+                "role": "user",
+                "auth_provider": "google",
+                "created_at": datetime.now(timezone.utc),
+                "updated_at": datetime.now(timezone.utc)
+            })
+        
+        # Create session
+        session_token = f"google_session_{uuid.uuid4().hex}"
+        expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+        
+        user_sessions_collection.delete_many({"user_id": user_id})
+        
+        user_sessions_collection.insert_one({
+            "user_id": user_id,
+            "session_token": session_token,
+            "expires_at": expires_at,
+            "created_at": datetime.now(timezone.utc)
+        })
+        
+        response.set_cookie(
+            key="session_token",
+            value=session_token,
+            httponly=True,
+            secure=True,
+            samesite="none",
+            path="/",
+            max_age=7 * 24 * 60 * 60
+        )
+        
+        user_doc = users_collection.find_one({"user_id": user_id}, {"_id": 0, "password": 0})
+        
+        return {
+            "success": True,
+            "user": user_doc,
+            "token": session_token
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Google OAuth Callback Error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Authentication failed: {str(e)}")
+
+
 @router.post("/google")
 async def google_oauth_login(request: GoogleTokenRequest, response: Response):
     """
