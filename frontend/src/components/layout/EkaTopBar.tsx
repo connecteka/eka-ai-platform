@@ -59,21 +59,33 @@ const EkaTopBar: React.FC<Props> = ({ intelligenceMode, onModeChange }) => {
   const isPro = false;
 
   return (
-    <header className="h-14 flex-shrink-0 flex items-center justify-between px-5 bg-white/95 backdrop-blur-md border-b border-gray-200 sticky top-0 z-40" data-testid="eka-topbar">
+    <header className="h-14 flex-shrink-0 flex items-center justify-between px-3 sm:px-5 bg-white/95 backdrop-blur-md border-b border-gray-200 sticky top-0 z-40" data-testid="eka-topbar">
 
-      {/* Page title with mascot */}
-      <div className="flex items-center gap-2.5">
-        <img 
-          src={MASCOT_URL} 
-          alt="eka-ai" 
-          className="w-7 h-7 object-cover"
-          style={{ borderRadius: '4px' }}
-        />
-        <div className="flex flex-col">
-          <h1 className="text-sm font-semibold text-gray-800 tracking-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
-            eka<span className="text-[#F98906]">-</span>a<span className="text-[#F98906]">ı</span>
-            <span className="text-gray-400 font-normal ml-2">/ {title}</span>
-          </h1>
+      {/* Left side - hamburger + page title */}
+      <div className="flex items-center gap-2">
+        {/* Mobile hamburger */}
+        <button
+          onClick={() => setMobileMenuOpen(true)}
+          className="md:hidden p-2 -ml-1 text-gray-600 hover:text-gray-800 rounded-lg hover:bg-gray-100 transition-colors"
+          data-testid="mobile-menu-btn"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+        
+        {/* Page title with mascot */}
+        <div className="flex items-center gap-2">
+          <img 
+            src={MASCOT_URL} 
+            alt="eka-ai" 
+            className="w-7 h-7 object-cover hidden sm:block"
+            style={{ borderRadius: '4px' }}
+          />
+          <div className="flex flex-col">
+            <h1 className="text-sm font-semibold text-gray-800 tracking-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+              <span className="hidden sm:inline">eka<span className="text-[#F98906]">-</span>a<span className="text-[#F98906]">ı</span></span>
+              <span className="text-gray-400 font-normal sm:ml-2">{title}</span>
+            </h1>
+          </div>
         </div>
       </div>
 
