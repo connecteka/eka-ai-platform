@@ -180,22 +180,36 @@ interface CostPaymentSectionProps {
 }
 
 export const CostPaymentSection: React.FC<CostPaymentSectionProps> = ({ payment }) => {
+  // Default payment values if payment is undefined
+  const safePayment = payment || {
+    services_total: 0,
+    parts_total: 0,
+    subtotal: 0,
+    gst: 0,
+    discount: 0,
+    grand_total: 0,
+    amount_paid: 0,
+    payment_mode: 'N/A'
+  };
+
   const costItems = [
-    { label: 'Labour Charges', amount: payment.services_total },
-    { label: 'Parts Cost', amount: payment.parts_total },
-    { label: 'Subtotal', amount: payment.subtotal, isSubtotal: true },
-    { label: 'GST (18%)', amount: payment.gst },
-    { label: 'Discount Applied', amount: -(payment.discount || 0), isDiscount: true },
-    { label: 'Grand Total', amount: payment.grand_total, isGrandTotal: true },
+    { label: 'Labour Charges', amount: safePayment.services_total || 0 },
+    { label: 'Parts Cost', amount: safePayment.parts_total || 0 },
+    { label: 'Subtotal', amount: safePayment.subtotal || 0, isSubtotal: true },
+    { label: 'GST (18%)', amount: safePayment.gst || 0 },
+    { label: 'Discount Applied', amount: -(safePayment.discount || 0), isDiscount: true },
+    { label: 'Grand Total', amount: safePayment.grand_total || 0, isGrandTotal: true },
   ];
+
+  const isPaid = (safePayment.amount_paid || 0) >= (safePayment.grand_total || 0);
 
   return (
     <div style={{ padding: '0 32px 24px' }}>
       <Card>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <span style={{ fontSize: '16px', fontWeight: 600, color: styles.gray800 }}>💰 Cost & Payment</span>
-          <Badge variant={payment.amount_paid >= payment.grand_total ? 'success' : 'warning'}>
-            {payment.amount_paid >= payment.grand_total ? 'Fully Paid' : 'Partial Payment'}
+          <Badge variant={isPaid ? 'success' : 'warning'}>
+            {isPaid ? 'Fully Paid' : 'Partial Payment'}
           </Badge>
         </div>
 
