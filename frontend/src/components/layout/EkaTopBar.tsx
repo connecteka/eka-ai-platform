@@ -42,6 +42,7 @@ const EkaTopBar: React.FC<Props> = ({ intelligenceMode, onModeChange }) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useLocalUser();
+  const { setMobileMenuOpen } = useShell();
   const [open, setOpen] = useState<'mode' | 'bell' | 'user' | null>(null);
 
   const toggle = (menu: typeof open) => setOpen(o => o === menu ? null : menu);
