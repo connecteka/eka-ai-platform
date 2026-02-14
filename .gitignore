@@ -10,12 +10,13 @@ dist/
 build/
 *.egg-info/
 
-# Environment files (keep examples)
-.env
+# Environment files - local only
 .env.local
 .env.development.local
 .env.test.local
-.env.production.local
+
+# Keep these for deployment
+!.env
 !.env.example
 !.env.production
 
@@ -45,7 +46,3 @@ test_reports/
 *.pem
 *.key
 uploads/
--e 
-# Environment files
-*.env
-*.env.*
