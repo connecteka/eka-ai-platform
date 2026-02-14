@@ -80,7 +80,7 @@ const Welcome: React.FC<{ onChip: (p: string) => void; usageCount: number }> = (
         </button>
       </div>
       
-      <div className="grid grid-cols-2 gap-3 w-full max-w-lg">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg">
         {CHIPS.map(c => {
           const Icon = c.icon;
           const isPro = 'isPro' in c && c.isPro;
@@ -89,7 +89,7 @@ const Welcome: React.FC<{ onChip: (p: string) => void; usageCount: number }> = (
               key={c.label}
               onClick={() => isPro ? navigate('/pricing') : onChip(c.prompt)}
               className={cn(
-                "flex items-center gap-3 p-4 rounded-xl text-left transition-all group border",
+                "flex items-center gap-3 p-3 sm:p-4 rounded-xl text-left transition-all group border",
                 isPro 
                   ? "bg-gray-50 border-gray-200 hover:border-[#F98906]/40"
                   : "bg-white border-gray-200 hover:border-[#F98906]/40 hover:shadow-md"
@@ -97,13 +97,13 @@ const Welcome: React.FC<{ onChip: (p: string) => void; usageCount: number }> = (
             >
               <Icon className={cn("w-4 h-4 flex-shrink-0", isPro ? "text-gray-400" : "text-[#F98906]")} />
               <span className={cn(
-                "text-[13px] leading-snug transition-colors",
+                "text-[12px] sm:text-[13px] leading-snug transition-colors flex-1",
                 isPro ? "text-gray-400" : "text-gray-600 group-hover:text-gray-800"
               )}>
                 {c.label}
               </span>
               {isPro && (
-                <span className="ml-auto flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#F98906]/10 text-[#F98906] text-[9px] font-bold">
+                <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#F98906]/10 text-[#F98906] text-[9px] font-bold flex-shrink-0">
                   <Lock className="w-2.5 h-2.5" />
                   PRO
                 </span>
