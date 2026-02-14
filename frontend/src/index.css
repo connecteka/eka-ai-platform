@@ -144,8 +144,8 @@ body {
   font-family: var(--font-primary);
   font-size: var(--text-base);
   line-height: 1.6;
-  color: var(--gray-700);
-  background-color: var(--white);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -156,10 +156,10 @@ body {
 
 @keyframes pulse-orange {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(218, 119, 86, 0.4);
+    box-shadow: 0 0 0 0 rgba(249, 137, 6, 0.4);
   }
   50% {
-    box-shadow: 0 0 0 8px rgba(218, 119, 86, 0);
+    box-shadow: 0 0 0 8px rgba(249, 137, 6, 0);
   }
 }
 
