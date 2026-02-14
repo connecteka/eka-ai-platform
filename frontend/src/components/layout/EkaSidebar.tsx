@@ -63,7 +63,7 @@ interface Props { collapsed: boolean; onToggle: () => void; }
 const EkaSidebar: React.FC<Props> = ({ collapsed, onToggle }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { user, signOut } = useAuth();
+  const { user, signOut } = useLocalUser();
   const [hovered, setHovered] = useState<string | null>(null);
 
   const isActive = (p: string) => pathname === p || pathname.startsWith(p + '/');
