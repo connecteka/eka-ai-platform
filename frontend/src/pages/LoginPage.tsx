@@ -507,10 +507,10 @@ const MobileFeatureShowcase: React.FC = () => {
         >
           {currentFeature.icon}
         </div>
-        <h3 className="text-white text-xl font-bold" data-testid="mobile-feature-title">
+        <h3 className="text-text-primary text-xl font-bold font-display" data-testid="mobile-feature-title">
           {currentFeature.title}
         </h3>
-        <p className="text-gray-400 text-sm mt-1" data-testid="mobile-feature-desc">
+        <p className="text-text-muted text-sm mt-1 font-serif" data-testid="mobile-feature-desc">
           {currentFeature.desc}
         </p>
       </div>
@@ -524,7 +524,7 @@ const MobileFeatureShowcase: React.FC = () => {
             data-testid={`mobile-dot-${index}`}
             aria-label={`Go to feature ${index + 1}`}
             className={`h-2 rounded-full transition-all ${
-              index === currentSlide ? 'w-6 bg-brand-orange' : 'w-2 bg-white/30'
+              index === currentSlide ? 'w-6 bg-brand-orange' : 'w-2 bg-border/30'
             }`}
           />
         ))}
@@ -539,12 +539,12 @@ const MobileFeatureShowcase: React.FC = () => {
             data-testid={`mobile-feature-btn-${index}`}
             className={`p-3 rounded-lg text-center transition-all ${
               index === currentSlide 
-                ? 'bg-white/10 border border-white/20' 
-                : 'bg-white/5'
+                ? 'bg-surface border border-border' 
+                : 'bg-border/5'
             }`}
           >
             <span className="text-xl block">{feature.icon}</span>
-            <p className="text-[10px] text-white/70 mt-1 truncate">{feature.title}</p>
+            <p className="text-[10px] text-text-muted mt-1 truncate font-serif">{feature.title}</p>
           </button>
         ))}
       </div>
