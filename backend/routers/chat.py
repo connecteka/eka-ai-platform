@@ -1,6 +1,6 @@
 """
 AI Chat routes for EKA-AI Backend.
-Handles AI chat endpoints and session management.
+Handles AI chat endpoints and session management with Supabase.
 """
 import os
 import re
@@ -10,20 +10,68 @@ import asyncio
 from datetime import datetime, timezone
 from typing import Optional, Dict, Any
 
-from fastapi import APIRouter, HTTPException, Query
-from fastapi.responses import StreamingResponse
+from fastapi import APIRouter, HTTPException, Query, Request, Cookie
 
 from models.schemas import ChatRequest, ChatStreamRequest, ChatSessionCreate, ChatMessageSave
-from utils.database import chat_sessions_collection, serialize_doc, serialize_docs
+from utils.supabase_db import (
+    get_chat_sessions, get_chat_session_by_id, create_chat_session,
+    update_chat_session, add_message_to_chat, delete_chat_session,
+    get_user_subscription, increment_usage, check_usage_limit, get_session_by_token,
+    serialize_doc, serialize_docs
+)
+from fastapi.responses import StreamingResponse
 
 router = APIRouter(prefix="/api/chat", tags=["AI Chat"])
 
 EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
 
+# Plan limits for AI queries
+PLAN_LIMITS = {
+    "starter": {"ai_queries": 100, "job_cards": 40},
+    "growth": {"ai_queries": 500, "job_cards": 120},
+    "elite": {"ai_queries": -1, "job_cards": -1},
+}
+
+
+def get_user_from_request(request: Request, session_token: Optional[str] = None) -> Optional[str]:
+    """Extract user_id from request."""
+    token = session_token
+    if not token:
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header.split(" ")[1]
+    
+    if not token:
+        return None
+    
+    session = get_session_by_token(token)
+    return session.get("user_id") if session else None
+
 
 @router.post("")
-async def chat_with_ai(request: ChatRequest):
-    """Main AI chat endpoint using Emergent LLM integration."""
+async def chat_with_ai(request: ChatRequest, req: Request, session_token: Optional[str] = Cookie(None)):
+    """Main AI chat endpoint using Emergent LLM integration with usage tracking."""
+    
+    # Get user for usage tracking
+    user_id = get_user_from_request(req, session_token)
+    
+    # Check usage limits if user is authenticated
+    if user_id:
+        subscription = get_user_subscription(user_id)
+        plan = subscription.get("plan", "starter")
+        limits = PLAN_LIMITS.get(plan, PLAN_LIMITS["starter"])
+        
+        allowed, current, limit = check_usage_limit(user_id, "ai_queries", limits)
+        if not allowed:
+            return {
+                "response_content": {
+                    "visual_text": f"You have reached your monthly AI query limit ({limit} queries). Please upgrade your plan for more queries.",
+                    "audio_text": "AI query limit reached."
+                },
+                "job_status_update": request.status,
+                "ui_triggers": {"theme_color": "#FF0000", "brand_identity": "LIMIT_REACHED", "show_orange_border": False},
+                "usage": {"current": current, "limit": limit, "plan": plan}
+            }
     
     if not EMERGENT_LLM_KEY:
         return {
@@ -88,6 +136,10 @@ Vehicle Context:
         user_message = UserMessage(text=user_text)
         response_text = await chat.send_message(user_message)
         
+        # Track usage after successful response
+        if user_id:
+            increment_usage(user_id, "ai_queries", 1)
+        
         reg_pattern = r'([A-Z]{2}[\s-]?\d{1,2}[\s-]?[A-Z]{0,2}[\s-]?\d{1,4})'
         show_orange_border = bool(re.search(reg_pattern, user_text, re.IGNORECASE))
         
@@ -125,10 +177,23 @@ Vehicle Context:
 
 
 @router.post("/stream")
-async def chat_stream(request: ChatStreamRequest):
-    """SSE streaming endpoint for AI chat responses."""
+async def chat_stream(request: ChatStreamRequest, req: Request, session_token: Optional[str] = Cookie(None)):
+    """SSE streaming endpoint for AI chat responses with usage tracking."""
+    
+    user_id = get_user_from_request(req, session_token)
     
     async def generate_stream():
+        # Check usage limits
+        if user_id:
+            subscription = get_user_subscription(user_id)
+            plan = subscription.get("plan", "starter")
+            limits = PLAN_LIMITS.get(plan, PLAN_LIMITS["starter"])
+            
+            allowed, current, limit = check_usage_limit(user_id, "ai_queries", limits)
+            if not allowed:
+                yield f"data: {json.dumps({'type': 'error', 'content': f'Monthly AI query limit reached ({limit}). Please upgrade your plan.'})}\n\n"
+                return
+        
         if not EMERGENT_LLM_KEY:
             yield f"data: {json.dumps({'type': 'error', 'content': 'AI service not configured'})}\n\n"
             return
@@ -155,6 +220,10 @@ Be professional yet friendly. Provide accurate automotive advice with cost estim
             
             user_message = UserMessage(text=request.message)
             response_text = await chat.send_message(user_message)
+            
+            # Track usage after successful response
+            if user_id:
+                increment_usage(user_id, "ai_queries", 1)
             
             words = response_text.split(' ')
             buffer = ""
@@ -189,34 +258,30 @@ Be professional yet friendly. Provide accurate automotive advice with cost estim
 # ==================== CHAT SESSIONS CRUD ====================
 
 @router.post("/sessions", status_code=201)
-def create_chat_session(session_data: ChatSessionCreate):
+def create_new_chat_session(session_data: ChatSessionCreate):
     """Create a new chat session."""
     session_id = f"chat-{uuid.uuid4().hex[:12]}"
     doc = {
         "session_id": session_id,
         "title": session_data.title or "New Conversation",
         "context": session_data.context or {},
-        "messages": [],
-        "created_at": datetime.now(timezone.utc),
-        "updated_at": datetime.now(timezone.utc)
+        "messages": []
     }
-    result = chat_sessions_collection.insert_one(doc)
-    doc["_id"] = result.inserted_id
-    return {"success": True, "data": serialize_doc(doc), "session_id": session_id}
+    result = create_chat_session(doc)
+    return {"success": True, "data": serialize_doc(result), "session_id": session_id}
 
 
 @router.get("/sessions")
-def get_chat_sessions(limit: int = Query(20, ge=1, le=100)):
+def get_all_chat_sessions(limit: int = Query(20, ge=1, le=100)):
     """Get all chat sessions, ordered by most recent."""
-    cursor = chat_sessions_collection.find({}).sort("updated_at", -1).limit(limit)
-    docs = list(cursor)
-    return {"success": True, "sessions": serialize_docs(docs)}
+    sessions = get_chat_sessions(limit=limit)
+    return {"success": True, "sessions": serialize_docs(sessions)}
 
 
 @router.get("/sessions/{session_id}")
-def get_chat_session(session_id: str):
+def get_single_chat_session(session_id: str):
     """Get a single chat session with all messages."""
-    doc = chat_sessions_collection.find_one({"session_id": session_id})
+    doc = get_chat_session_by_id(session_id)
     if not doc:
         raise HTTPException(status_code=404, detail="Chat session not found")
     return {"success": True, "data": serialize_doc(doc)}
@@ -232,31 +297,17 @@ def add_message_to_session(session_id: str, message: ChatMessageSave):
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
     
-    session = chat_sessions_collection.find_one({"session_id": session_id})
-    update_data = {
-        "$push": {"messages": msg_doc},
-        "$set": {"updated_at": datetime.now(timezone.utc)}
-    }
-    
-    if session and session.get("title") == "New Conversation" and message.role == "user":
-        title = message.content[:50] + "..." if len(message.content) > 50 else message.content
-        update_data["$set"]["title"] = title
-    
-    result = chat_sessions_collection.update_one(
-        {"session_id": session_id},
-        update_data
-    )
-    
-    if result.matched_count == 0:
+    result = add_message_to_chat(session_id, msg_doc)
+    if not result:
         raise HTTPException(status_code=404, detail="Chat session not found")
     
     return {"success": True, "message": msg_doc}
 
 
 @router.delete("/sessions/{session_id}")
-def delete_chat_session(session_id: str):
+def delete_single_chat_session(session_id: str):
     """Delete a chat session."""
-    result = chat_sessions_collection.delete_one({"session_id": session_id})
-    if result.deleted_count == 0:
+    success = delete_chat_session(session_id)
+    if not success:
         raise HTTPException(status_code=404, detail="Chat session not found")
     return {"success": True, "message": "Session deleted"}
