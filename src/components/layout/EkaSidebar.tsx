@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useLocalUser } from '../../hooks/useLocalUser';
 import {
   LayoutDashboard, Wrench, ClipboardCheck, Truck, FileText,
   Settings, ChevronLeft, ChevronRight, Plus, MessageSquare,
@@ -33,7 +33,7 @@ interface Props { collapsed: boolean; onToggle: () => void; }
 const EkaSidebar: React.FC<Props> = ({ collapsed, onToggle }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { user, signOut } = useAuth();
+  const { user, signOut } = useLocalUser();
   const [hovered, setHovered] = useState<string | null>(null);
 
   const isActive = (p: string) => pathname === p || pathname.startsWith(p + '/');

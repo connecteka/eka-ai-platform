@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Bell, ChevronDown, Zap, Brain, Database } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
+import { useLocalUser } from '../../hooks/useLocalUser';
 import type { IntelligenceMode } from '../../types';
 import { cn } from '../../lib/utils';
 
@@ -36,7 +36,7 @@ interface Props {
 const EkaTopBar: React.FC<Props> = ({ intelligenceMode, onModeChange }) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { user, signOut } = useLocalUser();
   const [open, setOpen] = useState<'mode' | 'bell' | 'user' | null>(null);
 
   const toggle = (menu: typeof open) => setOpen(o => o === menu ? null : menu);

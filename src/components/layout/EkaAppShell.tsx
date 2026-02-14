@@ -1,6 +1,6 @@
 import React, { useState, createContext, useContext } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useLocalUser } from '../../hooks/useLocalUser';
 import EkaSidebar from './EkaSidebar';
 import EkaTopBar  from './EkaTopBar';
 import type { IntelligenceMode } from '../../types';
@@ -31,7 +31,7 @@ const Loader: React.FC = () => (
 );
 
 const EkaAppShell: React.FC = () => {
-  const { user, loading } = useAuth();
+  const { user, loading } = useLocalUser();
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const [mode, setMode] = useState<IntelligenceMode>('FAST');
