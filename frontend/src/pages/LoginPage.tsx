@@ -282,23 +282,23 @@ const LoginPage = () => {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-[#0D0D0D] border-b border-white/5 px-4 py-4 relative z-20">
+          <div className="lg:hidden bg-background border-b border-border/10 px-4 py-4 relative z-20">
             {navItems.map((item, index) => (
               <button
                 key={index}
-                className="flex items-center justify-between w-full px-3 py-3 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded-md"
+                className="flex items-center justify-between w-full px-3 py-3 text-sm text-text-muted hover:text-text-primary hover:bg-border/5 rounded-md font-serif"
               >
                 {item.label}
                 {item.hasDropdown && <ChevronDown className="w-4 h-4" />}
               </button>
             ))}
-            <div className="border-t border-white/5 mt-3 pt-3 space-y-2">
-              <button className="w-full px-3 py-3 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded-md text-left">
+            <div className="border-t border-border/10 mt-3 pt-3 space-y-2">
+              <button className="w-full px-3 py-3 text-sm text-text-muted hover:text-text-primary hover:bg-border/5 rounded-md text-left font-serif">
                 Contact sales
               </button>
               <Link
                 to="/app/dashboard"
-                className="block w-full px-3 py-3 text-sm text-white bg-brand-orange rounded-md text-center hover:bg-brand-hover"
+                className="block w-full px-3 py-3 text-sm text-text-primary bg-brand-orange rounded-md text-center hover:bg-brand-hover font-medium"
               >
                 Try EKA-AI
               </Link>
@@ -309,7 +309,7 @@ const LoginPage = () => {
         {/* Main Content */}
         <div className="relative flex-1 flex flex-col items-center justify-center px-4 sm:px-8 py-8 lg:py-0">
           {/* Animated Tagline */}
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-serif text-white text-center leading-tight mb-8 lg:mb-12 min-h-[120px] sm:min-h-[160px] lg:min-h-[200px]">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-display text-text-primary text-center leading-tight mb-8 lg:mb-12 min-h-[120px] sm:min-h-[160px] lg:min-h-[200px]">
             <span className="block">
               {displayedMain}
               {isTypingMain && <span className="animate-pulse text-brand-orange">|</span>}
@@ -327,10 +327,10 @@ const LoginPage = () => {
               onClick={handleGoogleLogin}
               disabled={isGoogleLoading}
               data-testid="google-login-btn"
-              className="w-full flex items-center justify-center gap-3 px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-white/20 transition-all mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-3 px-4 py-3.5 bg-surface border border-border rounded-xl hover:bg-background-alt hover:border-border transition-all mb-4 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
             >
               {isGoogleLoading ? (
-                <Loader2 className="w-5 h-5 animate-spin text-white" />
+                <Loader2 className="w-5 h-5 animate-spin text-text-primary" />
               ) : (
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -339,23 +339,23 @@ const LoginPage = () => {
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                 </svg>
               )}
-              <span className="text-white font-medium">
+              <span className="text-text-primary font-medium font-serif">
                 {isGoogleLoading ? 'Connecting...' : 'Continue with Google'}
               </span>
             </button>
 
             {/* Divider */}
             <div className="flex items-center gap-4 my-6">
-              <div className="flex-1 h-px bg-white/10"></div>
-              <span className="text-sm text-gray-500">OR</span>
-              <div className="flex-1 h-px bg-white/10"></div>
+              <div className="flex-1 h-px bg-border/20"></div>
+              <span className="text-sm text-text-muted font-serif">OR</span>
+              <div className="flex-1 h-px bg-border/20"></div>
             </div>
 
             {/* Email Form */}
             <form onSubmit={handleEmailSubmit} className="space-y-4">
               {error && (
-                <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3" data-testid="auth-error">
-                  <p className="text-sm text-red-400">{error}</p>
+                <div className="bg-red-50 border border-red-200 rounded-xl p-3" data-testid="auth-error">
+                  <p className="text-sm text-red-600 font-serif">{error}</p>
                 </div>
               )}
 
@@ -367,21 +367,21 @@ const LoginPage = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     data-testid="name-input"
-                    className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-orange/50 focus:border-brand-orange/50 transition-all"
+                    className="w-full px-4 py-3.5 bg-surface border border-border rounded-xl text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-brand-orange/50 focus:border-brand-orange transition-all font-serif"
                     placeholder="Your name"
                   />
                 </div>
               )}
 
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   data-testid="email-input"
-                  className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-orange/50 focus:border-brand-orange/50 transition-all"
+                  className="w-full pl-12 pr-4 py-3.5 bg-surface border border-border rounded-xl text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-brand-orange/50 focus:border-brand-orange transition-all font-serif"
                   placeholder="Enter your email"
                 />
               </div>
@@ -395,7 +395,7 @@ const LoginPage = () => {
                     required
                     minLength={6}
                     data-testid="password-input"
-                    className="w-full px-4 py-3.5 pr-12 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-orange/50 focus:border-brand-orange/50 transition-all"
+                    className="w-full px-4 py-3.5 pr-12 bg-surface border border-border rounded-xl text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-brand-orange/50 focus:border-brand-orange transition-all font-serif"
                     placeholder={isSignUp ? 'Create a password (min 6 characters)' : 'Enter your password'}
                   />
                   <button
