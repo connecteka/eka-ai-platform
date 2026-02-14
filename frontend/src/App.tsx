@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { AuthProvider } from './context/AuthContext';
 import AppShell from './components/layout/AppShell';
 import EkaAppRoutes from './EkaAppRouter';
 
