@@ -2,6 +2,9 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 
+// Generate a unique build ID based on timestamp
+const BUILD_ID = Date.now().toString(36);
+
 export default defineConfig({
   plugins: [react()],
   resolve: {
@@ -11,6 +14,10 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
+  },
+  // Force new cache-busting hash
+  optimizeDeps: {
+    force: true,
   },
   server: {
     port: 3000,
