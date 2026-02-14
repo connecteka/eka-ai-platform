@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import AppShell from './components/layout/AppShell';
+import EkaAppRoutes from './EkaAppRouter';
 
 // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
 const GOOGLE_CLIENT_ID = '429173688791-h8le2ah2l4elcn1je494hdfqv5558nfi.apps.googleusercontent.com';
