@@ -161,7 +161,7 @@ const JobCardDetailPage: React.FC = () => {
       <style>{`
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        @keyframes pulse-orange { 0%, 100% { box-shadow: 0 0 0 0 rgba(218, 119, 86, 0.4); } 50% { box-shadow: 0 0 0 8px rgba(218, 119, 86, 0); } }
+        @keyframes pulse-orange { 0%, 100% { box-shadow: 0 0 0 0 rgba(249, 137, 6, 0.4); } 50% { box-shadow: 0 0 0 8px rgba(249, 137, 6, 0); } }
         @media print { .no-print { display: none !important; } }
       `}</style>
       
