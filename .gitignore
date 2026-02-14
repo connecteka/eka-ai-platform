@@ -45,3 +45,7 @@ test_reports/
 *.pem
 *.key
 uploads/
+-e 
+# Environment files
+*.env
+*.env.*
