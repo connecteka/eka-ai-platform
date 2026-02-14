@@ -254,18 +254,18 @@ body {
    ═══════════════════════════════════════════════════════════════════════════ */
 
 @theme {
-  --color-brand-orange: #da7756;
-  --color-background: #0D0D0D;
-  --color-background-alt: #1B1B1D;
-  --color-text-primary: #FFFFFF;
-  --color-text-secondary: #E5E5E5;
-  --color-border: #333333;
-  --color-surface: #1B1B1D;
-  --color-text-muted: #999999;
-  --color-brand-hover: #e54d2d;
+  --color-brand-orange: #F98906;
+  --color-background: #FFF5E6;
+  --color-background-alt: #FFFBF5;
+  --color-text-primary: #1A1A1A;
+  --color-text-secondary: #2C1A0E;
+  --color-border: #1A1A1A;
+  --color-surface: #FFFFFF;
+  --color-text-muted: #5C4A3D;
+  --color-brand-hover: #E07A00;
 
-  --font-family-sans: Inter, system-ui, sans-serif;
-  --font-family-heading: Outfit, sans-serif;
+  --font-family-sans: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-family-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
 }
 
 /* Scrollbar styling */
