@@ -72,6 +72,25 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 
 ## What's Been Implemented
 
+### February 14, 2026 - Update 28 (UI Responsiveness Polish)
+
+**Mobile Responsiveness Fixes:**
+1. **Pricing Page**: Trust badges now stack vertically on mobile
+2. **Pricing Page**: GROWTH (recommended) plan shows first on mobile (order-first class)
+3. **Pricing Page**: Feature comparison shows as mobile-friendly cards instead of table
+4. **Pricing Page**: FAQ questions don't overflow on narrow screens
+5. **App Shell**: Added hamburger menu for mobile navigation
+6. **App Shell**: Sidebar slides in as overlay on mobile (with backdrop blur)
+7. **Chat Page**: Suggestion chips stack in single column on mobile
+8. **Login Page**: Footer trust badges hidden on mobile for cleaner layout
+
+**Files Modified:**
+- `frontend/src/pages/PricingPage.tsx` - Responsive trust badges, feature cards, FAQ
+- `frontend/src/components/layout/EkaAppShell.tsx` - Mobile sidebar overlay with slide-in animation
+- `frontend/src/components/layout/EkaTopBar.tsx` - Hamburger menu button for mobile
+- `frontend/src/pages/EkaChatPage.tsx` - Responsive suggestion chips
+- `frontend/src/pages/LoginPage.tsx` - Cleaner mobile footer
+
 ### February 14, 2026 - Update 27 (Launch Ready UI Overhaul)
 
 **Priority 1 Complete:**
