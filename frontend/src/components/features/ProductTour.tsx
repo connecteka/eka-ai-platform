@@ -355,7 +355,7 @@ export const ProductTour: React.FC<ProductTourProps> = ({ children }) => {
             padding: '10px 0',
           },
           buttonNext: {
-            backgroundColor: '#F45D3D',
+            backgroundColor: '#da7756',
             borderRadius: 8,
             color: '#FFFFFF',
             fontSize: 14,
@@ -378,11 +378,11 @@ export const ProductTour: React.FC<ProductTourProps> = ({ children }) => {
             display: 'none', // We use disableBeacon instead
           },
           beaconInner: {
-            backgroundColor: '#F45D3D',
+            backgroundColor: '#da7756',
           },
           beaconOuter: {
-            borderColor: '#F45D3D',
-            backgroundColor: 'rgba(244, 93, 61, 0.2)',
+            borderColor: '#da7756',
+            backgroundColor: 'rgba(218, 119, 86, 0.2)',
           },
         }}
         locale={{
