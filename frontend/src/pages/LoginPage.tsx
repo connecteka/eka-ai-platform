@@ -470,7 +470,7 @@ const LoginPage = () => {
 
             {/* Terms */}
             <p className="text-xs text-gray-500 text-center leading-relaxed pt-4">
-              By continuing, you agree to EKA-AI's{' '}
+              By continuing, you agree to eka-aı's{' '}
               <Link to="/legal#terms" className="underline hover:text-gray-300 transition-colors">Terms of Service</Link>
               {' '}and{' '}
               <Link to="/legal#privacy" className="underline hover:text-gray-300 transition-colors">Privacy Policy</Link>.
