@@ -5,8 +5,10 @@ import EkaChatPage       from './pages/EkaChatPage';
 import EkaDashboardPage  from './pages/EkaDashboardPage';
 import EkaSearchPage     from './pages/EkaSearchPage';
 import JobCardsPage  from './pages/JobCardsPage';
+import JobCardDetailPage from './pages/JobCardDetailPage';
 import InvoicesPage  from './pages/InvoicesPage';
 import MGFleetPage   from './pages/MGFleetPage';
+import PDIPage       from './pages/PDIPage';
 import ChatsPage     from './pages/ChatsPage';
 import SettingsPage  from './pages/SettingsPage';
 
@@ -19,9 +21,11 @@ const EkaAppRoutes: React.FC = () => (
       <Route path="chat"          element={<EkaChatPage />}      />
       <Route path="search"        element={<EkaSearchPage />}    />
       <Route path="chats"         element={<ChatsPage />}        />
-      <Route path="job-cards/*"   element={<JobCardsPage />}     />
+      <Route path="job-cards"     element={<JobCardsPage />}     />
+      <Route path="job-cards/:id" element={<JobCardDetailPage />} />
       <Route path="invoices"      element={<InvoicesPage />}     />
       <Route path="mg-fleet"      element={<MGFleetPage />}      />
+      <Route path="pdi"           element={<PDIPage />}          />
       <Route path="settings"      element={<SettingsPage />}     />
     </Route>
   </Routes>
