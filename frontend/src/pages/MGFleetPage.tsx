@@ -360,8 +360,8 @@ export default function MGFleetPage() {
                     <AreaChart data={monthlyData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                       <defs>
                         <linearGradient id="kmGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#F45D3D" stopOpacity={0.3}/>
-                          <stop offset="95%" stopColor="#F45D3D" stopOpacity={0}/>
+                          <stop offset="5%" stopColor="#da7756" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#da7756" stopOpacity={0}/>
                         </linearGradient>
                       </defs>
                       <XAxis 
@@ -375,7 +375,7 @@ export default function MGFleetPage() {
                       <Area 
                         type="monotone" 
                         dataKey="km" 
-                        stroke="#F45D3D" 
+                        stroke="#da7756" 
                         strokeWidth={2}
                         fillOpacity={1} 
                         fill="url(#kmGradient)" 

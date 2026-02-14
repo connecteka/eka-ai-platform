@@ -329,7 +329,7 @@ export const ProductTour: React.FC<ProductTourProps> = ({ children }) => {
             arrowColor: '#1A1A1B',
             backgroundColor: '#1A1A1B',
             overlayColor: 'rgba(0, 0, 0, 0.75)',
-            primaryColor: '#F45D3D',
+            primaryColor: '#da7756',
             textColor: '#FFFFFF',
             spotlightShadow: '0 0 20px rgba(244, 93, 61, 0.5)',
             zIndex: 10000,
