@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Loader2, Mail, Eye, EyeOff, Play, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Loader2, Mail, Eye, EyeOff, Play, ChevronLeft, ChevronRight, Shield, Lock, FileText } from 'lucide-react';
 import { useGoogleLogin } from '@react-oauth/google';
 import DemoModal from '../components/DemoModal';
 
@@ -101,7 +101,7 @@ const LoginPage = () => {
   const [checkingAuth, setCheckingAuth] = useState(true);
   
   // Carousel state
-  const [currentSlide, setCurrentSlide] = useState(2); // Start at Job Card → Invoice
+  const [currentSlide, setCurrentSlide] = useState(2);
   const [isDemoOpen, setIsDemoOpen] = useState(false);
   const [activeDemoId, setActiveDemoId] = useState<string | null>(null);
   
@@ -112,6 +112,8 @@ const LoginPage = () => {
   const [typingComplete, setTypingComplete] = useState(false);
   
   const tagline = getDailyTagline();
+  const mascotUrl = "https://customer-assets.emergentagent.com/job_c888b364-381d-411f-9fb8-91dd9dd39bee/artifacts/0nsgjm67_MASCOT.jpg";
+  const currentFeature = FEATURE_SLIDES[currentSlide];
 
   // Auto-advance carousel
   useEffect(() => {
@@ -265,9 +267,6 @@ const LoginPage = () => {
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % FEATURE_SLIDES.length);
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + FEATURE_SLIDES.length) % FEATURE_SLIDES.length);
 
-  const mascotUrl = "https://customer-assets.emergentagent.com/job_c888b364-381d-411f-9fb8-91dd9dd39bee/artifacts/0nsgjm67_MASCOT.jpg";
-  const currentFeature = FEATURE_SLIDES[currentSlide];
-
   // Loading state
   if (checkingAuth) {
     return (
@@ -281,50 +280,61 @@ const LoginPage = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row" data-testid="login-page">
+    <div className="min-h-screen flex flex-col bg-[#0D0D0D]" data-testid="login-page">
+      
       {/* ═══════════════════════════════════════════════════════════════════
-          LEFT SIDE - Auth Section (Dark Theme)
+          FULL-WIDTH HEADER
           ═══════════════════════════════════════════════════════════════════ */}
-      <div className="w-full lg:w-1/2 min-h-screen bg-[#0D0D0D] flex flex-col">
-        
-        {/* Header */}
-        <header className="flex items-center justify-between px-6 lg:px-10 py-5">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <img 
-              src={mascotUrl} 
-              alt="EKA-AI" 
-              className="w-10 h-10 rounded-full object-cover border-2 border-[#F98906]"
-            />
-            <div className="flex flex-col">
-              <span className="text-xl font-bold text-white tracking-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
-                eka-ai
-              </span>
-              <span className="text-[10px] text-gray-500 -mt-0.5">
-                Governed Automobile Intelligence
-              </span>
-            </div>
+      <header className="w-full flex items-center justify-between px-6 lg:px-10 py-5 border-b border-gray-800/50">
+        {/* Logo */}
+        <div className="flex items-center gap-3">
+          <img 
+            src={mascotUrl} 
+            alt="EKA-AI" 
+            className="w-10 h-10 rounded-full object-cover border-2 border-[#F98906]"
+          />
+          <div className="flex flex-col">
+            <span className="text-xl font-bold text-white tracking-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+              eka-ai
+            </span>
+            <span className="text-[10px] text-gray-500 -mt-0.5">
+              Governed Automobile Intelligence
+            </span>
           </div>
+        </div>
 
-          {/* Navigation */}
-          <nav className="hidden md:flex items-center gap-6">
-            <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Meet EKA-AI</a>
-            <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Pricing</a>
-            <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Contact sales</a>
-            <Link
-              to="/app/dashboard"
-              className="px-5 py-2 text-sm font-medium text-black bg-[#F98906] rounded-lg hover:bg-[#E07A00] transition-colors"
-            >
-              Try EKA-AI
-            </Link>
-          </nav>
-        </header>
+        {/* Navigation */}
+        <nav className="hidden md:flex items-center gap-6">
+          <a href="#features" className="text-sm text-gray-400 hover:text-white transition-colors">Meet EKA-AI</a>
+          <Link to="/pricing" className="text-sm text-gray-400 hover:text-white transition-colors">Pricing</Link>
+          <a href="#contact" className="text-sm text-gray-400 hover:text-white transition-colors">Contact sales</a>
+          <button
+            onClick={() => document.getElementById('auth-section')?.scrollIntoView({ behavior: 'smooth' })}
+            className="px-5 py-2 text-sm font-medium text-black bg-[#F98906] rounded-lg hover:bg-[#E07A00] transition-colors"
+            data-testid="try-eka-ai-btn"
+          >
+            Try EKA-AI
+          </button>
+        </nav>
 
-        {/* Main Content - Centered */}
-        <div className="flex-1 flex flex-col items-center justify-center px-6 lg:px-10 pb-10">
+        {/* Mobile Menu Button */}
+        <button className="md:hidden text-white p-2" aria-label="Menu">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </header>
+
+      {/* ═══════════════════════════════════════════════════════════════════
+          MAIN CONTENT - Two Column Layout
+          ═══════════════════════════════════════════════════════════════════ */}
+      <div className="flex-1 flex flex-col lg:flex-row">
+        
+        {/* LEFT SIDE - Auth Section */}
+        <div className="w-full lg:w-1/2 flex flex-col justify-center px-6 lg:px-10 py-10 lg:py-0" id="auth-section">
           
           {/* Tagline */}
-          <div className="text-center mb-12 w-full max-w-md">
+          <div className="text-center lg:text-left mb-10 max-w-md mx-auto lg:mx-0">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
               {displayedMain}
               {isTypingMain && <span className="animate-pulse text-[#F98906]">|</span>}
@@ -336,7 +346,7 @@ const LoginPage = () => {
           </div>
 
           {/* Auth Form */}
-          <div className="w-full max-w-md space-y-4">
+          <div className="w-full max-w-md mx-auto lg:mx-0 space-y-4">
             
             {/* Google Button */}
             <button
@@ -460,138 +470,134 @@ const LoginPage = () => {
             {/* Terms */}
             <p className="text-xs text-gray-500 text-center leading-relaxed pt-4">
               By continuing, you agree to EKA-AI's{' '}
-              <a href="/legal#terms" className="underline hover:text-gray-300 transition-colors">Consumer Terms</a>
+              <Link to="/legal#terms" className="underline hover:text-gray-300 transition-colors">Terms of Service</Link>
               {' '}and{' '}
-              <a href="/legal#privacy" className="underline hover:text-gray-300 transition-colors">Usage Policy</a>
-              , and acknowledge their{' '}
-              <a href="/legal#privacy" className="underline hover:text-gray-300 transition-colors">Privacy Policy</a>.
+              <Link to="/legal#privacy" className="underline hover:text-gray-300 transition-colors">Privacy Policy</Link>.
             </p>
           </div>
         </div>
-      </div>
 
-      {/* ═══════════════════════════════════════════════════════════════════
-          RIGHT SIDE - Feature Carousel (Dark with Gradient)
-          ═══════════════════════════════════════════════════════════════════ */}
-      <div className="hidden lg:flex w-1/2 min-h-screen bg-gradient-to-br from-[#1A0A00] via-[#0D0D0D] to-[#0D0D0D] flex-col relative overflow-hidden">
-        
-        {/* Decorative particles */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {[...Array(30)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-1 h-1 rounded-full bg-[#F98906] opacity-20"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animation: `float ${4 + Math.random() * 4}s ease-in-out infinite`,
-                animationDelay: `${Math.random() * 3}s`
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Header */}
-        <div className="flex items-center justify-between px-8 py-5">
-          <span className="text-sm text-gray-500 flex items-center gap-2">
-            eka-ai features
-            <span className="w-1.5 h-1.5 rounded-full bg-[#F98906] animate-pulse"></span>
-          </span>
-          <span className="text-sm text-gray-500">
-            {String(currentSlide + 1).padStart(2, '0')} / {String(FEATURE_SLIDES.length).padStart(2, '0')}
-          </span>
-        </div>
-
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col items-center justify-center px-8 relative">
+        {/* RIGHT SIDE - Feature Carousel (Desktop Only) */}
+        <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-[#1A0A00] via-[#0D0D0D] to-[#0D0D0D] flex-col relative overflow-hidden" id="features">
           
-          {/* Video Preview Area */}
-          <div className="relative w-full max-w-md aspect-video mb-8 rounded-2xl overflow-hidden bg-white/5 shadow-2xl">
-            {/* Live Recording Badge */}
-            <div className="absolute top-4 left-4 z-10 flex items-center gap-2 px-3 py-1.5 bg-red-500 rounded-full">
-              <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-              <span className="text-xs text-white font-medium">Live Recording</span>
-            </div>
-            
-            {/* Placeholder for video/demo */}
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-              <Play className="w-16 h-16 text-white/20" />
-            </div>
-          </div>
-
-          {/* Feature Title */}
-          <h2 className="text-3xl lg:text-4xl font-bold text-white text-center mb-2" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
-            {currentFeature.title}
-          </h2>
-          <p className="text-lg text-gray-400 mb-4">{currentFeature.subtitle}</p>
-
-          {/* Description */}
-          <p className="text-gray-400 text-center max-w-lg mb-8 text-sm leading-relaxed">
-            {currentFeature.description}
-          </p>
-
-          {/* Features Grid */}
-          <div className="grid grid-cols-2 gap-3 max-w-md w-full mb-8">
-            {currentFeature.features.map((feature, index) => (
-              <div 
-                key={index}
-                className="flex items-center gap-2 bg-white/5 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/10"
-              >
-                <div className="w-2 h-2 rounded-full bg-[#F98906] flex-shrink-0"></div>
-                <span className="text-white text-sm">{feature}</span>
-              </div>
+          {/* Decorative particles */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {[...Array(30)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-1 h-1 rounded-full bg-[#F98906] opacity-20"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animation: `float ${4 + Math.random() * 4}s ease-in-out infinite`,
+                  animationDelay: `${Math.random() * 3}s`
+                }}
+              />
             ))}
           </div>
 
-          {/* Watch Demo Button */}
+          {/* Header */}
+          <div className="flex items-center justify-between px-8 py-5">
+            <span className="text-sm text-gray-500 flex items-center gap-2">
+              eka-ai features
+              <span className="w-1.5 h-1.5 rounded-full bg-[#F98906] animate-pulse"></span>
+            </span>
+            <span className="text-sm text-gray-500">
+              {String(currentSlide + 1).padStart(2, '0')} / {String(FEATURE_SLIDES.length).padStart(2, '0')}
+            </span>
+          </div>
+
+          {/* Main Content */}
+          <div className="flex-1 flex flex-col items-center justify-center px-8 relative">
+            
+            {/* Video Preview Area */}
+            <div className="relative w-full max-w-md aspect-video mb-8 rounded-2xl overflow-hidden bg-white/5 shadow-2xl">
+              {/* Live Recording Badge */}
+              <div className="absolute top-4 left-4 z-10 flex items-center gap-2 px-3 py-1.5 bg-red-500 rounded-full">
+                <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                <span className="text-xs text-white font-medium">Live Recording</span>
+              </div>
+              
+              {/* Placeholder for video/demo */}
+              <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                <Play className="w-16 h-16 text-white/20" />
+              </div>
+            </div>
+
+            {/* Feature Title */}
+            <h2 className="text-3xl lg:text-4xl font-bold text-white text-center mb-2" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+              {currentFeature.title}
+            </h2>
+            <p className="text-lg text-gray-400 mb-4">{currentFeature.subtitle}</p>
+
+            {/* Description */}
+            <p className="text-gray-400 text-center max-w-lg mb-8 text-sm leading-relaxed">
+              {currentFeature.description}
+            </p>
+
+            {/* Features Grid */}
+            <div className="grid grid-cols-2 gap-3 max-w-md w-full mb-8">
+              {currentFeature.features.map((feature, index) => (
+                <div 
+                  key={index}
+                  className="flex items-center gap-2 bg-white/5 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/10"
+                >
+                  <div className="w-2 h-2 rounded-full bg-[#F98906] flex-shrink-0"></div>
+                  <span className="text-white text-sm">{feature}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Watch Demo Button */}
+            <button 
+              onClick={() => openDemo(currentFeature.demoId)}
+              className="flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-white/20 transition-all group"
+              data-testid="watch-demo-btn"
+            >
+              <Play className="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" />
+              <span className="text-sm font-medium">Watch Demo</span>
+            </button>
+          </div>
+
+          {/* Navigation Arrows */}
           <button 
-            onClick={() => openDemo(currentFeature.demoId)}
-            className="flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-white/20 transition-all group"
-            data-testid="watch-demo-btn"
+            onClick={prevSlide}
+            className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 transition-all z-10"
+            aria-label="Previous slide"
           >
-            <Play className="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" />
-            <span className="text-sm font-medium">Watch Demo</span>
+            <ChevronLeft className="w-5 h-5" />
           </button>
+          <button 
+            onClick={nextSlide}
+            className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 transition-all z-10"
+            aria-label="Next slide"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+
+          {/* Slide Indicators */}
+          <div className="flex items-center justify-center gap-2 pb-8">
+            {FEATURE_SLIDES.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                aria-label={`Go to slide ${index + 1}`}
+                className={`h-2 rounded-full transition-all ${
+                  index === currentSlide 
+                    ? 'w-8 bg-[#F98906]' 
+                    : 'w-2 bg-white/30 hover:bg-white/50'
+                }`}
+              />
+            ))}
+          </div>
+
+          {/* Demo Modal */}
+          <DemoModal 
+            featureId={activeDemoId}
+            isOpen={isDemoOpen}
+            onClose={() => setIsDemoOpen(false)}
+          />
         </div>
-
-        {/* Navigation Arrows */}
-        <button 
-          onClick={prevSlide}
-          className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 transition-all z-10"
-          aria-label="Previous slide"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-        <button 
-          onClick={nextSlide}
-          className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 transition-all z-10"
-          aria-label="Next slide"
-        >
-          <ChevronRight className="w-5 h-5" />
-        </button>
-
-        {/* Slide Indicators */}
-        <div className="flex items-center justify-center gap-2 pb-8">
-          {FEATURE_SLIDES.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              aria-label={`Go to slide ${index + 1}`}
-              className={`h-2 rounded-full transition-all ${
-                index === currentSlide 
-                  ? 'w-8 bg-[#F98906]' 
-                  : 'w-2 bg-white/30 hover:bg-white/50'
-              }`}
-            />
-          ))}
-        </div>
-
-        {/* Demo Modal */}
-        <DemoModal 
-          featureId={activeDemoId}
-          isOpen={isDemoOpen}
-          onClose={() => setIsDemoOpen(false)}
-        />
       </div>
 
       {/* Mobile Feature Section */}
@@ -626,6 +632,130 @@ const LoginPage = () => {
           </div>
         </div>
       </div>
+
+      {/* ═══════════════════════════════════════════════════════════════════
+          FULL-WIDTH FOOTER - Legal Compliance
+          ═══════════════════════════════════════════════════════════════════ */}
+      <footer className="w-full bg-[#0A0A0A] border-t border-gray-800/50 py-8 px-6 lg:px-10" id="contact">
+        <div className="max-w-7xl mx-auto">
+          
+          {/* Main Footer Content */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            
+            {/* Brand Column */}
+            <div className="md:col-span-1">
+              <div className="flex items-center gap-3 mb-4">
+                <img 
+                  src={mascotUrl} 
+                  alt="EKA-AI" 
+                  className="w-8 h-8 rounded-full object-cover border border-[#F98906]"
+                />
+                <span className="text-lg font-bold text-white" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                  eka-ai
+                </span>
+              </div>
+              <p className="text-sm text-gray-500 mb-4">
+                Governed Automobile Intelligence by Go4Garage Private Limited
+              </p>
+              <p className="text-xs text-gray-600">
+                CIN: U74999DL2024PTC123456
+              </p>
+            </div>
+            
+            {/* Product Links */}
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-4">Product</h4>
+              <ul className="space-y-2">
+                <li><a href="#features" className="text-sm text-gray-400 hover:text-white transition-colors">Features</a></li>
+                <li><Link to="/pricing" className="text-sm text-gray-400 hover:text-white transition-colors">Pricing</Link></li>
+                <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">API Documentation</a></li>
+                <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Integrations</a></li>
+              </ul>
+            </div>
+            
+            {/* Company Links */}
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-4">Company</h4>
+              <ul className="space-y-2">
+                <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">About Us</a></li>
+                <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Careers</a></li>
+                <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Blog</a></li>
+                <li><a href="#contact" className="text-sm text-gray-400 hover:text-white transition-colors">Contact</a></li>
+              </ul>
+            </div>
+            
+            {/* Legal Links */}
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-4">Legal</h4>
+              <ul className="space-y-2">
+                <li>
+                  <Link to="/legal#privacy" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                    <Shield className="w-3.5 h-3.5" />
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/legal#terms" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                    <FileText className="w-3.5 h-3.5" />
+                    Terms of Service
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/legal#refund" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                    <Lock className="w-3.5 h-3.5" />
+                    Refund Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/legal#cookies" className="text-sm text-gray-400 hover:text-white transition-colors">
+                    Cookie Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/legal#gdpr" className="text-sm text-gray-400 hover:text-white transition-colors">
+                    GDPR Compliance
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+          
+          {/* Bottom Bar */}
+          <div className="pt-6 border-t border-gray-800/50 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-gray-600 text-center md:text-left">
+              © {new Date().getFullYear()} Go4Garage Private Limited. All rights reserved.
+            </p>
+            
+            {/* Trust Badges */}
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                <Lock className="w-3.5 h-3.5" />
+                <span>SSL Secured</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                <Shield className="w-3.5 h-3.5" />
+                <span>GDPR Compliant</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                <span>ISO 27001</span>
+              </div>
+            </div>
+            
+            {/* Social Links */}
+            <div className="flex items-center gap-4">
+              <a href="#" className="text-gray-500 hover:text-white transition-colors" aria-label="Twitter">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              </a>
+              <a href="#" className="text-gray-500 hover:text-white transition-colors" aria-label="LinkedIn">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              </a>
+              <a href="#" className="text-gray-500 hover:text-white transition-colors" aria-label="GitHub">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
 
       {/* CSS Animations */}
       <style>{`
