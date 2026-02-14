@@ -135,7 +135,7 @@ const LoginPage = () => {
         if (response.ok) {
           const user = await response.json();
           localStorage.setItem('user', JSON.stringify(user));
-          navigate('/app/dashboard', { replace: true });
+          navigate('/app/chat', { replace: true });
           return;
         }
       } catch (error) {
@@ -190,7 +190,7 @@ const LoginPage = () => {
         if (response.ok && data.token) {
           localStorage.setItem('token', data.token);
           localStorage.setItem('user', JSON.stringify(data.user));
-          navigate('/app/dashboard');
+          navigate('/app/chat');
         } else {
           setError(data.detail || 'Failed to sign in with Google');
         }
@@ -242,7 +242,7 @@ const LoginPage = () => {
       if (response.ok && data.token) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        navigate('/app/dashboard');
+        navigate('/app/chat');
       } else {
         setError(data.detail || 'Authentication failed');
       }
