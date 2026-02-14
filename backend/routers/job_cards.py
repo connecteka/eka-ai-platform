@@ -223,9 +223,10 @@ async def trigger_status_notification(job_card_id: str):
     """Background task to trigger status notification."""
     try:
         import httpx
+        backend_url = os.environ.get("BACKEND_URL", "http://localhost:8001")
         async with httpx.AsyncClient() as client:
             await client.post(
-                f"http://localhost:8001/api/notifications/job-card-update/{job_card_id}",
+                f"{backend_url}/api/notifications/job-card-update/{job_card_id}",
                 timeout=10.0
             )
     except Exception as e:

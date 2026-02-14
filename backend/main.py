@@ -417,8 +417,8 @@ def init_payu_payment(request: PayUInitRequest):
             "firstname": request.first_name,
             "email": request.email,
             "phone": request.phone,
-            "surl": "https://app.eka-ai.in/payment/success",
-            "furl": "https://app.eka-ai.in/payment/failure",
+            "surl": f"{os.environ.get('FRONTEND_URL', 'https://app.eka-ai.in')}/payment/success",
+            "furl": f"{os.environ.get('FRONTEND_URL', 'https://app.eka-ai.in')}/payment/failure",
             "hash": hash_value
         }
         

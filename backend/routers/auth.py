@@ -28,8 +28,8 @@ class GoogleCodeRequest(BaseModel):
     code: str
 
 
-# Google OAuth Client credentials
-GOOGLE_CLIENT_ID = "429173688791-h8le2ah2l4elcn1je494hdfqv5558nfi.apps.googleusercontent.com"
+# Google OAuth Client credentials (from environment)
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "")
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", "")
 
 
