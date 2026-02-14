@@ -1,6 +1,6 @@
 """
 Job Cards routes for EKA-AI Backend.
-Handles CRUD operations for workshop job cards.
+Handles CRUD operations for workshop job cards with FSM enforcement.
 """
 from datetime import datetime, timezone
 from typing import Optional, List
@@ -21,7 +21,13 @@ from utils.database import (
     signatures_collection, files_collection, invoices_collection
 )
 
+# Job Card Manager Integration
+from services.job_card_manager import JobCardManager, JobStatus
+
 router = APIRouter(prefix="/api/job-cards", tags=["Job Cards"])
+
+# Initialize Job Card Manager
+job_card_manager = JobCardManager()
 
 
 def generate_job_card_number():
@@ -172,22 +178,45 @@ async def transition_job_card(
     job_card_id: str, 
     transition: JobCardTransition,
     background_tasks: BackgroundTasks,
-    send_notification: bool = True
+    send_notification: bool = True,
+    request: Request = None
 ):
     """
-    Transition a job card to a new status.
+    Transition a job card to a new status with FSM validation.
+    
+    Uses JobCardManager to enforce valid state transitions:
+    CREATED → CONTEXT_VERIFIED → DIAGNOSED → ESTIMATED → CUSTOMER_APPROVAL → 
+    IN_PROGRESS → PDI → INVOICED → CLOSED
+    
     Optionally sends WhatsApp notification to customer.
     """
-    valid_statuses = [
-        "Pending", "In-Progress", "Completed", "Cancelled", "On-Hold",
-        "CREATED", "CONTEXT_VERIFIED", "DIAGNOSED", "ESTIMATED",
-        "CUSTOMER_APPROVAL", "IN_PROGRESS", "PDI", "PDI_COMPLETED", "INVOICED", "CLOSED"
-    ]
-    
-    if transition.new_status not in valid_statuses:
-        raise HTTPException(status_code=400, detail="Invalid status")
-    
     try:
+        # Get current job card
+        job_card = job_cards_collection.find_one({"_id": ObjectId(job_card_id)})
+        if not job_card:
+            raise HTTPException(status_code=404, detail="Job Card not found")
+        
+        # Get user ID from request (or default)
+        user_id = "system"
+        if request:
+            # Extract from auth header or session
+            pass
+        
+        # Use JobCardManager for FSM transition
+        result = job_card_manager.transition_state(
+            job_card_id=job_card_id,
+            action=transition.new_status,
+            user_id=user_id,
+            notes=transition.notes
+        )
+        
+        if not result.success:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Invalid state transition: {result.error_message}"
+            )
+        
+        # Update in database
         update_data = {
             "status": transition.new_status,
             "updated_at": datetime.now(timezone.utc)
@@ -195,15 +224,22 @@ async def transition_job_card(
         if transition.notes:
             update_data["transition_notes"] = transition.notes
         
-        result = job_cards_collection.update_one(
+        job_cards_collection.update_one(
             {"_id": ObjectId(job_card_id)},
             {"$set": update_data}
         )
         
-        if result.matched_count == 0:
-            raise HTTPException(status_code=404, detail="Job Card not found")
-        
         updated = job_cards_collection.find_one({"_id": ObjectId(job_card_id)})
+        
+        # Add timeline entry
+        timeline_entry = {
+            "job_card_id": job_card_id,
+            "timestamp": datetime.now(timezone.utc),
+            "description": f"Status changed to {transition.new_status}",
+            "actor": user_id,
+            "status": "completed"
+        }
+        job_card_timeline_collection.insert_one(timeline_entry)
         
         # Send notification in background if requested
         if send_notification:
@@ -212,11 +248,19 @@ async def transition_job_card(
                 job_card_id
             )
         
-        return {"success": True, "data": serialize_doc(updated), "notification_queued": send_notification}
+        return {
+            "success": True, 
+            "data": serialize_doc(updated), 
+            "notification_queued": send_notification,
+            "fsm_valid": True,
+            "previous_state": result.previous_state,
+            "new_state": result.new_state
+        }
+        
     except HTTPException:
         raise
-    except:
-        raise HTTPException(status_code=400, detail="Invalid job card ID format")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Transition failed: {str(e)}")
 
 
 async def trigger_status_notification(job_card_id: str):

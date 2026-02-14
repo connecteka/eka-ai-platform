@@ -1,6 +1,6 @@
 """
 AI Chat routes for EKA-AI Backend.
-Handles AI chat endpoints and session management.
+Handles AI chat endpoints and session management with AI Governance.
 """
 import os
 import re
@@ -11,19 +11,86 @@ from datetime import datetime, timezone
 from typing import Optional, Dict, Any
 
 from fastapi import APIRouter, HTTPException, Query
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, JSONResponse
 
 from models.schemas import ChatRequest, ChatStreamRequest, ChatSessionCreate, ChatMessageSave
 from utils.database import chat_sessions_collection, serialize_doc, serialize_docs
 
+# AI Governance Integration
+from services.ai_governance import AIGovernance, UserRole
+
 router = APIRouter(prefix="/api/chat", tags=["AI Chat"])
+
+# Initialize AI Governance
+governance = AIGovernance()
+
+EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
 
 EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
 
 
 @router.post("")
 async def chat_with_ai(request: ChatRequest):
-    """Main AI chat endpoint using Emergent LLM integration."""
+    """Main AI chat endpoint using Emergent LLM integration with AI Governance."""
+    
+    # Extract user message for governance check
+    user_text = ""
+    if request.history:
+        last_msg = request.history[-1]
+        if last_msg.role == "user" and last_msg.parts:
+            user_text = last_msg.parts[0].get("text", "")
+    
+    # AI Governance Check - 4-Layer Safety System
+    user_context = {
+        "user_id": getattr(request, 'user_id', 'anonymous'),
+        "role": UserRole.TECHNICIAN,  # Default role, should come from auth
+        "workshop_id": getattr(request, 'workshop_id', None),
+        "subscription_tier": "FREE"  # Should come from user profile
+    }
+    
+    decision = governance.evaluate_query(
+        query=user_text,
+        user_context=user_context
+    )
+    
+    # Log governance decision
+    governance.log_decision(decision)
+    
+    # Handle blocked queries
+    if decision.final_action == "BLOCK":
+        return JSONResponse(
+            status_code=403,
+            content={
+                "response_content": {
+                    "visual_text": decision.response_template or "This query cannot be processed.",
+                    "audio_text": "Query blocked by safety system."
+                },
+                "job_status_update": request.status,
+                "ui_triggers": {
+                    "theme_color": "#F59E0B", 
+                    "brand_identity": "BLOCKED", 
+                    "show_orange_border": True,
+                    "governance_alert": True
+                },
+                "governance": decision.to_dict()
+            }
+        )
+    
+    # Handle queries needing clarification
+    if decision.final_action == "CLARIFY":
+        return {
+            "response_content": {
+                "visual_text": decision.response_template or "I need more information to help you accurately.",
+                "audio_text": "Please provide more details."
+            },
+            "job_status_update": request.status,
+            "ui_triggers": {
+                "theme_color": "#3B82F6",
+                "brand_identity": "CLARIFY",
+                "show_orange_border": False
+            },
+            "governance": decision.to_dict()
+        }
     
     if not EMERGENT_LLM_KEY:
         return {
@@ -37,12 +104,6 @@ async def chat_with_ai(request: ChatRequest):
     
     try:
         from emergentintegrations.llm.chat import LlmChat, UserMessage
-        
-        user_text = ""
-        if request.history:
-            last_msg = request.history[-1]
-            if last_msg.role == "user" and last_msg.parts:
-                user_text = last_msg.parts[0].get("text", "")
         
         system_prompt = f"""You are EKA-AI, an expert automobile intelligence assistant for Go4Garage. 
 

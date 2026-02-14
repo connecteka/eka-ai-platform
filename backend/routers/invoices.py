@@ -1,6 +1,6 @@
 """
 Invoices routes for EKA-AI Backend.
-Handles invoice CRUD, PDF generation, and email delivery.
+Handles invoice CRUD, PDF generation, and email delivery with InvoiceManager.
 """
 import io
 import uuid
@@ -14,10 +14,16 @@ from bson import ObjectId
 from pydantic import BaseModel, EmailStr
 
 from models.schemas import InvoiceCreate
-from utils.database import invoices_collection, serialize_doc, serialize_docs
+from utils.database import invoices_collection, serialize_doc, serialize_docs, job_cards_collection
 from services.email_service import send_email_async, generate_invoice_email_html, is_email_enabled
 
+# Invoice Manager Integration
+from services.invoice_manager import InvoiceManager, InvoiceStatus
+
 router = APIRouter(prefix="/api/invoices", tags=["Invoices"])
+
+# Initialize Invoice Manager
+invoice_manager = InvoiceManager()
 
 
 class EmailInvoiceRequest(BaseModel):
@@ -448,3 +454,167 @@ async def email_invoice(invoice_id: str, request: EmailInvoiceRequest):
         }
     else:
         raise HTTPException(status_code=500, detail=result.get("message", "Failed to send email"))
+
+
+
+# ==================== INVOICE MANAGER INTEGRATION ====================
+
+@router.post("/generate-from-job-card")
+def generate_invoice_from_job_card(job_card_id: str, workshop_id: str):
+    """
+    Generate a GST-compliant invoice from a job card using InvoiceManager.
+    
+    This endpoint:
+    1. Fetches the job card details
+    2. Creates invoice items from services and parts
+    3. Calculates GST (CGST/SGST or IGST)
+    4. Generates a unique invoice number
+    5. Saves the invoice to database
+    """
+    from bson import ObjectId
+    
+    # Fetch job card
+    try:
+        job_card = job_cards_collection.find_one({"_id": ObjectId(job_card_id)})
+    except:
+        raise HTTPException(status_code=400, detail="Invalid job card ID format")
+    
+    if not job_card:
+        raise HTTPException(status_code=404, detail="Job card not found")
+    
+    # Get services and parts for this job card
+    from utils.database import services_collection, parts_collection
+    
+    services = list(services_collection.find({"job_card_id": job_card_id}))
+    parts = list(parts_collection.find({"job_card_id": job_card_id}))
+    
+    # Build invoice items
+    invoice_items = []
+    
+    # Add services as line items
+    for svc in services:
+        from decimal import Decimal
+        item = invoice_manager.create_invoice_item(
+            description=svc.get("service_type", "Service"),
+            hsn_sac_code="998714",  # Maintenance and repair services
+            quantity=Decimal("1"),
+            unit_price=Decimal(str(svc.get("cost", 0))),
+            item_type="LABOR"
+        )
+        invoice_items.append(item)
+    
+    # Add parts as line items
+    for part in parts:
+        from decimal import Decimal
+        qty = part.get("quantity", "1")
+        # Parse quantity (handle "2 pcs" format)
+        try:
+            qty_num = float(qty.split()[0]) if isinstance(qty, str) else float(qty)
+        except:
+            qty_num = 1
+        
+        item = invoice_manager.create_invoice_item(
+            description=part.get("name", "Part"),
+            hsn_sac_code=part.get("hsn_code", "8708"),  # Auto parts
+            quantity=Decimal(str(qty_num)),
+            unit_price=Decimal(str(part.get("unit_price", 0))),
+            item_type="PART"
+        )
+        invoice_items.append(item)
+    
+    # Generate invoice
+    try:
+        invoice = invoice_manager.generate_invoice(
+            job_card_id=job_card_id,
+            workshop_id=workshop_id,
+            customer_id=str(job_card.get("customer_id", "")),
+            items=invoice_items,
+            notes=f"Invoice generated from Job Card #{job_card.get('job_card_number', 'N/A')}"
+        )
+        
+        # Save to MongoDB
+        invoice_doc = invoice.to_dict()
+        invoice_doc["created_at"] = datetime.now(timezone.utc)
+        invoice_doc["updated_at"] = datetime.now(timezone.utc)
+        
+        result = invoices_collection.insert_one(invoice_doc)
+        invoice_doc["_id"] = result.inserted_id
+        
+        return {
+            "success": True,
+            "message": "Invoice generated successfully",
+            "data": serialize_doc(invoice_doc),
+            "invoice_id": str(result.inserted_id),
+            "invoice_number": invoice.invoice_number
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Invoice generation failed: {str(e)}")
+
+
+@router.get("/{invoice_id}/pdf-gst")
+def generate_gst_invoice_pdf(invoice_id: str):
+    """
+    Generate a professional GST-compliant PDF invoice using InvoiceManager.
+    
+    This produces a properly formatted invoice with:
+    - Company header with GSTIN
+    - Bill-to and Ship-to sections
+    - HSN/SAC codes for each item
+    - Proper GST breakdown (CGST/SGST or IGST)
+    - Authorized signature area
+    """
+    from bson import ObjectId
+    
+    try:
+        doc = invoices_collection.find_one({"_id": ObjectId(invoice_id)})
+    except:
+        raise HTTPException(status_code=400, detail="Invalid invoice ID format")
+    
+    if not doc:
+        raise HTTPException(status_code=404, detail="Invoice not found")
+    
+    try:
+        # Convert MongoDB document to Invoice object
+        from decimal import Decimal
+        
+        items = []
+        for item_data in doc.get("items", []):
+            item = invoice_manager.create_invoice_item(
+                description=item_data.get("description", ""),
+                hsn_sac_code=item_data.get("hsn_sac_code", ""),
+                quantity=Decimal(str(item_data.get("quantity", 1))),
+                unit_price=Decimal(str(item_data.get("unit_price", 0))),
+                discount_amount=Decimal(str(item_data.get("discount_amount", 0))),
+                gst_rate=Decimal(str(item_data.get("gst_rate", 18))),
+                item_type=item_data.get("item_type", "PART")
+            )
+            items.append(item)
+        
+        invoice = invoice_manager.generate_invoice(
+            job_card_id=doc.get("job_card_id", ""),
+            workshop_id=doc.get("workshop_id", ""),
+            customer_id=doc.get("customer_id", ""),
+            items=items,
+            notes=doc.get("notes", ""),
+            due_days=30
+        )
+        
+        # Generate PDF using InvoiceManager
+        pdf_buffer = invoice_manager.generate_pdf(invoice)
+        
+        invoice_number = doc.get("invoice_number", "UNKNOWN")
+        
+        return StreamingResponse(
+            pdf_buffer,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f"attachment; filename=GST-Invoice-{invoice_number}.pdf"
+            }
+        )
+        
+    except ImportError as e:
+        raise HTTPException(status_code=500, detail=f"PDF library not installed: {str(e)}")
+    except Exception as e:
+        print(f"GST PDF Generation Error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error generating GST PDF: {str(e)}")
