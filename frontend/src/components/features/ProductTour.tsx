@@ -329,9 +329,9 @@ export const ProductTour: React.FC<ProductTourProps> = ({ children }) => {
             arrowColor: '#1A1A1B',
             backgroundColor: '#1A1A1B',
             overlayColor: 'rgba(0, 0, 0, 0.75)',
-            primaryColor: '#da7756',
+            primaryColor: '#F98906',
             textColor: '#FFFFFF',
-            spotlightShadow: '0 0 20px rgba(218, 119, 86, 0.5)',
+            spotlightShadow: '0 0 20px rgba(249, 137, 6, 0.5)',
             zIndex: 10000,
           },
           spotlight: {
@@ -355,34 +355,34 @@ export const ProductTour: React.FC<ProductTourProps> = ({ children }) => {
             padding: '10px 0',
           },
           buttonNext: {
-            backgroundColor: '#da7756',
+            backgroundColor: '#F98906',
             borderRadius: 8,
-            color: '#FFFFFF',
+            color: '#1A1A1A',
             fontSize: 14,
             fontWeight: 500,
             padding: '10px 20px',
           },
           buttonBack: {
-            color: '#A0A0A0',
+            color: '#5C4A3D',
             fontSize: 14,
             marginRight: 10,
           },
           buttonSkip: {
-            color: '#666666',
+            color: '#5C4A3D',
             fontSize: 12,
           },
           buttonClose: {
-            color: '#666666',
+            color: '#5C4A3D',
           },
           beacon: {
             display: 'none', // We use disableBeacon instead
           },
           beaconInner: {
-            backgroundColor: '#da7756',
+            backgroundColor: '#F98906',
           },
           beaconOuter: {
-            borderColor: '#da7756',
-            backgroundColor: 'rgba(218, 119, 86, 0.2)',
+            borderColor: '#F98906',
+            backgroundColor: 'rgba(249, 137, 6, 0.2)',
           },
         }}
         locale={{
