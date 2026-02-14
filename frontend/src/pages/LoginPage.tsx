@@ -171,19 +171,18 @@ const LoginPage = () => {
     return () => clearTimeout(timeout);
   }, [displayedMain, displayedHighlight, isTypingMain, typingComplete, tagline]);
 
-  // Google OAuth
+  // Google OAuth - Using implicit flow with access token
   const googleLogin = useGoogleLogin({
-    flow: 'auth-code',
-    ux_mode: 'popup',
-    onSuccess: async (codeResponse) => {
+    flow: 'implicit',
+    onSuccess: async (tokenResponse) => {
       setIsGoogleLoading(true);
       setError(null);
       try {
         const apiUrl = import.meta.env.VITE_API_URL || '';
-        const response = await fetch(`${apiUrl}/api/auth/google/callback`, {
+        const response = await fetch(`${apiUrl}/api/auth/google`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code: codeResponse.code }),
+          body: JSON.stringify({ access_token: tokenResponse.access_token }),
           credentials: 'include'
         });
         
@@ -201,8 +200,9 @@ const LoginPage = () => {
         setIsGoogleLoading(false);
       }
     },
-    onError: () => {
-      setError('Google sign-in was cancelled');
+    onError: (errorResponse) => {
+      console.error('Google login error:', errorResponse);
+      setError('Google sign-in failed. Please try again.');
       setIsGoogleLoading(false);
     }
   });
