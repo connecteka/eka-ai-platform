@@ -402,11 +402,9 @@ def register_user(user: UserRegister, response: Response):
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
     
-    user_id = f"user_{uuid.uuid4().hex[:12]}"
     hashed_pw = hash_password(user.password)
     
-    create_user({
-        "user_id": user_id,
+    new_user = create_user({
         "email": user.email,
         "password": hashed_pw,
         "name": user.name,
@@ -414,6 +412,8 @@ def register_user(user: UserRegister, response: Response):
         "role": "user",
         "auth_provider": "email"
     })
+    
+    user_id = new_user.get("user_id") or new_user.get("id") if new_user else f"user_{uuid.uuid4().hex[:12]}"
     
     session_token = f"email_session_{uuid.uuid4().hex}"
     expires_at = datetime.now(timezone.utc) + timedelta(days=7)
@@ -452,13 +452,10 @@ def login_user(credentials: UserLogin, response: Response):
     if not verify_password(credentials.password, user.get("password", "")):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
-    user_id = user.get("user_id")
+    user_id = user.get("user_id") or user.get("id")
     
-    if not user_id:
-        user_id = f"user_{uuid.uuid4().hex[:12]}"
-        update_user(credentials.email, {"user_id": user_id})
-    
-    delete_sessions_by_user(user_id)
+    if user_id:
+        delete_sessions_by_user(user_id)
     
     session_token = f"email_session_{uuid.uuid4().hex}"
     expires_at = datetime.now(timezone.utc) + timedelta(days=7)
