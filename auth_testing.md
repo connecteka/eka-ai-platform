@@ -27,16 +27,16 @@ print('User ID: ' + userId);
 ## Step 2: Test Backend API
 ```bash
 # Test auth endpoint
-curl -X GET "https://garage-job-portal.preview.emergentagent.com/api/auth/me" \
+curl -X GET "https://eka-detail-page.preview.emergentagent.com/api/auth/me" \
   -H "Authorization: Bearer YOUR_SESSION_TOKEN"
 
 # Test registration
-curl -X POST "https://garage-job-portal.preview.emergentagent.com/api/auth/register" \
+curl -X POST "https://eka-detail-page.preview.emergentagent.com/api/auth/register" \
   -H "Content-Type: application/json" \
   -d '{"email":"newuser@example.com","password":"test123","name":"New User"}'
 
 # Test login
-curl -X POST "https://garage-job-portal.preview.emergentagent.com/api/auth/login" \
+curl -X POST "https://eka-detail-page.preview.emergentagent.com/api/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"email":"newuser@example.com","password":"test123"}'
 ```
@@ -53,7 +53,7 @@ await page.context.add_cookies([{
     "secure": true,
     "sameSite": "None"
 }]);
-await page.goto("https://garage-job-portal.preview.emergentagent.com");
+await page.goto("https://eka-detail-page.preview.emergentagent.com");
 ```
 
 ## Quick Debug
