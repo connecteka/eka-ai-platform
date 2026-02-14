@@ -907,18 +907,18 @@ const LoginPage = () => {
           {/* Bottom Bar */}
           <div className="pt-6 border-t border-gray-800/50 flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-xs text-gray-600 text-center md:text-left">
-              © {new Date().getFullYear()} Go4Garage Private Limited. All rights reserved.
+              © {new Date().getFullYear()} Go4Garage Pvt. Ltd. All rights reserved.
             </p>
             
-            {/* Trust Badges */}
-            <div className="flex items-center gap-4">
+            {/* Trust Badges - hidden on mobile */}
+            <div className="hidden sm:flex items-center gap-4">
               <div className="flex items-center gap-1.5 text-xs text-gray-500">
                 <Lock className="w-3.5 h-3.5" />
                 <span>SSL Secured</span>
               </div>
               <div className="flex items-center gap-1.5 text-xs text-gray-500">
                 <Shield className="w-3.5 h-3.5" />
-                <span>GDPR Compliant</span>
+                <span>GDPR</span>
               </div>
               <div className="flex items-center gap-1.5 text-xs text-gray-500">
                 <span>ISO 27001</span>
