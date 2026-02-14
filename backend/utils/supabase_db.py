@@ -49,45 +49,120 @@ def serialize_docs(docs: list) -> list:
     return [serialize_doc(doc) for doc in docs]
 
 
-# ==================== USERS ====================
+# ==================== USERS (using user_profiles table) ====================
 
 def get_user_by_email(email: str) -> Optional[Dict]:
-    """Get user by email."""
+    """Get user by email from user_profiles table."""
     client = get_supabase()
     if not client:
         return None
-    response = client.table("users").select("*").eq("email", email).execute()
-    return response.data[0] if response.data else None
+    try:
+        response = client.table("user_profiles").select("*").eq("email", email).execute()
+        if response.data:
+            user = response.data[0]
+            # Map user_profiles fields to expected user fields
+            return {
+                "id": user.get("id"),
+                "user_id": user.get("id"),  # Use id as user_id
+                "email": user.get("email"),
+                "name": user.get("full_name"),
+                "role": user.get("role", "user"),
+                "workshop_id": user.get("workshop_id"),
+                "phone": user.get("phone"),
+                "auth_provider": "email",
+                "created_at": user.get("created_at"),
+                "updated_at": user.get("updated_at"),
+                "password": user.get("password_hash")  # If stored
+            }
+        return None
+    except Exception as e:
+        print(f"get_user_by_email error: {e}")
+        return None
 
 
 def get_user_by_id(user_id: str) -> Optional[Dict]:
-    """Get user by user_id."""
+    """Get user by user_id from user_profiles table."""
     client = get_supabase()
     if not client:
         return None
-    response = client.table("users").select("*").eq("user_id", user_id).execute()
-    return response.data[0] if response.data else None
+    try:
+        response = client.table("user_profiles").select("*").eq("id", user_id).execute()
+        if response.data:
+            user = response.data[0]
+            return {
+                "id": user.get("id"),
+                "user_id": user.get("id"),
+                "email": user.get("email"),
+                "name": user.get("full_name"),
+                "role": user.get("role", "user"),
+                "workshop_id": user.get("workshop_id"),
+                "phone": user.get("phone"),
+                "auth_provider": user.get("auth_provider", "email"),
+                "picture": user.get("picture"),
+                "created_at": user.get("created_at"),
+                "updated_at": user.get("updated_at")
+            }
+        return None
+    except Exception as e:
+        print(f"get_user_by_id error: {e}")
+        return None
 
 
 def create_user(user_data: Dict) -> Dict:
-    """Create a new user."""
+    """Create a new user in user_profiles table."""
     client = get_supabase()
     if not client:
         return None
-    user_data["created_at"] = datetime.now(timezone.utc).isoformat()
-    user_data["updated_at"] = datetime.now(timezone.utc).isoformat()
-    response = client.table("users").insert(user_data).execute()
-    return response.data[0] if response.data else None
+    try:
+        # Map to user_profiles schema
+        profile_data = {
+            "full_name": user_data.get("name"),
+            "email": user_data.get("email"),
+            "role": user_data.get("role", "user"),
+            "phone": user_data.get("phone"),
+            "password_hash": user_data.get("password"),
+            "auth_provider": user_data.get("auth_provider", "email"),
+            "picture": user_data.get("picture"),
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }
+        response = client.table("user_profiles").insert(profile_data).execute()
+        if response.data:
+            user = response.data[0]
+            return {
+                "id": user.get("id"),
+                "user_id": user.get("id"),
+                "email": user.get("email"),
+                "name": user.get("full_name"),
+                "role": user.get("role")
+            }
+        return None
+    except Exception as e:
+        print(f"create_user error: {e}")
+        return None
 
 
 def update_user(email: str, update_data: Dict) -> Dict:
-    """Update user by email."""
+    """Update user by email in user_profiles table."""
     client = get_supabase()
     if not client:
         return None
-    update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
-    response = client.table("users").update(update_data).eq("email", email).execute()
-    return response.data[0] if response.data else None
+    try:
+        # Map to user_profiles schema
+        profile_update = {}
+        if "name" in update_data:
+            profile_update["full_name"] = update_data["name"]
+        if "picture" in update_data:
+            profile_update["picture"] = update_data["picture"]
+        if "phone" in update_data:
+            profile_update["phone"] = update_data["phone"]
+        profile_update["updated_at"] = datetime.now(timezone.utc).isoformat()
+        
+        response = client.table("user_profiles").update(profile_update).eq("email", email).execute()
+        return response.data[0] if response.data else None
+    except Exception as e:
+        print(f"update_user error: {e}")
+        return None
 
 
 # ==================== USER SESSIONS ====================
