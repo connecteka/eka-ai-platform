@@ -55,7 +55,7 @@ export const EkaAIInsightsPanel: React.FC<EkaAIInsightsPanelProps> = ({ insights
     <div style={{
       margin: '0 32px 24px',
       background: `linear-gradient(135deg, ${styles.ekaOrangeSuperLight} 0%, ${styles.white} 60%, ${styles.g4gPurpleLight} 100%)`,
-      border: '1px solid rgba(232, 149, 47, 0.15)',
+      border: '1px solid rgba(218, 119, 86, 0.15)',
       borderRadius: '20px',
       padding: '32px',
       position: 'relative',

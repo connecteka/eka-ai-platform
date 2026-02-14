@@ -416,7 +416,7 @@ export const defaultInsightsData: InsightsData = {
       body: 'Based on driving patterns (avg 1,400 km/month), next service at 37,500 km — approximately April 2025. Recommend scheduling proactive reminder 2 weeks before.',
       confidence: 94,
       action: 'Schedule Reminder',
-      border_color: '#E8952F',
+      border_color: '#da7756',
       bg_color: '#FEF6EC',
     },
     {
