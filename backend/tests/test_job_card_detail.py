@@ -7,7 +7,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = os.environ.get('VITE_API_URL', 'https://garage-job-portal.preview.emergentagent.com')
+BASE_URL = os.environ.get('VITE_API_URL', 'https://amber-dashboard.preview.emergentagent.com')
 TEST_JOB_CARD_ID = "698f9f0ac18c7ff6345f7a7e"
 
 class TestJobCardDetailAPI:

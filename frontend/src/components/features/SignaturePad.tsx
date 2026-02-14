@@ -168,7 +168,7 @@ const SignaturePad: React.FC<SignaturePadProps> = ({
             fontSize: '13px',
             fontWeight: 500,
             color: hasSignature ? '#FFFFFF' : '#9CA3AF',
-            backgroundColor: hasSignature ? '#E8952F' : '#E5E7EB',
+            backgroundColor: hasSignature ? '#F98906' : '#E8DDD0',
             border: 'none',
             borderRadius: '8px',
             cursor: hasSignature ? 'pointer' : 'not-allowed',
@@ -181,7 +181,7 @@ const SignaturePad: React.FC<SignaturePadProps> = ({
           }}
           onMouseLeave={(e) => {
             if (hasSignature) {
-              e.currentTarget.style.backgroundColor = '#E8952F';
+              e.currentTarget.style.backgroundColor = '#F98906';
             }
           }}
         >

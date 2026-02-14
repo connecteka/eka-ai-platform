@@ -101,7 +101,7 @@ const generateRevenueData = () => {
 
 // Job status distribution data
 const JOB_STATUS_DATA = [
-  { name: 'Open', value: 40, color: '#F45D3D' },
+  { name: 'Open', value: 40, color: '#F98906' },
   { name: 'In Progress', value: 25, color: '#3B82F6' },
   { name: 'PDI', value: 15, color: '#F59E0B' },
   { name: 'Invoiced', value: 10, color: '#22C55E' },
@@ -243,8 +243,8 @@ const DashboardPage: React.FC = () => {
               <AreaChart data={revenueData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                 <defs>
                   <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#F45D3D" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#F45D3D" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#F98906" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#F98906" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <XAxis 
@@ -261,7 +261,7 @@ const DashboardPage: React.FC = () => {
                 <Area 
                   type="monotone" 
                   dataKey="revenue" 
-                  stroke="#F45D3D" 
+                  stroke="#F98906" 
                   strokeWidth={2}
                   fillOpacity={1} 
                   fill="url(#revenueGradient)" 

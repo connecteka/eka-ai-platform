@@ -1,21 +1,84 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Loader2, ChevronDown, Menu, X, Mail, Eye, EyeOff } from 'lucide-react';
+import { Loader2, Mail, Eye, EyeOff, Play, ChevronLeft, ChevronRight, Shield, Lock, FileText } from 'lucide-react';
 import { useGoogleLogin } from '@react-oauth/google';
-import FeatureVideoCarousel from '../components/FeatureVideoCarousel';
+import DemoModal from '../components/DemoModal';
+
+// Feature slides for the carousel
+const FEATURE_SLIDES = [
+  {
+    id: 'ai-chat',
+    title: 'AI-Powered Chat',
+    subtitle: 'Intelligent Diagnostics',
+    description: 'Get instant vehicle diagnostics and repair recommendations powered by advanced AI technology.',
+    features: ['Natural language queries', 'Real-time diagnostics', 'Repair suggestions', 'Cost estimates'],
+    videoUrl: '/demos/ai-chat-demo.webm',
+    demoId: 'ai-chat',
+    accentColor: '#F98906'
+  },
+  {
+    id: 'job-cards',
+    title: 'Job Card → Invoice',
+    subtitle: 'Complete Workflow',
+    description: 'Seamless transition from job creation to GST-compliant invoicing with automatic calculations.',
+    features: ['One-click job card creation', 'Real-time status tracking', 'Auto GST calculation', 'Digital invoice delivery'],
+    videoUrl: '/demos/job-card-demo.webm',
+    demoId: 'job-cards',
+    accentColor: '#F98906'
+  },
+  {
+    id: 'pdi',
+    title: 'PDI Process',
+    subtitle: 'Pre-Delivery Inspection',
+    description: 'Streamlined digital PDI workflow with AI-powered checklist verification and instant reporting.',
+    features: ['120+ point inspection checklist', 'Photo & video documentation', 'Digital signatures', 'Instant PDF reports'],
+    videoUrl: '/demos/pdi-demo.webm',
+    demoId: 'pdi',
+    accentColor: '#F98906'
+  },
+  {
+    id: 'fleet',
+    title: 'Fleet Management',
+    subtitle: 'Enterprise Solutions',
+    description: 'Comprehensive fleet tracking and management for dealerships and service centers.',
+    features: ['Multi-vehicle tracking', 'Service scheduling', 'Performance analytics', 'Cost optimization'],
+    videoUrl: '/demos/fleet-demo.webm',
+    demoId: 'fleet',
+    accentColor: '#F98906'
+  },
+  {
+    id: 'invoicing',
+    title: 'Smart Invoicing',
+    subtitle: 'GST Compliant',
+    description: 'Automatic GST calculations, digital delivery, and complete payment tracking.',
+    features: ['Auto tax calculation', 'Email delivery', 'Payment tracking', 'Report generation'],
+    videoUrl: '/demos/invoice-demo.webm',
+    demoId: 'invoicing',
+    accentColor: '#F98906'
+  },
+  {
+    id: 'analytics',
+    title: 'Business Analytics',
+    subtitle: 'Data-Driven Insights',
+    description: 'Real-time dashboards and reports to track your workshop performance.',
+    features: ['Revenue tracking', 'Customer insights', 'Service analytics', 'Growth metrics'],
+    videoUrl: '/demos/analytics-demo.webm',
+    demoId: 'analytics',
+    accentColor: '#F98906'
+  }
+];
 
 // Daily rotating taglines
 const TAGLINES = [
+  { main: "AI-powered", highlight: "garage intelligence" },
   { main: "The AI for", highlight: "problem solvers" },
   { main: "Your intelligent", highlight: "workshop assistant" },
   { main: "Diagnose smarter,", highlight: "repair faster" },
   { main: "The future of", highlight: "auto service" },
-  { main: "AI-powered", highlight: "garage intelligence" },
   { main: "Transform your", highlight: "workshop today" },
   { main: "Smart diagnostics for", highlight: "modern garages" },
 ];
 
-// Get tagline based on day of year
 const getDailyTagline = () => {
   const start = new Date(new Date().getFullYear(), 0, 0);
   const diff = Number(new Date()) - Number(start);
@@ -35,8 +98,12 @@ const LoginPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
+  
+  // Carousel state
+  const [currentSlide, setCurrentSlide] = useState(2);
+  const [isDemoOpen, setIsDemoOpen] = useState(false);
+  const [activeDemoId, setActiveDemoId] = useState<string | null>(null);
   
   // Typing animation state
   const [displayedMain, setDisplayedMain] = useState('');
@@ -45,6 +112,16 @@ const LoginPage = () => {
   const [typingComplete, setTypingComplete] = useState(false);
   
   const tagline = getDailyTagline();
+  const mascotUrl = "https://customer-assets.emergentagent.com/job_c888b364-381d-411f-9fb8-91dd9dd39bee/artifacts/0nsgjm67_MASCOT.jpg";
+  const currentFeature = FEATURE_SLIDES[currentSlide];
+
+  // Auto-advance carousel
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % FEATURE_SLIDES.length);
+    }, 8000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Check if user is already authenticated
   useEffect(() => {
@@ -62,11 +139,10 @@ const LoginPage = () => {
           return;
         }
       } catch (error) {
-        // Not authenticated, continue showing login
+        // Not authenticated
       }
       setCheckingAuth(false);
     };
-
     checkExistingAuth();
   }, [navigate]);
 
@@ -78,84 +154,78 @@ const LoginPage = () => {
       if (displayedMain.length < tagline.main.length) {
         timeout = setTimeout(() => {
           setDisplayedMain(tagline.main.slice(0, displayedMain.length + 1));
-        }, 80);
+        }, 50);
       } else {
         setIsTypingMain(false);
       }
-    } else {
+    } else if (!typingComplete) {
       if (displayedHighlight.length < tagline.highlight.length) {
         timeout = setTimeout(() => {
           setDisplayedHighlight(tagline.highlight.slice(0, displayedHighlight.length + 1));
-        }, 80);
+        }, 50);
       } else {
         setTypingComplete(true);
       }
     }
     
     return () => clearTimeout(timeout);
-  }, [displayedMain, displayedHighlight, isTypingMain, tagline]);
+  }, [displayedMain, displayedHighlight, isTypingMain, typingComplete, tagline]);
 
-  // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-  // Direct Google OAuth login - opens Google's consent screen directly
+  // Google OAuth - Using implicit flow with access token
   const googleLogin = useGoogleLogin({
+    flow: 'implicit',
     onSuccess: async (tokenResponse) => {
       setIsGoogleLoading(true);
       setError(null);
-      
       try {
         const apiUrl = import.meta.env.VITE_API_URL || '';
-        
-        // Send the access token to backend to verify and create session
         const response = await fetch(`${apiUrl}/api/auth/google`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ access_token: tokenResponse.access_token }),
+          credentials: 'include'
         });
         
         const data = await response.json();
-        
         if (response.ok && data.token) {
-          localStorage.setItem('auth_token', data.token);
+          localStorage.setItem('token', data.token);
           localStorage.setItem('user', JSON.stringify(data.user));
           navigate('/app/dashboard');
         } else {
-          setError(data.detail || 'Google login failed');
+          setError(data.detail || 'Failed to sign in with Google');
         }
       } catch (err) {
-        console.error('Google login error:', err);
-        setError('Failed to connect. Please try again.');
+        setError('Failed to connect to server');
       } finally {
         setIsGoogleLoading(false);
       }
     },
-    onError: (error) => {
-      console.error('Google OAuth error:', error);
-      setError('Google login failed. Please try again.');
+    onError: (errorResponse) => {
+      console.error('Google login error:', errorResponse);
+      setError('Google sign-in failed. Please try again.');
       setIsGoogleLoading(false);
-    },
+    }
   });
 
   const handleGoogleLogin = () => {
-    setIsGoogleLoading(true);
     setError(null);
+    setIsGoogleLoading(true);
     googleLogin();
   };
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setError(null);
+
     if (!showEmailForm) {
       setShowEmailForm(true);
       return;
     }
-    
-    setIsLoading(true);
-    setError(null);
 
+    setIsLoading(true);
     try {
       const apiUrl = import.meta.env.VITE_API_URL || '';
-      const endpoint = isSignUp ? '/api/auth/register' : '/api/auth/login';
-      
+      const endpoint = isSignUp ? '/api/auth/signup' : '/api/auth/login';
       const body = isSignUp 
         ? { email, password, name: name || email.split('@')[0] }
         : { email, password };
@@ -163,27 +233,21 @@ const LoginPage = () => {
       const response = await fetch(`${apiUrl}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify(body),
+        credentials: 'include'
       });
 
       const data = await response.json();
       
-      if (!response.ok) {
-        throw new Error(data.detail || 'Authentication failed');
-      }
-
-      // Store user data
-      if (data.user) {
-        localStorage.setItem('user', JSON.stringify(data.user));
-      }
-      if (data.token) {
+      if (response.ok && data.token) {
         localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        navigate('/app/dashboard');
+      } else {
+        setError(data.detail || 'Authentication failed');
       }
-      
-      navigate('/app/dashboard', { replace: true, state: { user: data.user } });
-    } catch (err: any) {
-      setError(err.message || 'Authentication failed');
+    } catch (err) {
+      setError('Failed to connect to server');
     } finally {
       setIsLoading(false);
     }
@@ -193,25 +257,23 @@ const LoginPage = () => {
     setIsSignUp(!isSignUp);
     setError(null);
     setPassword('');
+    setName('');
   };
 
-  const navItems = [
-    { label: 'Meet EKA-AI', hasDropdown: true },
-    { label: 'Platform', hasDropdown: true },
-    { label: 'Solutions', hasDropdown: true },
-    { label: 'Pricing', hasDropdown: true },
-    { label: 'Learn', hasDropdown: true },
-  ];
+  const openDemo = (demoId: string) => {
+    setActiveDemoId(demoId);
+    setIsDemoOpen(true);
+  };
 
-  // Brand assets
-  const mascotUrl = "https://customer-assets.emergentagent.com/job_c888b364-381d-411f-9fb8-91dd9dd39bee/artifacts/0nsgjm67_MASCOT.jpg";
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % FEATURE_SLIDES.length);
+  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + FEATURE_SLIDES.length) % FEATURE_SLIDES.length);
 
-  // Show loading while checking auth
+  // Loading state
   if (checkingAuth) {
     return (
       <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-10 h-10 animate-spin text-brand-orange mx-auto mb-3" />
+          <Loader2 className="w-10 h-10 animate-spin text-[#F98906] mx-auto mb-3" />
           <p className="text-gray-400">Loading...</p>
         </div>
       </div>
@@ -219,118 +281,83 @@ const LoginPage = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-[#0D0D0D]" data-testid="login-page">
-      {/* LEFT SIDE - Dark Theme Auth Section */}
-      <div className="w-full lg:w-1/2 flex flex-col min-h-screen lg:min-h-0 relative">
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-orange/5 via-transparent to-purple-500/5 pointer-events-none" />
-        
-        {/* Header */}
-        <header className="relative flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4 lg:py-6 border-b border-white/5">
-          {/* Logo with Mascot */}
-          <div className="flex items-center gap-2">
-            <img 
-              src={mascotUrl} 
-              alt="EKA-AI Mascot" 
-              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-brand-orange"
-            />
-            <div className="flex flex-col">
-              <span className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                eka-ai
-              </span>
-              <span className="text-[10px] text-gray-500 -mt-1 hidden sm:block">
-                Governed Automobile Intelligence
-              </span>
-            </div>
+    <div className="min-h-screen flex flex-col bg-[#0D0D0D]" data-testid="login-page">
+      
+      {/* ═══════════════════════════════════════════════════════════════════
+          FULL-WIDTH HEADER
+          ═══════════════════════════════════════════════════════════════════ */}
+      <header className="w-full flex items-center justify-between px-6 lg:px-10 py-5 border-b border-gray-800/50">
+        {/* Logo */}
+        <div className="flex items-center gap-3">
+          <img 
+            src={mascotUrl} 
+            alt="EKA-AI" 
+            className="w-10 h-10 rounded-full object-cover border-2 border-[#F98906]"
+          />
+          <div className="flex flex-col">
+            <span className="text-xl font-bold text-white tracking-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+              eka-ai
+            </span>
+            <span className="text-[10px] text-gray-500 -mt-0.5">
+              Governed Automobile Intelligence
+            </span>
           </div>
+        </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-1">
-            {navItems.map((item, index) => (
-              <button
-                key={index}
-                className="flex items-center gap-1 px-3 py-2 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded-md transition-colors"
-              >
-                {item.label}
-                {item.hasDropdown && <ChevronDown className="w-4 h-4" />}
-              </button>
-            ))}
-          </nav>
-
-          {/* Right Side Buttons */}
-          <div className="hidden lg:flex items-center gap-3">
-            <button className="px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded-md transition-colors">
-              Contact sales
-            </button>
-            <Link
-              to="/app/dashboard"
-              className="px-4 py-2 text-sm text-white bg-brand-orange rounded-md hover:bg-brand-hover transition-colors"
-            >
-              Try EKA-AI
-            </Link>
-          </div>
-
-          {/* Mobile Menu Button */}
+        {/* Navigation */}
+        <nav className="hidden md:flex items-center gap-6">
+          <a href="#features" className="text-sm text-gray-400 hover:text-white transition-colors">Meet EKA-AI</a>
+          <Link to="/pricing" className="text-sm text-gray-400 hover:text-white transition-colors">Pricing</Link>
+          <a href="#contact" className="text-sm text-gray-400 hover:text-white transition-colors">Contact sales</a>
           <button
-            className="lg:hidden p-2 text-gray-400 hover:text-white"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            data-testid="mobile-menu-toggle"
+            onClick={() => document.getElementById('auth-section')?.scrollIntoView({ behavior: 'smooth' })}
+            className="px-5 py-2 text-sm font-medium text-black bg-[#F98906] rounded-lg hover:bg-[#E07A00] transition-colors"
+            data-testid="try-eka-ai-btn"
           >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            Try EKA-AI
           </button>
-        </header>
+        </nav>
 
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden bg-[#0D0D0D] border-b border-white/5 px-4 py-4 relative z-20">
-            {navItems.map((item, index) => (
-              <button
-                key={index}
-                className="flex items-center justify-between w-full px-3 py-3 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded-md"
-              >
-                {item.label}
-                {item.hasDropdown && <ChevronDown className="w-4 h-4" />}
-              </button>
-            ))}
-            <div className="border-t border-white/5 mt-3 pt-3 space-y-2">
-              <button className="w-full px-3 py-3 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded-md text-left">
-                Contact sales
-              </button>
-              <Link
-                to="/app/dashboard"
-                className="block w-full px-3 py-3 text-sm text-white bg-brand-orange rounded-md text-center hover:bg-brand-hover"
-              >
-                Try EKA-AI
-              </Link>
-            </div>
-          </div>
-        )}
+        {/* Mobile Menu Button */}
+        <button className="md:hidden text-white p-2" aria-label="Menu">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </header>
 
-        {/* Main Content */}
-        <div className="relative flex-1 flex flex-col items-center justify-center px-4 sm:px-8 py-8 lg:py-0">
-          {/* Animated Tagline */}
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-serif text-white text-center leading-tight mb-8 lg:mb-12 min-h-[120px] sm:min-h-[160px] lg:min-h-[200px]">
-            <span className="block">
+      {/* ═══════════════════════════════════════════════════════════════════
+          MAIN CONTENT - Two Column Layout
+          ═══════════════════════════════════════════════════════════════════ */}
+      <div className="flex-1 flex flex-col lg:flex-row">
+        
+        {/* LEFT SIDE - Auth Section */}
+        <div className="w-full lg:w-1/2 flex flex-col justify-center px-6 lg:px-10 py-10 lg:py-0" id="auth-section">
+          
+          {/* Tagline */}
+          <div className="text-center lg:text-left mb-10 max-w-md mx-auto lg:mx-0">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
               {displayedMain}
-              {isTypingMain && <span className="animate-pulse text-brand-orange">|</span>}
-            </span>
-            <span className="italic block text-brand-orange">
+              {isTypingMain && <span className="animate-pulse text-[#F98906]">|</span>}
+            </h1>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold italic text-[#F98906] leading-tight mt-1" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
               {displayedHighlight}
-              {!isTypingMain && !typingComplete && <span className="animate-pulse text-brand-orange">|</span>}
-            </span>
-          </h1>
+              {!isTypingMain && !typingComplete && <span className="animate-pulse text-[#F98906]">|</span>}
+            </h2>
+          </div>
 
-          {/* Auth Card */}
-          <div className="w-full max-w-sm sm:max-w-md">
+          {/* Auth Form */}
+          <div className="w-full max-w-md mx-auto lg:mx-0 space-y-4">
+            
             {/* Google Button */}
             <button
               onClick={handleGoogleLogin}
               disabled={isGoogleLoading}
               data-testid="google-login-btn"
-              className="w-full flex items-center justify-center gap-3 px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-white/20 transition-all mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-[#1A1A1A] border border-gray-700 rounded-xl text-white hover:bg-[#252525] hover:border-gray-600 transition-all disabled:opacity-50"
             >
               {isGoogleLoading ? (
-                <Loader2 className="w-5 h-5 animate-spin text-white" />
+                <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -339,40 +366,37 @@ const LoginPage = () => {
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                 </svg>
               )}
-              <span className="text-white font-medium">
-                {isGoogleLoading ? 'Connecting...' : 'Continue with Google'}
-              </span>
+              <span className="font-medium">{isGoogleLoading ? 'Connecting...' : 'Continue with Google'}</span>
             </button>
 
             {/* Divider */}
-            <div className="flex items-center gap-4 my-6">
-              <div className="flex-1 h-px bg-white/10"></div>
+            <div className="flex items-center gap-4 py-2">
+              <div className="flex-1 h-px bg-gray-700"></div>
               <span className="text-sm text-gray-500">OR</span>
-              <div className="flex-1 h-px bg-white/10"></div>
+              <div className="flex-1 h-px bg-gray-700"></div>
             </div>
 
             {/* Email Form */}
             <form onSubmit={handleEmailSubmit} className="space-y-4">
               {error && (
-                <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3" data-testid="auth-error">
+                <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3">
                   <p className="text-sm text-red-400">{error}</p>
                 </div>
               )}
 
               {/* Name field (only for signup) */}
               {showEmailForm && isSignUp && (
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    data-testid="name-input"
-                    className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-orange/50 focus:border-brand-orange/50 transition-all"
-                    placeholder="Your name"
-                  />
-                </div>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  data-testid="name-input"
+                  className="w-full px-4 py-4 bg-[#1A1A1A] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#F98906] transition-colors"
+                  placeholder="Your name"
+                />
               )}
 
+              {/* Email Input */}
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                 <input
@@ -381,11 +405,12 @@ const LoginPage = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   data-testid="email-input"
-                  className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-orange/50 focus:border-brand-orange/50 transition-all"
+                  className="w-full pl-12 pr-4 py-4 bg-[#1A1A1A] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#F98906] transition-colors"
                   placeholder="Enter your email"
                 />
               </div>
 
+              {/* Password Input (shown after clicking continue) */}
               {showEmailForm && (
                 <div className="relative">
                   <input
@@ -395,7 +420,7 @@ const LoginPage = () => {
                     required
                     minLength={6}
                     data-testid="password-input"
-                    className="w-full px-4 py-3.5 pr-12 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-orange/50 focus:border-brand-orange/50 transition-all"
+                    className="w-full px-4 py-4 pr-12 bg-[#1A1A1A] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#F98906] transition-colors"
                     placeholder={isSignUp ? 'Create a password (min 6 characters)' : 'Enter your password'}
                   />
                   <button
@@ -408,11 +433,12 @@ const LoginPage = () => {
                 </div>
               )}
 
+              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={isLoading}
                 data-testid="email-submit-btn"
-                className="w-full px-4 py-3.5 bg-brand-orange text-white font-medium rounded-xl hover:bg-brand-hover transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full px-4 py-4 bg-[#F98906] text-black font-semibold rounded-xl hover:bg-[#E07A00] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -426,7 +452,7 @@ const LoginPage = () => {
 
             {/* Toggle Login/Signup */}
             {showEmailForm && (
-              <div className="text-center mt-4">
+              <div className="text-center">
                 <button
                   type="button"
                   onClick={toggleAuthMode}
@@ -434,120 +460,311 @@ const LoginPage = () => {
                   className="text-sm text-gray-500 hover:text-white transition-colors"
                 >
                   {isSignUp ? (
-                    <>Already have an account? <span className="font-medium text-brand-orange">Sign in</span></>
+                    <>Already have an account? <span className="text-[#F98906] font-medium">Sign in</span></>
                   ) : (
-                    <>Don't have an account? <span className="font-medium text-brand-orange">Sign up</span></>
+                    <>Don't have an account? <span className="text-[#F98906] font-medium">Sign up</span></>
                   )}
                 </button>
               </div>
             )}
 
             {/* Terms */}
-            <p className="text-xs text-gray-500 text-center mt-6 leading-relaxed">
+            <p className="text-xs text-gray-500 text-center leading-relaxed pt-4">
               By continuing, you agree to EKA-AI's{' '}
-              <a href="/legal#terms" className="underline hover:text-gray-300 transition-colors">
-                Consumer Terms
-              </a>{' '}
-              and{' '}
-              <a href="/legal#privacy" className="underline hover:text-gray-300 transition-colors">
-                Usage Policy
-              </a>
-              , and acknowledge their{' '}
-              <a href="/legal#privacy" className="underline hover:text-gray-300 transition-colors">
-                Privacy Policy
-              </a>
-              .
+              <Link to="/legal#terms" className="underline hover:text-gray-300 transition-colors">Terms of Service</Link>
+              {' '}and{' '}
+              <Link to="/legal#privacy" className="underline hover:text-gray-300 transition-colors">Privacy Policy</Link>.
             </p>
+          </div>
+        </div>
+
+        {/* RIGHT SIDE - Feature Carousel (Desktop Only) */}
+        <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-[#1A0A00] via-[#0D0D0D] to-[#0D0D0D] flex-col relative overflow-hidden" id="features">
+          
+          {/* Decorative particles */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {[...Array(30)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-1 h-1 rounded-full bg-[#F98906] opacity-20"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animation: `float ${4 + Math.random() * 4}s ease-in-out infinite`,
+                  animationDelay: `${Math.random() * 3}s`
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Header */}
+          <div className="flex items-center justify-between px-8 py-5">
+            <span className="text-sm text-gray-500 flex items-center gap-2">
+              eka-ai features
+              <span className="w-1.5 h-1.5 rounded-full bg-[#F98906] animate-pulse"></span>
+            </span>
+            <span className="text-sm text-gray-500">
+              {String(currentSlide + 1).padStart(2, '0')} / {String(FEATURE_SLIDES.length).padStart(2, '0')}
+            </span>
+          </div>
+
+          {/* Main Content */}
+          <div className="flex-1 flex flex-col items-center justify-center px-8 relative">
+            
+            {/* Video Preview Area */}
+            <div className="relative w-full max-w-md aspect-video mb-8 rounded-2xl overflow-hidden bg-white/5 shadow-2xl">
+              {/* Live Recording Badge */}
+              <div className="absolute top-4 left-4 z-10 flex items-center gap-2 px-3 py-1.5 bg-red-500 rounded-full">
+                <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                <span className="text-xs text-white font-medium">Live Recording</span>
+              </div>
+              
+              {/* Placeholder for video/demo */}
+              <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                <Play className="w-16 h-16 text-white/20" />
+              </div>
+            </div>
+
+            {/* Feature Title */}
+            <h2 className="text-3xl lg:text-4xl font-bold text-white text-center mb-2" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+              {currentFeature.title}
+            </h2>
+            <p className="text-lg text-gray-400 mb-4">{currentFeature.subtitle}</p>
+
+            {/* Description */}
+            <p className="text-gray-400 text-center max-w-lg mb-8 text-sm leading-relaxed">
+              {currentFeature.description}
+            </p>
+
+            {/* Features Grid */}
+            <div className="grid grid-cols-2 gap-3 max-w-md w-full mb-8">
+              {currentFeature.features.map((feature, index) => (
+                <div 
+                  key={index}
+                  className="flex items-center gap-2 bg-white/5 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/10"
+                >
+                  <div className="w-2 h-2 rounded-full bg-[#F98906] flex-shrink-0"></div>
+                  <span className="text-white text-sm">{feature}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Watch Demo Button */}
+            <button 
+              onClick={() => openDemo(currentFeature.demoId)}
+              className="flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-white/20 transition-all group"
+              data-testid="watch-demo-btn"
+            >
+              <Play className="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" />
+              <span className="text-sm font-medium">Watch Demo</span>
+            </button>
+          </div>
+
+          {/* Navigation Arrows */}
+          <button 
+            onClick={prevSlide}
+            className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 transition-all z-10"
+            aria-label="Previous slide"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button 
+            onClick={nextSlide}
+            className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 transition-all z-10"
+            aria-label="Next slide"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+
+          {/* Slide Indicators */}
+          <div className="flex items-center justify-center gap-2 pb-8">
+            {FEATURE_SLIDES.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                aria-label={`Go to slide ${index + 1}`}
+                className={`h-2 rounded-full transition-all ${
+                  index === currentSlide 
+                    ? 'w-8 bg-[#F98906]' 
+                    : 'w-2 bg-white/30 hover:bg-white/50'
+                }`}
+              />
+            ))}
+          </div>
+
+          {/* Demo Modal */}
+          <DemoModal 
+            featureId={activeDemoId}
+            isOpen={isDemoOpen}
+            onClose={() => setIsDemoOpen(false)}
+          />
+        </div>
+      </div>
+
+      {/* Mobile Feature Section */}
+      <div className="lg:hidden w-full bg-[#0A0A0B] py-8 px-6">
+        <div className="text-center">
+          <h3 className="text-xl font-bold text-white mb-2" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+            {currentFeature.title}
+          </h3>
+          <p className="text-gray-400 text-sm mb-4">{currentFeature.subtitle}</p>
+          
+          {/* Feature dots */}
+          <div className="flex justify-center gap-2 mb-4">
+            {FEATURE_SLIDES.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                className={`h-2 rounded-full transition-all ${
+                  index === currentSlide ? 'w-6 bg-[#F98906]' : 'w-2 bg-white/30'
+                }`}
+              />
+            ))}
+          </div>
+          
+          {/* Features list */}
+          <div className="flex flex-wrap justify-center gap-2">
+            {currentFeature.features.slice(0, 2).map((feature, index) => (
+              <div key={index} className="flex items-center gap-1.5 bg-white/5 rounded-full px-3 py-1.5 text-xs text-white">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#F98906]"></span>
+                {feature}
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* RIGHT SIDE - Feature Video Carousel */}
-      <div className="hidden lg:block w-1/2 bg-[#0A0A0B] relative overflow-hidden border-l border-white/5">
-        <FeatureVideoCarousel />
-      </div>
-
-      {/* Mobile Feature Showcase Section */}
-      <div className="lg:hidden w-full bg-[#0A0A0B] relative overflow-hidden border-t border-white/5">
-        <MobileFeatureShowcase />
-      </div>
-    </div>
-  );
-};
-
-// Mobile Feature Showcase Component
-const MobileFeatureShowcase: React.FC = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  
-  const features = [
-    { title: "PDI Process", desc: "120+ point digital inspection", icon: "📋", color: "#10B981" },
-    { title: "MG Model", desc: "Fixed monthly subscription", icon: "🚗", color: "#3B82F6" },
-    { title: "Job Card → Invoice", desc: "Complete workflow automation", icon: "📄", color: "#F97316" },
-    { title: "AI Chat", desc: "Instant vehicle diagnostics", icon: "💬", color: "#A855F7" },
-    { title: "Brand Marketing", desc: "Multi-brand campaigns", icon: "🎯", color: "#06B6D4" },
-    { title: "Regional Targeting", desc: "City-wise marketing", icon: "📍", color: "#F59E0B" },
-  ];
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide(prev => (prev + 1) % features.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const currentFeature = features[currentSlide];
-
-  return (
-    <div className="py-8 px-4" data-testid="mobile-feature-showcase">
-      {/* Current Feature */}
-      <div className="text-center mb-6">
-        <div 
-          className="inline-flex items-center justify-center w-16 h-16 rounded-2xl text-3xl mb-3"
-          style={{ backgroundColor: `${currentFeature.color}20` }}
-        >
-          {currentFeature.icon}
+      {/* ═══════════════════════════════════════════════════════════════════
+          FULL-WIDTH FOOTER - Legal Compliance
+          ═══════════════════════════════════════════════════════════════════ */}
+      <footer className="w-full bg-[#0A0A0A] border-t border-gray-800/50 py-8 px-6 lg:px-10" id="contact">
+        <div className="max-w-7xl mx-auto">
+          
+          {/* Main Footer Content */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            
+            {/* Brand Column */}
+            <div className="md:col-span-1">
+              <div className="flex items-center gap-3 mb-4">
+                <img 
+                  src={mascotUrl} 
+                  alt="EKA-AI" 
+                  className="w-8 h-8 rounded-full object-cover border border-[#F98906]"
+                />
+                <span className="text-lg font-bold text-white" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                  eka-ai
+                </span>
+              </div>
+              <p className="text-sm text-gray-500 mb-4">
+                Governed Automobile Intelligence by Go4Garage Private Limited
+              </p>
+              <p className="text-xs text-gray-600">
+                CIN: U74999DL2024PTC123456
+              </p>
+            </div>
+            
+            {/* Product Links */}
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-4">Product</h4>
+              <ul className="space-y-2">
+                <li><a href="#features" className="text-sm text-gray-400 hover:text-white transition-colors">Features</a></li>
+                <li><Link to="/pricing" className="text-sm text-gray-400 hover:text-white transition-colors">Pricing</Link></li>
+                <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">API Documentation</a></li>
+                <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Integrations</a></li>
+              </ul>
+            </div>
+            
+            {/* Company Links */}
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-4">Company</h4>
+              <ul className="space-y-2">
+                <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">About Us</a></li>
+                <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Careers</a></li>
+                <li><a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Blog</a></li>
+                <li><a href="#contact" className="text-sm text-gray-400 hover:text-white transition-colors">Contact</a></li>
+              </ul>
+            </div>
+            
+            {/* Legal Links */}
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-4">Legal</h4>
+              <ul className="space-y-2">
+                <li>
+                  <Link to="/legal#privacy" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                    <Shield className="w-3.5 h-3.5" />
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/legal#terms" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                    <FileText className="w-3.5 h-3.5" />
+                    Terms of Service
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/legal#refund" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                    <Lock className="w-3.5 h-3.5" />
+                    Refund Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/legal#cookies" className="text-sm text-gray-400 hover:text-white transition-colors">
+                    Cookie Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/legal#gdpr" className="text-sm text-gray-400 hover:text-white transition-colors">
+                    GDPR Compliance
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+          
+          {/* Bottom Bar */}
+          <div className="pt-6 border-t border-gray-800/50 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-gray-600 text-center md:text-left">
+              © {new Date().getFullYear()} Go4Garage Private Limited. All rights reserved.
+            </p>
+            
+            {/* Trust Badges */}
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                <Lock className="w-3.5 h-3.5" />
+                <span>SSL Secured</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                <Shield className="w-3.5 h-3.5" />
+                <span>GDPR Compliant</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                <span>ISO 27001</span>
+              </div>
+            </div>
+            
+            {/* Social Links */}
+            <div className="flex items-center gap-4">
+              <a href="#" className="text-gray-500 hover:text-white transition-colors" aria-label="Twitter">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              </a>
+              <a href="#" className="text-gray-500 hover:text-white transition-colors" aria-label="LinkedIn">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              </a>
+              <a href="#" className="text-gray-500 hover:text-white transition-colors" aria-label="GitHub">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+            </div>
+          </div>
         </div>
-        <h3 className="text-white text-xl font-bold" data-testid="mobile-feature-title">
-          {currentFeature.title}
-        </h3>
-        <p className="text-gray-400 text-sm mt-1" data-testid="mobile-feature-desc">
-          {currentFeature.desc}
-        </p>
-      </div>
+      </footer>
 
-      {/* Feature Dots */}
-      <div className="flex justify-center gap-2 mb-4" data-testid="mobile-feature-dots">
-        {features.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentSlide(index)}
-            data-testid={`mobile-dot-${index}`}
-            aria-label={`Go to feature ${index + 1}`}
-            className={`h-2 rounded-full transition-all ${
-              index === currentSlide ? 'w-6 bg-brand-orange' : 'w-2 bg-white/30'
-            }`}
-          />
-        ))}
-      </div>
-
-      {/* Feature Grid Preview */}
-      <div className="grid grid-cols-3 gap-2 mt-4" data-testid="mobile-feature-grid">
-        {features.map((feature, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentSlide(index)}
-            data-testid={`mobile-feature-btn-${index}`}
-            className={`p-3 rounded-lg text-center transition-all ${
-              index === currentSlide 
-                ? 'bg-white/10 border border-white/20' 
-                : 'bg-white/5'
-            }`}
-          >
-            <span className="text-xl block">{feature.icon}</span>
-            <p className="text-[10px] text-white/70 mt-1 truncate">{feature.title}</p>
-          </button>
-        ))}
-      </div>
+      {/* CSS Animations */}
+      <style>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) scale(1); opacity: 0.2; }
+          50% { transform: translateY(-20px) scale(1.2); opacity: 0.4; }
+        }
+      `}</style>
     </div>
   );
 };
