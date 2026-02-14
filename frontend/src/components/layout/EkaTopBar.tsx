@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Bell, ChevronDown, Zap, Brain, Database, Crown, Sparkles } from 'lucide-react';
+import { Bell, ChevronDown, Zap, Brain, Database, Crown, Sparkles, Menu } from 'lucide-react';
 import { useLocalUser } from '../../hooks/useLocalUser';
+import { useShell } from './EkaAppShell';
 import type { IntelligenceMode } from '../../types';
 import { cn } from '../../lib/utils';
 
