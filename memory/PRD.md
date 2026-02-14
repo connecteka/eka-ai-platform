@@ -5,7 +5,7 @@
 **Type:** Automobile Intelligence System  
 **Client:** Go4Garage Private Limited  
 **Date Created:** February 2026  
-**Last Updated:** February 14, 2026 (Update 20 - Backend Data Integration Complete)
+**Last Updated:** February 14, 2026 (Update 22 - Primary Color Updated)
 
 ## Original Problem Statement
 Build the EKA-AI Platform - a comprehensive automobile intelligence system with a Claude-like chat interface for vehicle diagnostics, job card management, and fleet operations.
@@ -37,7 +37,7 @@ Build the EKA-AI Platform - a comprehensive automobile intelligence system with 
 - [x] Claude-like AI chat interface with automobile expertise
 - [x] Job card CRUD with state machine workflow
 - [x] Dashboard with real-time metrics
-- [x] Dark theme with brand orange (#E8952F) accent
+- [x] Dark theme with brand coral (#da7756) accent
 - [x] Mobile-responsive design
 - [x] MG Fleet management module
 - [x] Invoice generation with GST support
