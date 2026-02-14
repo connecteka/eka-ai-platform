@@ -17,12 +17,12 @@ from utils.database import (
 )
 
 # MG Service Integration
-from services.mg_service import MGService, MGContract
+from services.mg_service import MGEngine
 
 router = APIRouter(prefix="/api/mg-fleet", tags=["MG Fleet"])
 
-# Initialize MG Service
-mg_service = MGService()
+# Initialize MG Engine
+mg_engine = MGEngine()
 
 
 class ContractCreate(BaseModel):
