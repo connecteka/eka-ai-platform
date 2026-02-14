@@ -99,7 +99,7 @@ interface PartsInventorySectionProps {
 }
 
 export const PartsInventorySection: React.FC<PartsInventorySectionProps> = ({ parts }) => {
-  const sampleParts = parts.length > 0 ? parts : [
+  const sampleParts = (parts && parts.length > 0) ? parts : [
     { id: '1', name: 'Engine Oil 5W-30', part_number: 'OIL-5W30-4L', category: 'Lubricant', quantity: '4 L', unit_price: 350, total: 1400, warranty: undefined, availability: 'in-stock' },
     { id: '2', name: 'Oil Filter', part_number: 'FLT-MSZ-OIL', category: 'Filter', quantity: '1', unit_price: 280, total: 280, warranty: '6 months', availability: 'in-stock' },
     { id: '3', name: 'Brake Pad Set', part_number: 'BRK-FRT-SWF', category: 'Brake', quantity: '1 set', unit_price: 2200, total: 2200, warranty: '12 months', availability: 'in-stock' },
