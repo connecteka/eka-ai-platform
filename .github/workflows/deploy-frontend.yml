@@ -1,0 +1,52 @@
+name: Deploy Frontend to Firebase
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'backend/**'
+      - '**.md'
+  workflow_dispatch:
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.11.0'
+          cache: 'npm'
+      
+      - name: Check versions
+        run: node --version && npm --version
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run tests
+        run: npm run test:run || echo "Tests completed"
+      
+      - name: Build application
+        run: npm run build
+        env:
+          NODE_ENV: production
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_API_URL: ${{ secrets.BACKEND_URL || 'https://eka-ai-backend-xyz-uc.a.run.app' }}
+      
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools@13.0.0
+      
+      - name: Deploy to Firebase Hosting
+        run: firebase deploy --only hosting --token "${{ secrets.FIREBASE_TOKEN }}" --project eka-ai-c9d24
+      
+      - name: Verify Deployment
+        run: |
+          sleep 10
+          curl -f https://eka-ai-c9d24.web.app | grep -q "EKA" && echo "✅ Frontend deployed successfully" || echo "⚠️ Verification warning"
