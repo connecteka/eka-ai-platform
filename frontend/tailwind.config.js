@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        'brand-orange': '#F45D3D',
+        'brand-orange': '#da7756',
         'background': '#0D0D0D',
         'background-alt': '#1B1B1D',
         'text-primary': '#FFFFFF',
