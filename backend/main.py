@@ -1,16 +1,19 @@
 """
 EKA-AI Backend - Main Entry Point
-FastAPI application with MongoDB database
+FastAPI application with Supabase database
 """
 import os
 import uuid
 import hashlib
 import json
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Import routers
 from routers.auth import router as auth_router
@@ -27,17 +30,30 @@ from routers.dashboard import router as dashboard_router
 PAYU_MERCHANT_KEY = os.getenv("PAYU_MERCHANT_KEY", "test_key")
 PAYU_MERCHANT_SALT = os.getenv("PAYU_MERCHANT_SALT", "test_salt")
 PAYU_BASE_URL = os.getenv("PAYU_BASE_URL", "https://test.payu.in/_payment")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "")
 
 app = FastAPI(
     title="EKA-AI Backend API",
     description="API for Job Cards, Invoices, Payments, and MG Fleet management.",
-    version="2.0.0"
+    version="2.1.0"
 )
 
-# --- CORS Middleware ---
+# --- CORS Middleware (Restricted for production) ---
+ALLOWED_ORIGINS: List[str] = [
+    "https://chat-deployed.preview.emergentagent.com",
+    "https://eka-ai-c9d24.web.app",
+    "https://app.eka-ai.in",
+    "http://localhost:3000",
+    "http://localhost:5173",
+]
+
+# Add FRONTEND_URL if set
+if FRONTEND_URL and FRONTEND_URL not in ALLOWED_ORIGINS:
+    ALLOWED_ORIGINS.append(FRONTEND_URL)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
