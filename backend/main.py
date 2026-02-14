@@ -7,22 +7,11 @@ from typing import List, Optional
 from fastapi import FastAPI, HTTPException, Depends, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from supabase import create_client, Client
 
-# --- Configuration & Supabase Connection ---
-
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+# --- Configuration ---
 PAYU_MERCHANT_KEY = os.getenv("PAYU_MERCHANT_KEY", "test_key")
 PAYU_MERCHANT_SALT = os.getenv("PAYU_MERCHANT_SALT", "test_salt")
 PAYU_BASE_URL = os.getenv("PAYU_BASE_URL", "https://test.payu.in/_payment")
-
-try:
-    supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-    print("✅ Successfully connected to Supabase.")
-except Exception as e:
-    print(f"❌ Error connecting to Supabase: {e}")
-    supabase = None
 
 app = FastAPI(
     title="EKA-AI Backend API",
