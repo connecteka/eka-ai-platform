@@ -44,15 +44,15 @@ app.add_middleware(
 )
 
 # --- Include Routers ---
-app.include_router(auth_router, prefix="/api/auth", tags=["Authentication"])
-app.include_router(job_cards_router, prefix="/api/job-cards", tags=["Job Cards"])
-app.include_router(invoices_router, prefix="/api/invoices", tags=["Invoices"])
-app.include_router(chat_router, prefix="/api/chat", tags=["Chat"])
-app.include_router(files_router, prefix="/api/files", tags=["Files"])
-app.include_router(notifications_router, prefix="/api/notifications", tags=["Notifications"])
-app.include_router(voice_router, prefix="/api/voice", tags=["Voice"])
-app.include_router(mg_fleet_router, prefix="/api/mg-fleet", tags=["MG Fleet"])
-app.include_router(dashboard_router, prefix="/api/dashboard", tags=["Dashboard"])
+app.include_router(auth_router, tags=["Authentication"])
+app.include_router(job_cards_router, tags=["Job Cards"])
+app.include_router(invoices_router, tags=["Invoices"])
+app.include_router(chat_router, tags=["Chat"])
+app.include_router(files_router, tags=["Files"])
+app.include_router(notifications_router, tags=["Notifications"])
+app.include_router(voice_router, tags=["Voice"])
+app.include_router(mg_fleet_router, tags=["MG Fleet"])
+app.include_router(dashboard_router, tags=["Dashboard"])
 
 
 # --- Health Check Endpoints ---
