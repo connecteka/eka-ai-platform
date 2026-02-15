@@ -76,7 +76,7 @@ jobs:
             MONGODB_URI=${{ secrets.MONGODB_URI }}
             GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
-            RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
+            RESEND_API_KEY=${{ secrets.RESEND_KEY }}
             FRONTEND_URL=https://eka-ai-c9d24.web.app
             PYTHONUNBUFFERED=1
           flags: |
