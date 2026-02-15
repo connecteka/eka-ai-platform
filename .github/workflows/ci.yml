@@ -20,19 +20,19 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'npm'
+        cache: 'yarn'
         
     # Install dependencies
     - name: Install dependencies
-      run: npm ci
+      run: yarn install --frozen-lockfile
       
     # Run TypeScript type checking
     - name: Type check
-      run: npm run typecheck
+      run: yarn typecheck
       
     # Build application
     - name: Build
-      run: npm run build
+      run: yarn build
       
     # Upload build artifacts
     - name: Upload build artifacts
