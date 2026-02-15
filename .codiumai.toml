@@ -1,0 +1,695 @@
+# ==========================================================
+# EKA-AI "CONSTITUTIONAL" CONFIGURATION
+# Governed Automobile Intelligence System (Go4Garage)
+# ==========================================================
+# This file defines the immutable governance rules, testing
+# protocols, and protection mechanisms for the EKA-AI Platform.
+# Last Updated: February 14, 2026
+# ==========================================================
+
+[general]
+project_name = "EKA-AI Platform"
+organization = "Go4Garage Private Limited"
+version = "2.0.0"
+strict_mode = true
+avoid_external_libraries = true
+max_suggestions = 5
+confidence_threshold = 0.90  # High threshold for production readiness
+environment = "production"
+launch_date = "2026-02-14"
+
+# ==========================================================
+# 1. ARCHITECTURE & FILE PROTECTION (CRITICAL)
+# ==========================================================
+
+[architecture]
+preserve_folder_structure = true
+prevent_refactors = true
+prevent_signature_changes = true
+prevent_global_variable_changes = true
+enforce_immutability = true
+
+# PROTECT THE CONSTITUTION & CORE LOGIC
+protect_files = [
+    # The Constitution
+    "memory/PRD.md",
+    "backend/prompts/eka_system_prompt.txt",
+    ".codiumai.toml",
+    
+    # The 4-Gate Governance System
+    "backend/services/ai_governance.py",
+    "backend/middleware/auth.py",
+    
+    # Financial Determinism
+    "backend/services/mg_service.py",
+    "backend/services/billing.py",
+    "backend/finance/rbi_compliance.py",
+    
+    # Database Schemas (Hybrid protection)
+    "backend/database/schema_complete.sql",
+    "backend/database/mongodb_schema.js",
+    
+    # Core Managers
+    "backend/services/job_card_manager.py",
+    "backend/services/pdi_manager.py",
+    "backend/services/invoice_service.py",
+    
+    # Legal & Compliance
+    "backend/legal/erasure.py",
+    "docs/PRODUCTION_DEPLOYMENT_CHECKLIST.md",
+    "docs/PRODUCTION_READINESS_REPORT.md"
+]
+
+# Critical directories that must not be deleted
+protect_directories = [
+    "backend/",
+    "frontend/",
+    "backend/database/",
+    "backend/services/",
+    "backend/routers/",
+    "backend/finance/",
+    "backend/legal/",
+    "backend/agents/",
+    "frontend/src/components/",
+    "frontend/src/pages/",
+    "frontend/src/services/"
+]
+
+# ==========================================================
+# 2. PYTHON BACKEND TESTING (FastAPI + Logic)
+# ==========================================================
+
+[tests.python]
+framework = "pytest"
+testing_level = "component"
+coverage_target = 95
+async_support = true
+validate_type_hints = true
+strict_assertions = true
+min_tests_required = 31
+
+test_targets = [
+    "backend/services/",
+    "backend/routers/",
+    "backend/finance/",
+    "backend/legal/",
+    "backend/agents/",
+    "backend/middleware/",
+    "backend/utils/"
+]
+
+focus_rules = [
+    # Governance & Safety
+    "Validate AI Governance 4-Gates (Domain, Confidence, Context, Permission)",
+    "Ensure 'Domain Gate' rejects non-automobile queries immediately",
+    "Validate RBAC permissions for 'UserRole' (Owner vs Technician)",
+    "Ensure JWT token validation on all protected endpoints",
+    
+    # Financial Integrity
+    "Validate 'MGEngine' calculates MAX(assured, actual) with Decimal precision",
+    "Validate GST logic distinguishes IGST vs CGST/SGST based on state codes",
+    "Ensure RBI compliance checks pass for all financial transactions",
+    "Validate invoice numbering is sequential and unique",
+    
+    # Operational Logic
+    "Validate Job Card state machine transitions (Created -> Diagnosed -> Estimating -> Approved -> In-Progress -> Completed)",
+    "Ensure PDI Evidence (photos/videos) links correctly to Job Cards",
+    "Validate digital signature capture and storage",
+    "Ensure customer approval workflow is enforced",
+    
+    # Data Integrity
+    "Validate all database queries use parameterized statements",
+    "Ensure no SQL injection vulnerabilities",
+    "Validate foreign key constraints",
+    "Ensure audit logs capture all mutations"
+]
+
+critical_test_cases = [
+    "test_auth_login_valid_credentials",
+    "test_auth_login_invalid_credentials",
+    "test_job_card_creation",
+    "test_job_card_state_transitions",
+    "test_invoice_generation_with_gst",
+    "test_mg_billing_calculation",
+    "test_ai_governance_domain_gate",
+    "test_ai_governance_confidence_gate",
+    "test_digital_signature_capture",
+    "test_customer_approval_workflow",
+    "test_rbi_compliance_validation",
+    "test_rate_limiting",
+    "test_cors_configuration"
+]
+
+# ==========================================================
+# 3. TYPESCRIPT FRONTEND TESTING (Vite + React 19)
+# ==========================================================
+
+[tests.typescript]
+framework = "vitest"
+testing_level = "component"
+strict_props_validation = true
+protect_design_system = true
+min_tests_required = 25
+
+test_targets = [
+    "frontend/src/components/features/job-cards/",
+    "frontend/src/components/features/invoice/",
+    "frontend/src/components/features/pdi/",
+    "frontend/src/components/chat/",
+    "frontend/src/services/",
+    "frontend/src/hooks/",
+    "frontend/src/pages/"
+]
+
+focus_rules = [
+    # UI/UX Critical Paths
+    "Validate 17-Section Job Card Detail Page rendering",
+    "Validate 'ClaudeLikeChat' handles streaming responses correctly",
+    "Ensure 'CustomerApprovalGate' locks UI until token is validated",
+    "Validate PDF generation trigger in InvoiceGenerator",
+    "Check responsive behavior for the Full-Width Login Header",
+    "Validate mobile responsiveness on all pages",
+    "Ensure accessibility compliance (WCAG 2.1 AA)",
+    
+    # Component Integration
+    "Validate form submission and error handling",
+    "Ensure proper state management with React Hooks",
+    "Validate API call error handling",
+    "Check loading states and spinners",
+    
+    # Design System
+    "Validate brand colors (#F98906, #7433A2, #3CB44B)",
+    "Ensure consistent typography (Playfair Display, Source Serif 4)",
+    "Check spacing and layout consistency",
+    "Validate dark theme implementation"
+]
+
+critical_test_cases = [
+    "test_login_page_renders",
+    "test_login_with_valid_credentials",
+    "test_login_with_invalid_credentials",
+    "test_dashboard_loads_metrics",
+    "test_job_card_detail_page_renders_all_sections",
+    "test_invoice_generation_and_download",
+    "test_digital_signature_capture",
+    "test_chat_interface_sends_message",
+    "test_chat_interface_receives_response",
+    "test_mobile_responsive_design",
+    "test_legal_page_navigation",
+    "test_customer_approval_workflow"
+]
+
+# ==========================================================
+# 4. AI LOGIC & CONSTITUTION VALIDATION
+# ==========================================================
+
+[ai_validation]
+enforce_constitution = true
+validate_mg_loop = true
+validate_pricing_constraints = true
+validate_hallucination_prevention = true
+confidence_threshold = 0.90
+
+checks = [
+    # Pricing Safety (From System Prompt)
+    "AI must NEVER generate exact prices; it must use Ranges or Estimates",
+    "All pricing responses must include the disclaimer: 'Final pricing subject to workshop approval'",
+    "AI must not suggest prices outside workshop's historical range",
+    
+    # Hallucination Prevention
+    "If confidence < 0.90, AI must ask clarifying questions (Root Cause Protocol)",
+    "AI must cite sources for all technical recommendations",
+    "AI must not invent vehicle specifications",
+    "AI must validate vehicle registration before providing diagnostics",
+    
+    # Data Integrity
+    "Job Cards must always track 'updated_by' and 'updated_at'",
+    "Intelligence Logs must record every query decision (PASS/BLOCK)",
+    "All AI responses must be logged with confidence scores",
+    "Audit trail must be immutable",
+    
+    # Feature Specifics
+    "MG Fleet bills must be generated with 'is_audit_safe=True' flag",
+    "Invoices must reference valid HSN/SAC codes",
+    "Digital signatures must include timestamp and customer verification",
+    "Customer approval tokens must expire after 24 hours",
+    
+    # Safety Gates
+    "Domain Gate: Reject queries about non-automobile topics",
+    "Confidence Gate: Require 0.90+ confidence for recommendations",
+    "Context Gate: Require valid vehicle details for diagnostics",
+    "Permission Gate: Enforce RBAC for sensitive operations"
+]
+
+# ==========================================================
+# 5. DATABASE INTEGRITY (Postgres + Mongo)
+# ==========================================================
+
+[database]
+validate_schema_integrity = true
+prevent_table_removal = true
+enforce_foreign_keys = true
+enable_row_level_security = true
+backup_frequency = "daily"
+backup_retention_days = 30
+
+protect_tables = [
+    # Core Business Entities
+    "vehicles",
+    "job_cards",
+    "invoices",
+    "workshops",
+    "users",
+    
+    # Financials
+    "mg_contracts",
+    "mg_vehicle_logs",
+    "mg_calculation_logs",
+    "payments",
+    "subscriptions",
+    
+    # Governance
+    "intelligence_logs",
+    "audit_logs",
+    "user_profiles",
+    "user_roles",
+    
+    # PDI & Evidence
+    "pdi_evidence",
+    "pdi_checklists",
+    
+    # Chat & Sessions
+    "chat_sessions",
+    "chat_messages"
+]
+
+validate_relations = true
+validate_foreign_keys = true
+
+critical_indexes = [
+    "idx_vehicles_registration",
+    "idx_job_cards_status",
+    "idx_job_cards_vehicle",
+    "idx_invoices_job_card",
+    "idx_pdi_evidence_job",
+    "idx_intelligence_logs_created",
+    "idx_audit_logs_created",
+    "idx_mg_contracts_status"
+]
+
+# ==========================================================
+# 6. DEPLOYMENT & SECURITY
+# ==========================================================
+
+[deployment]
+validate_environment_variables = true
+block_deploy_if_missing = true
+require_api_keys = [
+    "EMERGENT_LLM_KEY",      # Critical for AI
+    "MONGO_URL",              # Critical for DB
+    "SUPABASE_URL",           # Critical for DB
+    "SUPABASE_KEY",           # Critical for DB
+    "RESEND_API_KEY",         # Critical for Email Service
+    "JWT_SECRET",             # Critical for Auth
+    "GOOGLE_GENAI_API_KEY"    # Critical for Gemini
+]
+
+optional_api_keys = [
+    "TWILIO_ACCOUNT_SID",     # WhatsApp notifications
+    "TWILIO_AUTH_TOKEN",      # WhatsApp notifications
+    "PAYU_MERCHANT_KEY",      # Payment processing
+    "PAYU_MERCHANT_SALT",     # Payment processing
+    "SENTRY_DSN"              # Error tracking
+]
+
+validate_jwt_flow = true
+validate_rate_limiting = true
+validate_cors_configuration = true
+validate_ssl_certificates = true
+
+# Deployment checklist
+pre_deployment_checks = [
+    "All environment variables configured",
+    "Database backups enabled",
+    "SSL/TLS certificates valid",
+    "Rate limiting configured",
+    "CORS origins restricted",
+    "Monitoring alerts configured",
+    "Error tracking enabled",
+    "All tests passing (31/31)",
+    "Security audit completed",
+    "Performance benchmarks met"
+]
+
+# ==========================================================
+# 7. PERFORMANCE & LOAD
+# ==========================================================
+
+[performance]
+validate_response_time_ms = 1500  # Strict latency budget
+validate_memory_usage = true
+validate_database_query_time_ms = 500
+validate_concurrent_users = 1000
+
+# Critical Endpoints to Monitor
+validate_endpoints = [
+    "POST /api/chat/stream",              # Real-time AI chat
+    "POST /api/mg-fleet/contracts/bill",  # Heavy calculation
+    "GET /api/job-cards/{id}/detail",     # Large data fetch (17 sections)
+    "POST /api/invoices/generate",        # PDF generation load
+    "GET /api/dashboard/metrics",         # Dashboard data
+    "POST /api/job-cards",                # Job card creation
+    "GET /api/job-cards",                 # Job card list
+    "POST /api/auth/login"                # Authentication
+]
+
+performance_targets = [
+    { endpoint = "POST /api/chat/stream", max_response_time_ms = 2000, description = "Real-time AI chat streaming" },
+    { endpoint = "POST /api/mg-fleet/contracts/bill", max_response_time_ms = 3000, description = "MG billing calculation" },
+    { endpoint = "GET /api/job-cards/{id}/detail", max_response_time_ms = 1500, description = "Job card detail fetch" },
+    { endpoint = "POST /api/invoices/generate", max_response_time_ms = 2500, description = "PDF generation" },
+    { endpoint = "GET /api/dashboard/metrics", max_response_time_ms = 1000, description = "Dashboard metrics" },
+    { endpoint = "POST /api/job-cards", max_response_time_ms = 1000, description = "Job card creation" },
+    { endpoint = "GET /api/job-cards", max_response_time_ms = 1500, description = "Job card list" },
+    { endpoint = "POST /api/auth/login", max_response_time_ms = 800, description = "Authentication" }
+]
+
+# ==========================================================
+# 8. SECURITY & COMPLIANCE
+# ==========================================================
+
+[security]
+enforce_https = true
+enforce_jwt_expiration = true
+jwt_expiration_hours = 24
+enforce_password_complexity = true
+min_password_length = 8
+enforce_rate_limiting = true
+rate_limit_requests_per_minute = 100
+enforce_input_validation = true
+enforce_sql_injection_prevention = true
+enforce_xss_prevention = true
+enforce_csrf_protection = true
+
+# Compliance requirements
+compliance_requirements = [
+    "GDPR compliance (Privacy Policy, Terms, Cookie Policy)",
+    "RBI compliance for financial transactions",
+    "GST compliance for invoicing",
+    "Data retention policies enforced",
+    "Audit logging enabled",
+    "Encryption at rest and in transit",
+    "Row-level security (RLS) enabled",
+    "Regular security audits"
+]
+
+# ==========================================================
+# 9. MONITORING & OBSERVABILITY
+# ==========================================================
+
+[monitoring]
+enable_error_tracking = true
+enable_performance_monitoring = true
+enable_audit_logging = true
+enable_health_checks = true
+
+error_tracking_service = "Sentry"
+performance_monitoring_service = "Google Cloud Monitoring"
+logging_service = "Google Cloud Logging"
+
+critical_metrics = [
+    "API response time (p95)",
+    "Database query time (p95)",
+    "Error rate",
+    "Uptime percentage",
+    "Memory usage",
+    "CPU usage",
+    "Concurrent users",
+    "Request throughput"
+]
+
+alert_thresholds = [
+    { metric = "error_rate", threshold = 0.01, severity = "critical" },
+    { metric = "response_time_p95", threshold = 2000, severity = "high" },
+    { metric = "database_query_time_p95", threshold = 500, severity = "high" },
+    { metric = "uptime", threshold = 0.99, severity = "critical" },
+    { metric = "memory_usage", threshold = 0.90, severity = "high" },
+    { metric = "cpu_usage", threshold = 0.85, severity = "high" }
+]
+
+# ==========================================================
+# 10. FEATURE SPECIFICATIONS & CONSTRAINTS
+# ==========================================================
+
+[features]
+
+[features.job_cards]
+description = "Job card management with 17-section detail page"
+state_machine = [
+    "CREATED",
+    "DIAGNOSED",
+    "ESTIMATING",
+    "APPROVED",
+    "IN_PROGRESS",
+    "COMPLETED",
+    "CANCELLED"
+]
+required_fields = [
+    "customer_name",
+    "vehicle_registration",
+    "status",
+    "created_at",
+    "updated_at"
+]
+max_sections = 17
+sections = [
+    "Vehicle Information",
+    "Customer Details",
+    "Service History",
+    "Symptoms & Diagnosis",
+    "Parts & Labor",
+    "Estimates & Pricing",
+    "Digital Signature",
+    "Photo Gallery",
+    "Internal Notes",
+    "Timeline/Activity",
+    "Payment Status",
+    "Invoice Link",
+    "Customer Approval",
+    "Technician Assignment",
+    "Status Workflow",
+    "Compliance Checklist",
+    "Related Documents"
+]
+
+[features.invoices]
+description = "GST-compliant invoice generation"
+required_fields = [
+    "job_card_id",
+    "customer_name",
+    "amount",
+    "cgst",
+    "sgst",
+    "igst",
+    "total_amount",
+    "status"
+]
+gst_types = ["CGST", "SGST", "IGST"]
+invoice_statuses = ["DRAFT", "FINALIZED", "PAID", "CANCELLED"]
+require_hsn_sac_codes = true
+require_customer_approval = true
+
+[features.mg_fleet]
+description = "MG Fleet contract management"
+required_fields = [
+    "customer_name",
+    "vehicle_registration",
+    "contract_type",
+    "start_date",
+    "end_date",
+    "monthly_km_limit",
+    "monthly_fee"
+]
+billing_logic = "MAX(assured_km_cost, actual_km_cost)"
+require_audit_safe_flag = true
+require_decimal_precision = true
+
+[features.chat]
+description = "Claude-like AI chat interface"
+required_fields = [
+    "session_id",
+    "user_id",
+    "message",
+    "response",
+    "confidence_score",
+    "created_at"
+]
+max_message_length = 4000
+max_messages_per_session = 100
+require_streaming = true
+require_markdown_support = true
+
+[features.digital_signature]
+description = "Canvas-based digital signature capture"
+required_fields = [
+    "job_card_id",
+    "customer_name",
+    "signature_data",
+    "timestamp",
+    "approval_status"
+]
+require_timestamp = true
+require_customer_verification = true
+token_expiration_hours = 24
+
+[features.pdi]
+description = "PDI checklist and evidence management"
+required_fields = [
+    "job_card_id",
+    "checklist_item",
+    "file_url",
+    "file_type",
+    "uploaded_at"
+]
+allowed_file_types = ["image", "video"]
+max_file_size_mb = 10
+
+# ==========================================================
+# 11. TESTING REQUIREMENTS
+# ==========================================================
+
+[testing]
+min_coverage_percentage = 95
+min_tests_required = 31
+test_execution_timeout_seconds = 300
+fail_on_warnings = true
+
+test_categories = [
+    "Unit Tests",
+    "Integration Tests",
+    "E2E Tests",
+    "Performance Tests",
+    "Security Tests",
+    "Compliance Tests"
+]
+
+# ==========================================================
+# 12. LAUNCH READINESS CRITERIA
+# ==========================================================
+
+[launch_readiness]
+overall_percentage = 95
+status = "READY_WITH_PENDING_ITEMS"
+
+critical_items_pending = 0
+high_priority_items_pending = 0
+medium_priority_items_pending = 3
+
+critical_blockers = []
+
+high_priority_items = []
+
+medium_priority_items = [
+    "Voice Input Integration",
+    "File Upload to Cloud Storage",
+    "Advanced Analytics Dashboard"
+]
+
+estimated_time_to_launch_hours = 0.5
+
+# ==========================================================
+# 13. GOVERNANCE GATES (4-Gate System)
+# ==========================================================
+
+[governance.gates]
+
+[governance.gates.domain_gate]
+description = "Ensures queries are automobile-related"
+enabled = true
+reject_non_automobile_queries = true
+examples_allowed = [
+    "What's wrong with my car?",
+    "How much will the repair cost?",
+    "What's the service history?"
+]
+examples_rejected = [
+    "Tell me a joke",
+    "What's the weather?",
+    "How do I cook pasta?"
+]
+
+[governance.gates.confidence_gate]
+description = "Ensures AI confidence is above threshold"
+enabled = true
+confidence_threshold = 0.90
+action_if_below_threshold = "ASK_CLARIFYING_QUESTIONS"
+
+[governance.gates.context_gate]
+description = "Ensures required context is available"
+enabled = true
+required_context = [
+    "vehicle_registration",
+    "vehicle_model",
+    "customer_details"
+]
+action_if_missing = "REQUEST_MISSING_INFORMATION"
+
+[governance.gates.permission_gate]
+description = "Ensures user has required permissions"
+enabled = true
+enforce_rbac = true
+roles = ["OWNER", "TECHNICIAN", "SERVICE_ADVISOR", "CUSTOMER"]
+sensitive_operations = [
+    "DELETE_JOB_CARD",
+    "MODIFY_INVOICE",
+    "APPROVE_PAYMENT",
+    "GENERATE_REPORT"
+]
+
+# ==========================================================
+# 14. IMMUTABLE RULES (Cannot be changed)
+# ==========================================================
+
+[immutable_rules]
+description = "These rules are immutable and cannot be changed without explicit approval"
+
+rules = [
+    "AI must never generate exact prices",
+    "All financial calculations must use Decimal precision",
+    "Job card state machine must be enforced",
+    "Digital signatures must include timestamps",
+    "Customer approval tokens must expire after 24 hours",
+    "All mutations must be logged in audit trail",
+    "RLS policies must be enforced on all tables",
+    "JWT tokens must expire after 24 hours",
+    "Rate limiting must be enforced on all endpoints",
+    "CORS must be restricted to approved origins",
+    "SSL/TLS must be enforced on all connections",
+    "All API responses must include proper error handling",
+    "All database queries must use parameterized statements",
+    "All user inputs must be validated and sanitized",
+    "All sensitive data must be encrypted at rest and in transit"
+]
+
+# ==========================================================
+# 15. SIGN-OFF & APPROVAL
+# ==========================================================
+
+[sign_off]
+created_date = "2026-02-14"
+created_by = "Product Analysis Team"
+version = "1.0.0"
+status = "ACTIVE"
+
+approvals_required = [
+    "Technical Lead",
+    "Product Manager",
+    "Operations Lead",
+    "Security Lead"
+]
+
+approvals_completed = []
+
+# ==========================================================
+# END OF CONSTITUTION
+# ==========================================================
