@@ -13,7 +13,11 @@ description: How EKA-AI supports root cause analysis without guessing.
 ### Root cause protocol (pattern)
 
 1. Confirm symptoms.
-2. Collect vehicle context.
+2. Collect vehicle context (brand, model, year, fuel type).
 3. Run the minimum safe checks.
 4. Narrow down causes.
 5. Recommend next action.
+
+{% hint style="info" %}
+If confidence is below **0.90 (90%)**, EKA-AI should not guess. It should ask targeted questions and request missing evidence.
+{% endhint %}

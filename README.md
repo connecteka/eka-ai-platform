@@ -6,207 +6,96 @@ description: >-
 
 # 🚗 EKA-AI Platform
 
-**Governed Automobile Intelligence System**\
-**Go4Garage Private Limited**
+### Governed automobile intelligence
 
-[![Production Ready](https://img.shields.io/badge/status-production%20ready-success)](https://github.com/connecteka/eka-ai-platform) [![React](https://img.shields.io/badge/React-19-blue)](https://react.dev) [![FastAPI](https://img.shields.io/badge/FastAPI-Python-green)](https://fastapi.tiangolo.com) [![MongoDB](https://img.shields.io/badge/MongoDB-Database-brightgreen)](https://mongodb.com) [![Tests](https://img.shields.io/badge/tests-31%2F31%20passing-success)](test_reports/)
+EKA-AI is the operating system for Go4Garage workshops.
 
-***
+It is not a generic chatbot.
 
-## 🎯 Overview (what is EKA-AI?)
+It is governed AI for safety and audit-grade finance.
 
-EKA-AI is **AI-powered automobile workshop management software**. It is a modern **garage management system** for service centers. Manage **job cards**, **vehicle history**, **customer approvals**, and **GST invoices**.
+### Start here
 
-It also includes an AI assistant for faster **vehicle diagnostics** and guided workflows.
+* [Getting Started](/broken/spaces/TVzkJlkx3M2vwS6FA0Xx/pages/NimTlNUwUIHe88XOY1uE)
+* [Workshop Onboarding & Catalog Setup](getting-started/workshop-onboarding-and-catalog-setup.md)
+* [How to Chat with EKA-AI](the-ai-assistant/how-to-chat-with-eka-ai.md)
+* [Vision & Philosophy: Governed Intelligence](introduction/vision-and-philosophy-governed-intelligence.md)
+* [The "4-Gate" Safety System (The Constitution)](introduction/the-4-gate-safety-system-the-constitution.md)
+* [Architecture & Tech Stack](introduction/architecture-and-tech-stack.md)
 
-### Core modules and features
+### Why “governed” AI
 
-* **AI Chat Assistant** - Claude-like interface for vehicle diagnostics (Gemini 2.0 Flash)
-* **Job Card Management** - Job card software with full CRUD and a workflow state machine
-* **Digital Signature Capture** - Customer approval using a signature pad
-* **Invoice Generation** - GST-compliant invoice generator (PDF) with email delivery
-* **Vehicle Documentation** - Photo upload and management
-* **WhatsApp Notifications** - Customer status updates (Twilio integration)
-* **Voice Input** - Speech-to-text transcription (OpenAI Whisper)
-* **Guided Product Tour** - First-time user onboarding
+Automotive mistakes cost money. They can also be unsafe.
 
-### Who it’s for
+Generic AI guesses. It also drifts out of scope.
 
-* Independent garages and service centers
-* Multi-bay workshops that need standardized job card workflows
-* Teams that want faster diagnostics with AI assistance
+EKA-AI is constrained by a constitution.
 
-### Common workflows (search-friendly)
+> **Promise:** No guessed prices. No non-automotive advice. No bypassed approvals.
 
-* Create a job card → add notes/photos → capture signature → generate GST invoice → notify customer
-* Vehicle record management (service evidence and documentation)
-* Workshop updates to customers via WhatsApp notifications
+### The 4-gate safety system
 
-### Getting started and deployment
+Every request passes the Governance Engine (`ai_governance.py`).
 
-* Developer quick start: [Quick Start Guide - Claude-like Frontend](developers-and-api/frontend/deployment_guide.md)
-* Production deploy (Firebase + Cloud Run): [Production Deployment Guide](developers-and-api/deployment-and-ops/docs/production_deployment.md)
-* Google sign-in setup: [Google OAuth & Gemini API Setup Guide](developers-and-api/deployment-and-ops/docs/google_setup.md)
-* Public launch runbook: [Launch (Public GA)](launch-public-ga/)
+#### 1) Domain gate
 
-***
+EKA-AI rejects non-automotive queries.
 
-## 🏗️ Architecture
+* Allowed: “Why is the engine overheating?”
+* Blocked: “What is the capital of France?”
 
-```
-eka-ai-platform/
-├── frontend/                     # React 19 + TypeScript + Vite
-│   ├── src/
-│   │   ├── components/          # Reusable UI components
-│   │   │   ├── ui/              # Shadcn/UI components
-│   │   │   └── features/        # Feature components (SignaturePad)
-│   │   ├── pages/               # Application pages
-│   │   ├── hooks/               # Custom React hooks
-│   │   └── lib/                 # Utilities
-│   └── package.json
-│
-├── backend/                      # FastAPI (Python)
-│   ├── routers/                 # API route handlers
-│   │   ├── auth.py              # Authentication
-│   │   ├── job_cards.py         # Job card CRUD + insights
-│   │   ├── invoices.py          # Invoice + PDF + Email
-│   │   ├── chat.py              # AI chat sessions
-│   │   ├── files.py             # File uploads
-│   │   ├── notifications.py     # WhatsApp notifications
-│   │   └── voice.py             # Voice transcription
-│   ├── services/                # Business logic
-│   │   └── email_service.py     # Resend email integration
-│   ├── models/                  # Pydantic schemas
-│   ├── utils/                   # Database & security
-│   └── requirements.txt
-│
-├── memory/                       # Project documentation
-│   └── PRD.md                   # Product Requirements Document
-│
-├── test_reports/                # Test results
-└── uploads/                     # Uploaded files storage
-```
+#### 2) Confidence gate
 
-***
+EKA-AI enforces a **0.90 (90%)** confidence threshold.
 
-## 🚀 Quick Start
+If confidence is lower, it asks targeted questions.
 
-### Prerequisites
+#### 3) Context gate
 
-* Node.js 18+
-* Python 3.11+
-* MongoDB
+EKA-AI requires vehicle context before guidance.
 
-### Frontend Setup
+Provide brand, model, year, and fuel type.
 
-```bash
-cd frontend
-yarn install
-yarn dev
-```
+When available, job card history is also used.
 
-### Backend Setup
+#### 4) Permission gate (RBAC)
 
-```bash
-cd backend
-pip install -r requirements.txt
-uvicorn server:app --reload --port 8001
-```
+Actions are permissioned, not just suggested.
 
-### Environment Variables
+Typical split:
 
-**Frontend** (`frontend/.env`):
+* **Technician**: diagnostics and checklist updates
+* **Owner**: catalog changes and invoice approvals
 
-```env
-VITE_API_URL=http://localhost:8001
-```
+### Core capabilities
 
-**Backend** (`backend/.env`):
+* Mega job card
+  * 17 sections, evidence, approvals, and signatures.
+* MG fleet engine
+  * Deterministic billing using `MAX(assured, actual)`.
+* GST invoicing
+  * IGST vs CGST/SGST logic and compliant PDFs.
+* PDI and artifacts
+  * Mobile-first inspections with photo evidence.
 
-```env
-MONGO_URL=mongodb://localhost:27017
-DB_NAME=eka_ai
-EMERGENT_LLM_KEY=your_key_here
+### Technical foundation
 
-# Optional
-RESEND_API_KEY=re_xxxxx          # Email invoices
-TWILIO_ACCOUNT_SID=xxxxx         # WhatsApp notifications
-TWILIO_AUTH_TOKEN=xxxxx
-```
+* Frontend: React 19 + TypeScript
+* Backend: FastAPI
+* Data: MongoDB (job cards) + PostgreSQL/Supabase (auth and finance)
 
-***
+{% hint style="info" %}
+EKA-AI can provide ranges and estimates only. Final prices must come from `parts_catalog` and `labor_catalog`.
+{% endhint %}
 
-## 📡 API Endpoints
+— EKA-AI, Go4Garage Intelligence
 
-### Authentication
+<details>
 
-* `POST /api/auth/register` - Register user
-* `POST /api/auth/login` - Login
-* `GET /api/auth/me` - Current user
+<summary>For developers</summary>
 
-### Job Cards
+* Streaming chat: [API Reference (`/api/chat/stream`)](developers-and-api/api-and-integrations/api-reference-api-chat-stream.md)
+* Webhooks: [Webhooks & Integrations](developers-and-api/api-and-integrations/webhooks-and-integrations.md)
+* Security: [Security Standards (ISO 27001)](developers-and-api/security/security-standards-iso-27001.md)
 
-* `GET /api/job-cards` - List job cards
-* `POST /api/job-cards` - Create job card
-* `GET /api/job-cards/{id}/detail` - Full job card details
-* `GET /api/job-cards/{id}/insights` - AI insights
-* `POST /api/job-cards/{id}/signature` - Save digital signature
-* `POST /api/job-cards/{id}/notes` - Add internal note
-
-### Invoices
-
-* `GET /api/invoices` - List invoices
-* `POST /api/invoices` - Create invoice
-* `GET /api/invoices/{id}/pdf` - Download PDF
-* `POST /api/invoices/{id}/email` - Email invoice to customer
-
-### Files
-
-* `POST /api/files/upload` - Upload file (images, documents)
-* `GET /api/files/{id}` - Download file
-
-### AI Chat
-
-* `POST /api/chat` - Send message
-* `POST /api/chat/stream` - SSE streaming response
-* `GET /api/chat/sessions` - List sessions
-
-***
-
-## 🎨 Brand Colors
-
-| Color            | Hex       | Usage                |
-| ---------------- | --------- | -------------------- |
-| EKA Orange       | `#E8820C` | Primary accent, CTAs |
-| Go4Garage Purple | `#7433A2` | Secondary, headers   |
-| Success Green    | `#3CB44B` | Status indicators    |
-| Background       | `#FFFFFF` | Light theme base     |
-
-***
-
-## 🧪 Testing
-
-```bash
-# Backend tests
-cd backend
-pytest tests/ -v
-
-# Frontend lint
-cd frontend
-yarn lint
-```
-
-***
-
-## 📄 License
-
-Proprietary - Go4Garage Private Limited © 2025
-
-***
-
-## 🙏 Acknowledgments
-
-* Powered by **Emergent Labs** AI infrastructure
-* Built with **Gemini 2.0 Flash** for AI capabilities
-* **Resend** for transactional emails
-* **Twilio** for WhatsApp notifications
+</details>

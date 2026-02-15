@@ -23,7 +23,7 @@ Use the existing setup guide:
 3. Create workshop
 4. Add first vehicle
 5. Create first job card
-6. Capture signature
+6. Capture customer approval (digital signature)
 7. Generate invoice
 8. Notify customer
 
@@ -74,8 +74,8 @@ If you keep the tour:
 ### Invite + roles (recommended for GA)
 
 * Add at least two roles:
-  * **Owner/Admin**
-  * **Staff**
+  * **Owner**
+  * **Technician**
 * Owners can manage billing and integrations.
 
 ### Copy blocks you should have

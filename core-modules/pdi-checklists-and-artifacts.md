@@ -4,7 +4,9 @@ description: Inspections, evidence capture, and transparency.
 
 # PDI Checklists & Artifacts
 
-PDI is inspection + proof. Artifacts are the proof.
+PDI (pre-delivery inspection) is inspection plus proof.
+
+Artifacts are evidence attached to the job card.
 
 ### What to capture
 
@@ -16,5 +18,5 @@ PDI is inspection + proof. Artifacts are the proof.
 ### Why it matters
 
 * Reduces disputes.
-* Improves approvals.
+* Improves customer approval (digital signature).
 * Improves AI context quality.

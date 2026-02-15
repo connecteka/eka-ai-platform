@@ -11,7 +11,7 @@ This is the **go/no-go** list. Stop if any **Blocker** item is not done.
 * [ ] Launch date and timezone set.
 * [ ] Target region(s) defined.
 * [ ] The “happy path” is locked:
-  * [ ] Signup → create workshop → create job card → signature → invoice → notify.
+  * [ ] Signup → create workshop → create job card → customer approval (digital signature) → invoice → notify.
 
 ### Blockers (must be green)
 
@@ -28,7 +28,7 @@ This is the **go/no-go** list. Stop if any **Blocker** item is not done.
 
 * [ ] Workshop data is isolated per tenant.
 * [ ] A user cannot access other workshops by ID.
-* [ ] Admin actions are permission-gated.
+* [ ] Owner actions are permission-gated.
 
 #### Payments (if you charge at GA)
 

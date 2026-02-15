@@ -8,10 +8,10 @@ EKA-AI blocks requests to keep outputs safe. This is expected.
 
 ### Common block reasons
 
-* Out of automotive domain
+* Out of domain (non-automotive)
 * Missing context (vehicle details)
-* Low confidence
-* Missing permissions
+* Low confidence (below 0.90)
+* Missing permission (RBAC)
 
 ### What the UI should do
 

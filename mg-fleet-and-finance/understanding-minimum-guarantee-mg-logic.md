@@ -10,7 +10,7 @@ MG billing must be deterministic. No hallucinations.
 
 Use the maximum of:
 
-* assured amount
+* assured amount (MG)
 * actual amount
 
 In plain terms:
@@ -18,9 +18,20 @@ In plain terms:
 * If actual exceeds MG, bill actual.
 * If actual is below MG, bill MG.
 
+This is the same rule you will see as `MAX(assured, actual)`.
+
+### Where it fits
+
+MG is a finance module.
+
+It should feed invoice generation.
+
+It should not be overridden by free-text edits.
+
 ### What to log
 
-* Inputs (assured, actual)
-* Output
-* Who approved
+* Inputs (assured, actual, contract/rate identifiers)
+* Output (billable value and final amount)
+* Linked entity (invoice ID and/or job card ID)
+* Approval (Owner)
 * Timestamp

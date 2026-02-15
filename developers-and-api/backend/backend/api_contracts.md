@@ -1,18 +1,22 @@
 # EKA-AI API Contracts
 
 ## Base URL
+
 ```
 Production: https://eka-ai.go4garage.in/api
 Development: http://localhost:8001/api
 ```
 
 ## Authentication
+
 All protected endpoints require a Bearer token in the Authorization header:
+
 ```
 Authorization: Bearer <jwt_token>
 ```
 
 Token payload:
+
 ```json
 {
   "sub": "user_uuid",
@@ -24,14 +28,16 @@ Token payload:
 }
 ```
 
----
+***
 
 ## Health & System
 
 ### GET /health
+
 Public endpoint for health checks.
 
 **Response:**
+
 ```json
 {
   "status": "healthy",
@@ -46,16 +52,18 @@ Public endpoint for health checks.
 }
 ```
 
----
+***
 
 ## AI Intelligence
 
 ### POST /chat
+
 Main AI intelligence endpoint.
 
 **Rate Limit:** 15 per minute
 
 **Request:**
+
 ```json
 {
   "history": [
@@ -75,6 +83,7 @@ Main AI intelligence endpoint.
 ```
 
 **Response:**
+
 ```json
 {
   "response_content": {
@@ -99,11 +108,13 @@ Main AI intelligence endpoint.
 ```
 
 ### POST /speak
+
 Text-to-Speech endpoint.
 
 **Rate Limit:** 20 per minute
 
 **Request:**
+
 ```json
 {
   "text": "Your vehicle diagnostic is complete."
@@ -111,6 +122,7 @@ Text-to-Speech endpoint.
 ```
 
 **Response:**
+
 ```json
 {
   "audio_data": "base64_encoded_audio",
@@ -118,16 +130,18 @@ Text-to-Speech endpoint.
 }
 ```
 
----
+***
 
 ## Job Card Management
 
 ### POST /job/transition
+
 Transition job card state (Protected).
 
 **Auth:** Any authenticated user
 
 **Request:**
+
 ```json
 {
   "job_id": "uuid",
@@ -137,6 +151,7 @@ Transition job card state (Protected).
 ```
 
 **Response (Success):**
+
 ```json
 {
   "success": true,
@@ -148,6 +163,7 @@ Transition job card state (Protected).
 ```
 
 **Response (Invalid Transition):**
+
 ```json
 {
   "error": "Invalid state transition",
@@ -159,6 +175,7 @@ Transition job card state (Protected).
 ```
 
 ### GET /job/transitions
+
 Get valid transitions for a job card.
 
 **Auth:** Any authenticated user
@@ -166,6 +183,7 @@ Get valid transitions for a job card.
 **Query:** `?job_id=uuid`
 
 **Response:**
+
 ```json
 {
   "job_card_id": "uuid",
@@ -175,16 +193,18 @@ Get valid transitions for a job card.
 }
 ```
 
----
+***
 
 ## MG Fleet Model
 
 ### POST /mg/calculate
+
 Calculate MG billing (Protected).
 
-**Auth:** OWNER, MANAGER, FLEET_MANAGER
+**Auth:** OWNER, MANAGER, FLEET\_MANAGER
 
 **Request:**
+
 ```json
 {
   "assured_km": 12000,
@@ -196,6 +216,7 @@ Calculate MG billing (Protected).
 ```
 
 **Response:**
+
 ```json
 {
   "utilization_type": "OVER_UTILIZED",
@@ -216,11 +237,13 @@ Calculate MG billing (Protected).
 ```
 
 ### POST /mg/validate-odometer
+
 Validate odometer readings.
 
-**Auth:** OWNER, MANAGER, FLEET_MANAGER, TECHNICIAN
+**Auth:** OWNER, MANAGER, FLEET\_MANAGER, TECHNICIAN
 
 **Request:**
+
 ```json
 {
   "opening_odometer": 10000,
@@ -229,6 +252,7 @@ Validate odometer readings.
 ```
 
 **Response:**
+
 ```json
 {
   "valid": true,
@@ -239,16 +263,18 @@ Validate odometer readings.
 }
 ```
 
----
+***
 
 ## Billing & GST
 
 ### POST /billing/calculate
+
 Calculate invoice with GST (Protected).
 
 **Auth:** OWNER, MANAGER
 
 **Request:**
+
 ```json
 {
   "items": [
@@ -271,6 +297,7 @@ Calculate invoice with GST (Protected).
 ```
 
 **Response:**
+
 ```json
 {
   "tax_type": "CGST_SGST",
@@ -308,11 +335,13 @@ Calculate invoice with GST (Protected).
 ```
 
 ### POST /billing/validate-gstin
+
 Validate GSTIN format.
 
 **Auth:** Any authenticated user
 
 **Request:**
+
 ```json
 {
   "gstin": "27AABCU9603R1ZX"
@@ -320,6 +349,7 @@ Validate GSTIN format.
 ```
 
 **Response:**
+
 ```json
 {
   "valid": true,
@@ -331,11 +361,13 @@ Validate GSTIN format.
 ```
 
 ### POST /billing/tax-type
+
 Determine tax type based on states.
 
 **Auth:** Any authenticated user
 
 **Request:**
+
 ```json
 {
   "workshop_state": "27",
@@ -344,6 +376,7 @@ Determine tax type based on states.
 ```
 
 **Response:**
+
 ```json
 {
   "workshop_state": "27",
@@ -353,14 +386,16 @@ Determine tax type based on states.
 }
 ```
 
----
+***
 
-## Customer Approval
+## Customer approval (digital signature)
 
 ### POST /generate-approval-link
-Generate secure approval link.
+
+Generate secure customer approval link (digital signature).
 
 **Request:**
+
 ```json
 {
   "job_card_id": "uuid",
@@ -369,6 +404,7 @@ Generate secure approval link.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -379,9 +415,11 @@ Generate secure approval link.
 ```
 
 ### POST /approve-job
-Customer approval action.
+
+Customer approval action (digital signature).
 
 **Request:**
+
 ```json
 {
   "token": "jwt_token",
@@ -390,6 +428,7 @@ Customer approval action.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -398,11 +437,12 @@ Customer approval action.
 }
 ```
 
----
+***
 
 ## PDI (Pre-Delivery Inspection)
 
 ### POST /upload-pdi
+
 Upload PDI evidence.
 
 **Rate Limit:** 30 per minute
@@ -410,11 +450,13 @@ Upload PDI evidence.
 **Content-Type:** `multipart/form-data`
 
 **Fields:**
-- `file`: Image or video (jpg, png, webp, mp4, max 5MB)
-- `job_card_id`: UUID
-- `checklist_item`: String identifier
+
+* `file`: Image or video (jpg, png, webp, mp4, max 5MB)
+* `job_card_id`: UUID
+* `checklist_item`: String identifier
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -423,16 +465,18 @@ Upload PDI evidence.
 }
 ```
 
----
+***
 
 ## LangChain/LlamaIndex - Knowledge Base & RAG
 
 ### GET /kb/status
+
 Get knowledge base status and statistics.
 
 **Auth:** Any authenticated user
 
 **Response:**
+
 ```json
 {
   "available": true,
@@ -446,11 +490,13 @@ Get knowledge base status and statistics.
 ```
 
 ### POST /kb/search
+
 Semantic search on knowledge base.
 
 **Auth:** Any authenticated user
 
 **Request:**
+
 ```json
 {
   "query": "brake pad replacement procedure",
@@ -462,6 +508,7 @@ Semantic search on knowledge base.
 ```
 
 **Response:**
+
 ```json
 {
   "query": "brake pad replacement procedure",
@@ -481,11 +528,13 @@ Semantic search on knowledge base.
 ```
 
 ### POST /kb/query
+
 RAG query with LLM synthesis.
 
 **Auth:** Any authenticated user
 
 **Request:**
+
 ```json
 {
   "query": "How do I replace brake pads on a Swift?",
@@ -498,6 +547,7 @@ RAG query with LLM synthesis.
 ```
 
 **Response:**
+
 ```json
 {
   "query": "How do I replace brake pads on a Swift?",
@@ -516,11 +566,13 @@ RAG query with LLM synthesis.
 ```
 
 ### POST /kb/documents
+
 Add documents to knowledge base.
 
 **Auth:** OWNER, MANAGER
 
 **Request:**
+
 ```json
 {
   "documents": [
@@ -537,6 +589,7 @@ Add documents to knowledge base.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -546,12 +599,14 @@ Add documents to knowledge base.
 ```
 
 ### POST /agent/diagnose
+
 Intelligent diagnostic with LangChain agent.
 
-**Auth:** Any authenticated user  
+**Auth:** Any authenticated user\
 **Rate Limit:** 10 per minute
 
 **Request:**
+
 ```json
 {
   "symptoms": "Car makes grinding noise when braking",
@@ -565,6 +620,7 @@ Intelligent diagnostic with LangChain agent.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -590,34 +646,35 @@ Intelligent diagnostic with LangChain agent.
 ```
 
 ### POST /agent/enhanced-chat
+
 Enhanced chat with RAG context augmentation.
 
-**Auth:** Any authenticated user  
+**Auth:** Any authenticated user\
 **Rate Limit:** 15 per minute
 
 **Request:** Same as `/chat`
 
 **Response:** Same as `/chat` but with knowledge base augmentation
 
----
+***
 
 ## Error Codes
 
-| Code | HTTP Status | Description |
-|------|-------------|-------------|
-| NO_TOKEN | 401 | Missing Authorization header |
-| EMPTY_TOKEN | 401 | Bearer token is empty |
-| TOKEN_EXPIRED | 401 | JWT has expired |
-| INVALID_TOKEN | 401 | JWT signature invalid |
-| FORBIDDEN | 403 | User role not authorized |
-| INVALID_INPUT | 400 | Request data invalid |
-| INVALID_TRANSITION | 409 | Job card state transition not allowed |
-| CALCULATION_ERROR | 500 | MG/Billing calculation failed |
-| BILLING_ERROR | 500 | Invoice calculation failed |
-| TRANSITION_ERROR | 500 | State transition failed |
-| KB_UNAVAILABLE | 503 | Knowledge base service not available |
+| Code                | HTTP Status | Description                           |
+| ------------------- | ----------- | ------------------------------------- |
+| NO\_TOKEN           | 401         | Missing Authorization header          |
+| EMPTY\_TOKEN        | 401         | Bearer token is empty                 |
+| TOKEN\_EXPIRED      | 401         | JWT has expired                       |
+| INVALID\_TOKEN      | 401         | JWT signature invalid                 |
+| FORBIDDEN           | 403         | User role not authorized              |
+| INVALID\_INPUT      | 400         | Request data invalid                  |
+| INVALID\_TRANSITION | 409         | Job card state transition not allowed |
+| CALCULATION\_ERROR  | 500         | MG/Billing calculation failed         |
+| BILLING\_ERROR      | 500         | Invoice calculation failed            |
+| TRANSITION\_ERROR   | 500         | State transition failed               |
+| KB\_UNAVAILABLE     | 503         | Knowledge base service not available  |
 
----
+***
 
 ## State Machine
 

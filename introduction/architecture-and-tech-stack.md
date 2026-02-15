@@ -6,7 +6,7 @@ description: Product architecture, data model split, and deployment options.
 
 ### High-level architecture
 
-* Web app (React + TypeScript)
+* Web app (React 19 + TypeScript)
 * API server (FastAPI)
 * Database(s) (workload-specific)
 * Integrations (PayU, Twilio, Resend)

@@ -3,17 +3,19 @@
 ## Pre-Deployment Verification
 
 ### 1. Code Verification
-- [ ] All tests passing (33/33)
-- [ ] Code review completed
-- [ ] No hardcoded secrets in code
-- [ ] Environment variables documented
+
+* [ ] All tests passing (33/33)
+* [ ] Code review completed
+* [ ] No hardcoded secrets in code
+* [ ] Environment variables documented
 
 ### 2. Database Preparation
-- [ ] Run `schema_complete.sql` in production Supabase
-- [ ] Verify all RLS policies enabled
-- [ ] Create initial workshop record
-- [ ] Create admin user profile
-- [ ] Test database connections
+
+* [ ] Run `schema_complete.sql` in production Supabase
+* [ ] Verify all RLS policies enabled
+* [ ] Create initial workshop record
+* [ ] Create Owner user profile
+* [ ] Test database connections
 
 ### 3. Environment Configuration
 
@@ -267,8 +269,8 @@ python load_test.py --all --users 50 --duration 300 --token <jwt-token>
 # Test complete job card flow
 1. Create job card via UI
 2. Upload PDI evidence
-3. Generate approval link
-4. Approve via link
+3. Generate customer approval link
+4. Capture customer approval (digital signature) via link
 5. Generate invoice
 6. Verify MG calculation
 ```
@@ -295,36 +297,36 @@ curl https://eka-ai.go4garage.in/api/health
 ## Monitoring Checklist
 
 ### Application Metrics
-- [ ] Response time P95 < 2s
-- [ ] Error rate < 1%
-- [ ] CPU usage < 70%
-- [ ] Memory usage < 80%
-- [ ] Database connections < 80% of max
+
+* [ ] Response time P95 < 2s
+* [ ] Error rate < 1%
+* [ ] CPU usage < 70%
+* [ ] Memory usage < 80%
+* [ ] Database connections < 80% of max
 
 ### Business Metrics
-- [ ] Job cards created per hour
-- [ ] MG calculations completed
-- [ ] Invoices generated
-- [ ] AI response accuracy
+
+* [ ] Job cards created per hour
+* [ ] MG calculations completed
+* [ ] Invoices generated
+* [ ] AI response accuracy
 
 ### Infrastructure Metrics
-- [ ] SSL certificate expiry > 30 days
-- [ ] Backup completion daily
-- [ ] Disk usage < 80%
-- [ ] Log rotation working
+
+* [ ] SSL certificate expiry > 30 days
+* [ ] Backup completion daily
+* [ ] Disk usage < 80%
+* [ ] Log rotation working
 
 ## Sign-Off
 
-| Role | Name | Signature | Date |
-|------|------|-----------|------|
-| CTO | | | |
-| DevOps Lead | | | |
-| QA Lead | | | |
-| Security Officer | | | |
+| Role             | Name | Signature | Date |
+| ---------------- | ---- | --------- | ---- |
+| CTO              |      |           |      |
+| DevOps Lead      |      |           |      |
+| QA Lead          |      |           |      |
+| Security Officer |      |           |      |
 
----
+***
 
-**Deployment Date:** _______________
-**Deployed By:** _______________
-**Version:** 4.5
-**Status:** PRODUCTION READY ✅
+**Deployment Date:** \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ **Deployed By:** \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ **Version:** 4.5 **Status:** PRODUCTION READY ✅

@@ -4,13 +4,16 @@ description: Approval capture, auditability, and user experience.
 
 # Digital Signatures & Customer Approvals
 
-Approvals are part of governance. They protect both customer and workshop.
+Customer approval (digital signature) is part of governance.
+
+It protects both the customer and the workshop.
 
 ### Recommended rules
 
-* Capture signature + timestamp.
+* Capture digital signature plus timestamp.
 * Store the approval payload immutably.
-* Always show what was approved.
+* Store it against the job card.
+* Always show what was approved (scope and totals).
 
 ### UX tips
 

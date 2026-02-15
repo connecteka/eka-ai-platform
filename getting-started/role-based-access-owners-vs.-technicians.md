@@ -4,18 +4,18 @@ description: Roles, permissions, and how they map to governed actions.
 
 # Role-Based Access (Owners vs. Technicians)
 
-EKA-AI enforces RBAC. It is part of the Permission Gate.
+EKA-AI enforces RBAC. It is part of the permission gate.
 
 ### Recommended default roles
 
-* **Owner/Admin**
+* **Owner**
   * Billing and subscriptions
-  * Pricing catalogs
-  * Invoice approval and financial exports
+  * Pricing catalogs (parts catalog and labor catalog)
+  * Invoice approval and exports
   * Integrations and settings
-* **Technician/Staff**
+* **Technician**
   * Job card updates
-  * PDI checklists
+  * PDI checklists (inspection)
   * Evidence uploads
   * Diagnostics support
 
