@@ -1,13 +1,8 @@
-# Nixpacks Build Configuration
-# Railway uses this to build the backend
-
 [phases.setup]
-nixPkgs = ["python311", "gcc", "libpq"]
+nixPkgs = ["python311", "gcc"]
 
 [phases.build]
-cmds = [
-    "cd backend && pip install -r requirements.txt"
-]
+cmds = ["pip install -r backend/requirements.txt"]
 
 [start]
-cmd = "cd backend && gunicorn wsgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT --workers 4 --threads 2 --timeout 120 --max-requests 1000 --max-requests-jitter 50"
+cmd = "cd backend && gunicorn wsgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
