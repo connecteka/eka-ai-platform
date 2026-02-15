@@ -47,7 +47,7 @@
 ### 2. API Keys (Provided)
 | Service | Key | Status |
 |---------|-----|--------|
-| Gemini | `al-0W5rF-IHg8x5mJ-NYqSkiGfMRb9DTl_IYYmQaGIAblj` | ✅ Ready |
+| Gemini | `al-qV7VvpWWEtHdYbKcbTZIwZkyNwVq-oagyxqwiuMFeW7` | ✅ Ready |
 | Emergent | `sk-emergent-eBdD4BdC6Fd9f7a5dF` | ✅ Ready |
 
 ### 3. Secrets to Generate
@@ -105,7 +105,7 @@ MONGO_URL=mongodb+srv://username:password@cluster.mongodb.net/eka_ai
 MONGODB_DATABASE=eka_ai
 
 # AI Keys (Provided)
-GEMINI_API_KEY=al-0W5rF-IHg8x5mJ-NYqSkiGfMRb9DTl_IYYmQaGIAblj
+GEMINI_API_KEY=al-qV7VvpWWEtHdYbKcbTZIwZkyNwVq-oagyxqwiuMFeW7
 EMERGENT_LLM_KEY=sk-emergent-eBdD4BdC6Fd9f7a5dF
 
 # Security (Generate JWT_SECRET)
