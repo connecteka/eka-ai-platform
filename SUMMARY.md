@@ -31,7 +31,7 @@
 * [Diagnostics & Troubleshooting](the-ai-assistant/diagnostics-and-troubleshooting.md)
 * [Governance: Why the AI might "Block" you](the-ai-assistant/governance-why-the-ai-might-block-you.md)
 
-## 🛠 Core Modules
+## 🛠️ Core Modules
 
 * [The 17-Section Job Card (Mega Template)](core-modules/the-17-section-job-card-mega-template.md)
 * [PDI Checklists & Artifacts](core-modules/pdi-checklists-and-artifacts.md)
@@ -127,3 +127,9 @@
   * [Legal (Terms + Privacy)](launch-public-ga/legal-terms-+-privacy.md)
   * [Analytics & KPIs](launch-public-ga/analytics-and-kpis.md)
   * [Changelog](launch-public-ga/changelog.md)
+  * [VS Code AI Launch Agent Playbook](launch-public-ga/vs-code-ai-launch-agent-playbook.md)
+
+## 🏢 Enterprise Launch (B2B)
+
+* [Enterprise Launch Book (VS Code + Kimi Agent)](enterprise-launch-b2b/enterprise-launch-book-vs-code-+-kimi-agent.md)
+* [Legal & Compliance Pack (Pre-launch + Templates)](enterprise-launch-b2b/legal-and-compliance-pack-pre-launch-+-templates.md)

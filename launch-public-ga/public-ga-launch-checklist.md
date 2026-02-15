@@ -83,6 +83,20 @@ Use the existing production guides:
 * [Production Deployment Guide](../developers-and-api/deployment-and-ops/docs/production_deployment.md)
 * [Production Deployment Checklist](../developers-and-api/backend/backend/deployment/production_deployment_checklist.md)
 
+#### Legal + compliance (must be green)
+
+* [ ] Terms of Service is published and linked in the footer.
+* [ ] Privacy Policy is published and linked in the footer.
+* [ ] Cookie policy is published (if you use cookies/analytics).
+* [ ] Refund/cancellation policy is published (if you charge online).
+* [ ] Support policy is published (support hours + escalation + contact).
+* [ ] Subprocessors list is accurate (AI provider, hosting, email, WhatsApp, payments).
+* [ ] Data deletion / erasure workflow exists and is testable.
+
+Reference templates:
+
+* [Legal & Compliance Pack (Pre-launch + Templates)](../enterprise-launch-b2b/legal-and-compliance-pack-pre-launch-+-templates.md)
+
 ### Launch-day runbook
 
 {% stepper %}

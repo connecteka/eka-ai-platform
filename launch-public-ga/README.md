@@ -30,6 +30,14 @@ You already have strong deployment material. Link it into launch ops instead of 
 * Use the existing [Production Deployment Checklist](../developers-and-api/backend/backend/deployment/production_deployment_checklist.md).
 * Keep customer-visible changes tracked in [Changelog](changelog.md).
 
+### Enterprise launches
+
+Public GA is optimized for self-serve.
+
+Enterprise launches require stricter security, UAT, and change control.
+
+Use: [Enterprise Launch Book (VS Code + Kimi Agent)](../enterprise-launch-b2b/enterprise-launch-book-vs-code-+-kimi-agent.md)
+
 ### Payments: webhook acknowledgement policy (PayU)
 
 We treat PayU webhooks as **at-least-once delivery**. Assume duplicates and retries.
