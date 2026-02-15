@@ -1,0 +1,13 @@
+# Nixpacks Build Configuration
+# Railway uses this to build the backend
+
+[phases.build]
+cmds = [
+    "cd backend && pip install -r requirements.txt"
+]
+
+[phases.setup]
+nixPkgs = ["python311", "gcc"]
+
+[start]
+cmd = "cd backend && gunicorn main_enterprise:app -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT --workers 4 --threads 2 --timeout 120"
