@@ -6,6 +6,19 @@ description: The go/no-go checklist for launching EKA-AI with self-serve signups
 
 This is the **go/no-go** list. Stop if any **Blocker** item is not done.
 
+### Launch configuration (locked)
+
+* Monetization: **Paid day‑1**
+* Frontend: **Firebase Hosting**
+* Backend: **Cloud Run**
+* Payments: **PayU**
+* Support email: `connect@eka-ai.in`
+
+References:
+
+* [Production Deployment Guide](../developers-and-api/deployment-and-ops/docs/production_deployment.md) (Cloud Run + Firebase)
+* [Billing flow, PayU integration, and Supabase mapping](pricing-trials-and-billing/billing-flow-payu-integration-and-supabase-mapping.md)
+
 ### Scope lock
 
 * [ ] Launch date and timezone set.
@@ -53,6 +66,13 @@ Decision: **Paid day‑1**.
 
 #### Reliability
 
+**Cloud Run + Firebase (must be green)**
+
+* [ ] Cloud Run backend is deployed and has a stable URL.
+* [ ] `/api/health` is reachable from the public internet.
+* [ ] CORS allows your Firebase Hosting domain(s) and any custom domain.
+* [ ] Firebase Hosting is configured for SPA routing (`rewrites` to `index.html`).
+* [ ] PayU webhook URL points to the Cloud Run service (not a preview URL).
 * [ ] Error tracking is enabled.
 * [ ] Health checks are live.
 * [ ] Backups are scheduled and tested.
