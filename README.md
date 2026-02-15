@@ -17,11 +17,13 @@ It is governed AI for safety and audit-grade finance.
 ### Start here
 
 * [Getting Started](/broken/spaces/TVzkJlkx3M2vwS6FA0Xx/pages/NimTlNUwUIHe88XOY1uE)
+* [Executive Overview](introduction/executive-overview.md)
 * [Workshop Onboarding & Catalog Setup](getting-started/workshop-onboarding-and-catalog-setup.md)
 * [How to Chat with EKA-AI](the-ai-assistant/how-to-chat-with-eka-ai.md)
 * [Vision & Philosophy: Governed Intelligence](introduction/vision-and-philosophy-governed-intelligence.md)
 * [The "4-Gate" Safety System (The Constitution)](introduction/the-4-gate-safety-system-the-constitution.md)
-* [Architecture & Tech Stack](introduction/architecture-and-tech-stack.md)
+* [Governance Constitution (Platform Law)](introduction/governance-constitution-platform-law.md)
+* [Architecture & Tech Stack](introduction/architecture-and-tech-stack/)
 
 ### Why “governed” AI
 
@@ -32,6 +34,12 @@ Generic AI guesses. It also drifts out of scope.
 EKA-AI is constrained by a constitution.
 
 > **Promise:** No guessed prices. No non-automotive advice. No bypassed approvals.
+
+### Platform law (non-negotiable)
+
+These rules are enforced by platform code.
+
+{% include ".gitbook/includes/platform-law-non-negotiable-rules.md" %}
 
 ### The 4-gate safety system
 
@@ -94,6 +102,7 @@ EKA-AI can provide ranges and estimates only. Final prices must come from `parts
 
 <summary>For developers</summary>
 
+* Start here: [Developer handbook](developers-and-api/developer-handbook.md)
 * Streaming chat: [API Reference (`/api/chat/stream`)](developers-and-api/api-and-integrations/api-reference-api-chat-stream.md)
 * Webhooks: [Webhooks & Integrations](developers-and-api/api-and-integrations/webhooks-and-integrations.md)
 * Security: [Security Standards (ISO 27001)](developers-and-api/security/security-standards-iso-27001.md)

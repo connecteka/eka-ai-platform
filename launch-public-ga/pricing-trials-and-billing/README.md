@@ -8,6 +8,12 @@ Decision: **Paid from day 1**.
 
 Make the billing behavior explicit. Avoid “surprise paywalls”.
 
+### Detailed design pages
+
+* [Plans and entitlements](plans-and-entitlements.md)
+* [Token, usage, and AI cost model](token-usage-and-ai-cost-model.md)
+* [Billing flow, PayU integration, and Supabase mapping](billing-flow-payu-integration-and-supabase-mapping.md)
+
 ### Pricing rules (lock these before GA)
 
 Write down:
@@ -20,7 +26,7 @@ Write down:
 
 ### Customer-facing pricing terms (copy/paste)
 
-{% include "../.gitbook/includes/pricing-terms-customer-facing.md" %}
+{% include "../../.gitbook/includes/pricing-terms-customer-facing.md" %}
 
 ### Billing states to implement
 
@@ -73,7 +79,7 @@ Rules:
 
 Reference:
 
-* [Production Deployment Guide](../developers-and-api/deployment-and-ops/docs/production_deployment.md) (PayU secrets)
+* [Production Deployment Guide](../../developers-and-api/deployment-and-ops/docs/production_deployment.md) (PayU secrets)
 
 ### Redirect UX (webhook pending)
 
@@ -87,7 +93,7 @@ Requirements:
 * Show a clear support CTA: `connect@eka-ai.in`.
 * Never grant access from the redirect alone.
 
-{% include "../.gitbook/includes/payment-confirmation-payu.md" %}
+{% include "../../.gitbook/includes/payment-confirmation-payu.md" %}
 
 #### Draft UI copy (use this)
 

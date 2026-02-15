@@ -3,11 +3,21 @@
 ## 👋 Introduction
 
 * [🚗 EKA-AI Platform](README.md)
+* [Executive Overview](introduction/executive-overview.md)
+* [Investor narrative (deck backbone)](introduction/investor-narrative-deck-backbone.md)
 * [Vision & Philosophy: Governed Intelligence](introduction/vision-and-philosophy-governed-intelligence.md)
 * [The "4-Gate" Safety System (The Constitution)](introduction/the-4-gate-safety-system-the-constitution.md)
-* [Architecture & Tech Stack](introduction/architecture-and-tech-stack.md)
+* [Governance Constitution (Platform Law)](introduction/governance-constitution-platform-law.md)
+* [Architecture & Tech Stack](introduction/architecture-and-tech-stack/README.md)
+  * [Multi-tenant architecture](introduction/architecture-and-tech-stack/multi-tenant-architecture.md)
+  * [Tenant tiers and packaging](introduction/architecture-and-tech-stack/tenant-tiers-and-packaging.md)
+  * [White-label system architecture](introduction/architecture-and-tech-stack/white-label-system-architecture.md)
+  * [Backend service layout](introduction/architecture-and-tech-stack/backend-service-layout.md)
+  * [LLM governance model (4 layers)](introduction/architecture-and-tech-stack/llm-governance-model-4-layers.md)
+  * [Plugin system and sandboxing](introduction/architecture-and-tech-stack/plugin-system-and-sandboxing.md)
 * [memory](introduction/memory/README.md)
   * [EKA-AI Platform - Product Requirements Document](introduction/memory/prd.md)
+  * [EKA-AI master documentation prompt](introduction/memory/eka-ai-master-documentation-prompt.md)
 
 ## 🚀 Getting Started
 
@@ -26,10 +36,14 @@
 * [The 17-Section Job Card (Mega Template)](core-modules/the-17-section-job-card-mega-template.md)
 * [PDI Checklists & Artifacts](core-modules/pdi-checklists-and-artifacts.md)
 * [Digital Signatures & Customer Approvals](core-modules/digital-signatures-and-customer-approvals.md)
+* [Job Card → Invoice (end-to-end)](core-modules/job-card-invoice-end-to-end.md)
 
 ## 🚛 MG Fleet & Finance
 
-* [Understanding "Minimum Guarantee" (MG) Logic](mg-fleet-and-finance/understanding-minimum-guarantee-mg-logic.md)
+* [Understanding "Minimum Guarantee" (MG) Logic](mg-fleet-and-finance/understanding-minimum-guarantee-mg-logic/README.md)
+  * [MG calculations (state-wise and fleet-wise)](mg-fleet-and-finance/understanding-minimum-guarantee-mg-logic/mg-calculations-state-wise-and-fleet-wise.md)
+  * [Dynamic pricing boundaries and governance](mg-fleet-and-finance/understanding-minimum-guarantee-mg-logic/dynamic-pricing-boundaries-and-governance.md)
+  * [MG loop: validation, errors, and compliance](mg-fleet-and-finance/understanding-minimum-guarantee-mg-logic/mg-loop-validation-errors-and-compliance.md)
 * [GST-Compliant Invoicing (IGST/CGST/SGST)](mg-fleet-and-finance/gst-compliant-invoicing-igst-cgst-sgst.md)
 * [Audit Logs & Financial Security](mg-fleet-and-finance/audit-logs-and-financial-security.md)
 
@@ -69,6 +83,7 @@
     * [EKA-AI Testing Checklist](developers-and-api/deployment-and-ops/docs/testing_checklist.md)
   * [Cloud Run Deployment Guide](developers-and-api/deployment-and-ops/cloudrun_deployment.md)
   * [Google Cloud Platform (GCP) Migration Guide](developers-and-api/deployment-and-ops/gcp_migration_guide.md)
+  * [Deployment architecture (reference)](developers-and-api/deployment-and-ops/deployment-architecture-reference.md)
 * [CI/CD](developers-and-api/ci-cd/README.md)
   * [.github](developers-and-api/ci-cd/.github/README.md)
     * [EKA-AI Platform - GitHub Copilot Instructions](developers-and-api/ci-cd/.github/copilot-instructions.md)
@@ -82,23 +97,32 @@
   * [test\_result](developers-and-api/testing/test_result.md)
 * [Security](developers-and-api/security/README.md)
   * [Security Standards (ISO 27001)](developers-and-api/security/security-standards-iso-27001.md)
+  * [Security architecture](developers-and-api/security/security-architecture.md)
 * [Internal Notes](developers-and-api/internal-notes/README.md)
   * [.emergent](developers-and-api/internal-notes/.emergent/README.md)
     * [EKA\_AI\_SYSTEM\_DOCUMENTATION](developers-and-api/internal-notes/.emergent/eka_ai_system_documentation.md)
     * [FRONTEND\_TESTING\_CHECKLIST](developers-and-api/internal-notes/.emergent/frontend_testing_checklist.md)
     * [PRODUCTION\_TESTING\_CHECKLIST](developers-and-api/internal-notes/.emergent/production_testing_checklist.md)
+* [Plugin Marketplace](developers-and-api/plugin-marketplace.md)
+* [Developer handbook](developers-and-api/developer-handbook.md)
 
 ## ⚖️ Legal & Compliance
 
 * [Privacy Policy & GDPR Data Erasure](legal-and-compliance/privacy-policy-and-gdpr-data-erasure.md)
 * [Terms of Service](legal-and-compliance/terms-of-service.md)
+* [DPDP (India) compliance notes](legal-and-compliance/dpdp-india-compliance-notes.md)
+* [GST + HSN compliance handbook](legal-and-compliance/gst-+-hsn-compliance-handbook.md)
+* [RBI compliance (if financial flows expand)](legal-and-compliance/rbi-compliance-if-financial-flows-expand.md)
 
 ***
 
 * [🚀 Launch (Public GA)](launch-public-ga/README.md)
   * [Public GA Launch Checklist](launch-public-ga/public-ga-launch-checklist.md)
   * [Self-serve Signup & Onboarding](launch-public-ga/self-serve-signup-and-onboarding.md)
-  * [Pricing, Trials, and Billing](launch-public-ga/pricing-trials-and-billing.md)
+  * [Pricing, Trials, and Billing](launch-public-ga/pricing-trials-and-billing/README.md)
+    * [Plans and entitlements](launch-public-ga/pricing-trials-and-billing/plans-and-entitlements.md)
+    * [Token, usage, and AI cost model](launch-public-ga/pricing-trials-and-billing/token-usage-and-ai-cost-model.md)
+    * [Billing flow, PayU integration, and Supabase mapping](launch-public-ga/pricing-trials-and-billing/billing-flow-payu-integration-and-supabase-mapping.md)
   * [Support & Incident Response](launch-public-ga/support-and-incident-response.md)
   * [Legal (Terms + Privacy)](launch-public-ga/legal-terms-+-privacy.md)
   * [Analytics & KPIs](launch-public-ga/analytics-and-kpis.md)

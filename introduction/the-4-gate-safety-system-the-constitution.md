@@ -12,6 +12,10 @@ Every AI request must pass all four gates.
 
 Gates are enforced by the Governance Engine (`ai_governance.py`).
 
+For permanent, non-negotiable rules, also read:
+
+* [Governance Constitution (Platform Law)](governance-constitution-platform-law.md)
+
 ### 1) Domain gate
 
 Blocks anything outside automobiles and workshop operations.
