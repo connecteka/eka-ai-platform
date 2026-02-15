@@ -4,21 +4,6 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
-    inputs:
-      deployment_target:
-        description: 'Deployment Target'
-        required: true
-        default: 'railway'
-        type: choice
-        options:
-          - railway
-          - gcp-cloudrun
-
-env:
-  NODE_ENV: production
-  VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-  VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-  VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://api.eka-ai.in' }}
 
 jobs:
   # ==================== BUILD & DEPLOY FRONTEND ====================
@@ -42,6 +27,12 @@ jobs:
       - name: Build frontend
         run: yarn build
       
+      - name: Check build output
+        run: |
+          echo "Checking dist folder..."
+          ls -la dist/ || echo "dist folder not found!"
+          ls -la || echo "Root folder listing"
+      
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
       
@@ -49,13 +40,16 @@ jobs:
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
-          firebase deploy --only hosting --project ekaaifront-68443483 --token "$FIREBASE_TOKEN"
+          echo "Deploying to Firebase..."
+          firebase deploy --only hosting --project ekaaifront-68443483 --token "$FIREBASE_TOKEN" --debug || {
+            echo "Firebase deploy failed!"
+            exit 1
+          }
 
   # ==================== DEPLOY BACKEND TO RAILWAY ====================
   deploy-backend-railway:
     name: Deploy Backend to Railway
     runs-on: ubuntu-latest
-    if: github.event.inputs.deployment_target == 'railway' || github.event.inputs.deployment_target == null
     
     steps:
       - name: Checkout repository
@@ -64,55 +58,16 @@ jobs:
       - name: Install Railway CLI
         run: npm install -g @railway/cli
       
-      - name: Set Railway Environment Variables
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: |
-          cd backend
-          railway link --project eka-ai-platform
-          # Set environment variables from secrets
-          railway variables set \
-            SUPABASE_URL="${{ secrets.VITE_SUPABASE_URL }}" \
-            SUPABASE_KEY="${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
-            SUPABASE_SERVICE_KEY="${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
-            MONGO_URL="${{ secrets.MONGO_URL }}" \
-            MONGODB_DATABASE="eka_ai" \
-            GEMINI_API_KEY="${{ secrets.GEMINI_KEY }}" \
-            JWT_SECRET="${{ secrets.JWT_SECRET }}" \
-            ALLOWED_ORIGINS="https://www.eka-ai.in,https://app.eka-ai.in" \
-            NODE_ENV="production" \
-            ENVIRONMENT="production" \
-            ENABLE_RATE_LIMITING="true" \
-            ENABLE_CACHING="true" \
-            ENABLE_MONITORING="true"
+      - name: Verify Railway CLI
+        run: railway --version
       
       - name: Deploy to Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           cd backend
-          railway up --detach
-
-  # ==================== NOTIFICATION ====================
-  notify:
-    name: Deployment Complete
-    runs-on: ubuntu-latest
-    needs: [deploy-frontend, deploy-backend-railway]
-    if: always()
-    
-    steps:
-      - name: Check deployment status
-        run: |
-          if [ "${{ needs.deploy-frontend.result }}" == "success" ]; then
-            echo "✅ Frontend deployed to Firebase"
-          else
-            echo "❌ Frontend deployment failed"
-          fi
-          
-          if [ "${{ needs.deploy-backend-railway.result }}" == "success" ]; then
-            echo "✅ Backend deployed to Railway"
-          elif [ "${{ needs.deploy-backend-railway.result }}" == "skipped" ]; then
-            echo "ℹ️ Railway deployment skipped"
-          else
-            echo "❌ Backend deployment failed"
-          fi
+          echo "Deploying backend to Railway..."
+          railway up --detach || {
+            echo "Railway deploy failed!"
+            exit 1
+          }
