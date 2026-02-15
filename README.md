@@ -25,7 +25,7 @@ It is governed AI for safety and audit-grade finance.
 * [Governance Constitution (Platform Law)](introduction/governance-constitution-platform-law.md)
 * [Architecture & Tech Stack](introduction/architecture-and-tech-stack/)
 
-### Why “governed” AI
+### Why "governed" AI
 
 Automotive mistakes cost money. They can also be unsafe.
 
@@ -49,8 +49,8 @@ Every request passes the Governance Engine (`ai_governance.py`).
 
 EKA-AI rejects non-automotive queries.
 
-* Allowed: “Why is the engine overheating?”
-* Blocked: “What is the capital of France?”
+* Allowed: "Why is the engine overheating?"
+* Blocked: "What is the capital of France?"
 
 #### 2) Confidence gate
 
@@ -95,6 +95,77 @@ Typical split:
 {% hint style="info" %}
 EKA-AI can provide ranges and estimates only. Final prices must come from `parts_catalog` and `labor_catalog`.
 {% endhint %}
+
+---
+
+## 🚀 Production Deployment
+
+### Scale Target: 200,000 Customers | 12,000 Concurrent Users | 500 QPS Peak
+
+| Component | Technology | Cost/Month |
+|-----------|-----------|------------|
+| **Backend** | Railway.app (Auto-scaling) | ~$150 |
+| **Database** | Supabase + MongoDB Atlas M10 | ~$60 |
+| **Total** | | **~$210** |
+
+**Savings: 74% vs Kubernetes ($800/month)**
+
+### Quick Deploy
+
+```bash
+# 1. Setup MongoDB Atlas
+# Create M10 cluster at mongodb.com → Copy connection string
+
+# 2. Setup Railway
+# railway.app → New Project → GitHub repo → Add Redis
+
+# 3. Configure Environment Variables
+# See: DEPLOY_RAILWAY_FINAL.md
+
+# 4. Deploy
+railway up
+```
+
+### Architecture
+
+```
+┌─────────────────────────────────────┐
+│         Railway.app                 │
+│    Auto-scaling 10-100 instances    │
+└─────────────┬───────────────────────┘
+              │
+    ┌─────────┴──────────┐
+    │                    │
+┌───▼──────┐     ┌──────▼─────┐
+│ Supabase │     │ MongoDB    │
+│ (Postgre)│     │ Atlas      │
+└──────────┘     └────────────┘
+       │                │
+       └────────────────┘
+              │
+        ┌─────▼──────┐
+        │   Redis    │
+        │  (Cache)   │
+        └────────────┘
+```
+
+### Features Implemented
+
+| Feature | File | Purpose |
+|---------|------|---------|
+| Connection Pooling | `backend/config/database_pool.py` | 20+30 connections |
+| MongoDB Pooling | `backend/config/mongodb_pool.py` | 50 connections |
+| Redis Caching | `backend/middleware/cache.py` | <200ms responses |
+| Rate Limiting | `backend/middleware/rate_limiter.py` | 1000 req/hour |
+| Health Monitoring | `backend/monitoring/health_check.py` | Full system status |
+| Load Testing | `tests/load/k6/*.js` | 12K concurrent test |
+
+### Documentation
+
+* **[DEPLOY_RAILWAY_FINAL.md](DEPLOY_RAILWAY_FINAL.md)** - Complete deployment guide
+* **[RAILWAY_DEPLOYMENT_STATUS.md](RAILWAY_DEPLOYMENT_STATUS.md)** - Current status
+
+---
 
 — EKA-AI, Go4Garage Intelligence
 
