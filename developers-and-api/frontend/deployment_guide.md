@@ -26,7 +26,7 @@ npm run dev
 
 Visit: `http://localhost:5173/claude-chat`
 
----
+***
 
 ## 📦 Build for Production
 
@@ -36,55 +36,52 @@ npm run build
 
 Output in `dist/` folder.
 
----
+***
 
 ## 🌐 Deploy
 
 ### Firebase
+
 ```bash
 npm run build
 firebase deploy --only hosting
 ```
 
 ### Vercel
+
 ```bash
 vercel --prod
 ```
 
 ### Netlify
+
 ```bash
 netlify deploy --prod --dir=dist
 ```
 
----
+***
 
 ## 🎯 Routes
 
-- `/claude-chat` - Full-screen Claude-like interface
-- `/chat` - Original chat with header/footer
-- `/dashboard` - Dashboard view
-- `/` - Homepage
+* `/claude-chat` - Full-screen Claude-like interface
+* `/chat` - Original chat with header/footer
+* `/dashboard` - Dashboard view
+* `/` - Homepage
 
----
+***
 
 ## 🔧 Key Features
 
-✅ Claude-inspired dark UI
-✅ Multi-session chat
-✅ Markdown rendering
-✅ Code highlighting
-✅ Streaming responses
-✅ Mobile responsive
-✅ Job card integration
+✅ Claude-inspired dark UI ✅ Multi-session chat ✅ Markdown rendering ✅ Code highlighting ✅ Streaming responses ✅ Mobile responsive ✅ Job card integration
 
----
+***
 
 ## 📖 Documentation
 
-- **Full Guide**: [CLAUDE_FRONTEND_README.md](./CLAUDE_FRONTEND_README.md)
-- **Deployment**: [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)
-- **Main README**: [README.md](./README.md)
+* **Full Guide**: [CLAUDE\_FRONTEND\_README.md](claude_frontend_readme.md)
+* **Deployment**: [DEPLOYMENT\_GUIDE.md](deployment_guide.md)
+* **Main README**: [README.md](../../)
 
----
+***
 
 **Need Help?** support@go4garage.in
