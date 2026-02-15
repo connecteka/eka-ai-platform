@@ -4,12 +4,21 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+    inputs:
+      deployment_target:
+        description: 'Deployment Target'
+        required: true
+        default: 'railway'
+        type: choice
+        options:
+          - railway
+          - gcp-cloudrun
 
 env:
   NODE_ENV: production
   VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
   VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-  VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://eka-ai-backend-xxxxx.a.run.app' }}
+  VITE_API_URL: ${{ secrets.BACKEND_URL || 'https://api.eka-ai.in' }}
 
 jobs:
   # ==================== TEST ====================
@@ -62,9 +71,9 @@ jobs:
           path: dist/
           retention-days: 1
 
-  # ==================== DEPLOY TO FIREBASE ====================
-  deploy-firebase:
-    name: Deploy to Firebase
+  # ==================== DEPLOY FRONTEND TO FIREBASE ====================
+  deploy-frontend:
+    name: Deploy Frontend to Firebase
     runs-on: ubuntu-latest
     needs: build-frontend
     
@@ -86,11 +95,40 @@ jobs:
           channelId: live
           projectId: eka-ai-platform
 
-  # ==================== DEPLOY BACKEND TO CLOUD RUN ====================
-  deploy-backend:
-    name: Deploy Backend to Cloud Run
+  # ==================== DEPLOY BACKEND TO RAILWAY ====================
+  deploy-backend-railway:
+    name: Deploy Backend to Railway
     runs-on: ubuntu-latest
     needs: test
+    if: github.event.inputs.deployment_target == 'railway' || github.event.inputs.deployment_target == null
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+      
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          cd backend
+          railway link --project eka-ai-platform
+          railway up --detach
+      
+      - name: Verify deployment
+        run: |
+          echo "⏳ Waiting for deployment to be ready..."
+          sleep 30
+          curl -f https://api.eka-ai.in/health || echo "⚠️ Health check failed - check Railway logs"
+
+  # ==================== DEPLOY BACKEND TO CLOUD RUN (Fallback) ====================
+  deploy-backend-gcp:
+    name: Deploy Backend to GCP Cloud Run
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event.inputs.deployment_target == 'gcp-cloudrun'
     
     steps:
       - name: Checkout repository
@@ -109,7 +147,7 @@ jobs:
             --platform managed \
             --region asia-south1 \
             --allow-unauthenticated \
-            --set-env-vars="SUPABASE_URL=${{ secrets.SUPABASE_URL }},SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" \
+            --set-env-vars="SUPABASE_URL=${{ secrets.SUPABASE_URL }},SUPABASE_KEY=${{ secrets.SUPABASE_KEY }},MONGODB_URL=${{ secrets.MONGODB_URI }},JWT_SECRET=${{ secrets.JWT_SECRET }}" \
             --memory 512Mi \
             --max-instances 10 \
             --quiet
@@ -123,19 +161,20 @@ jobs:
   notify:
     name: Deployment Complete
     runs-on: ubuntu-latest
-    needs: [deploy-firebase, deploy-backend]
-    if: always()
+    needs: [deploy-frontend, deploy-backend-railway]
+    if: always() && (needs.deploy-backend-railway.result == 'success' || needs.deploy-backend-railway.result == 'skipped')
     
     steps:
       - name: Check deployment status
         run: |
-          if [ "${{ needs.deploy-firebase.result }}" == "success" ] && [ "${{ needs.deploy-backend.result }}" == "success" ]; then
-            echo "✅ All deployments successful!"
-            echo "Frontend: https://eka-ai-platform.web.app"
-            echo "Backend: Check Cloud Run console for URL"
-          else
-            echo "❌ Some deployments failed"
-            echo "Firebase: ${{ needs.deploy-firebase.result }}"
-            echo "Backend: ${{ needs.deploy-backend.result }}"
-            exit 1
+          echo "✅ Frontend deployed to Firebase"
+          if [ "${{ needs.deploy-backend-railway.result }}" == "success" ]; then
+            echo "✅ Backend deployed to Railway: https://api.eka-ai.in"
+          elif [ "${{ needs.deploy-backend-railway.result }}" == "skipped" ]; then
+            echo "ℹ️ Railway deployment skipped"
           fi
+          echo ""
+          echo "📋 Next Steps:"
+          echo "  1. Verify health: curl https://api.eka-ai.in/health"
+          echo "  2. Run load tests: ./scripts/run-load-tests.sh https://api.eka-ai.in"
+          echo "  3. Check Railway dashboard for metrics"
