@@ -18,7 +18,7 @@ env:
   NODE_ENV: production
   VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
   VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-  VITE_API_URL: ${{ secrets.BACKEND_URL || 'https://api.eka-ai.in' }}
+  VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://api.eka-ai.in' }}
 
 jobs:
   # ==================== TEST ====================
@@ -109,12 +109,33 @@ jobs:
       - name: Install Railway CLI
         run: npm install -g @railway/cli
       
-      - name: Deploy to Railway
+      - name: Set Railway Environment Variables
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           cd backend
           railway link --project eka-ai-platform
+          # Set environment variables from secrets
+          railway variables set \
+            SUPABASE_URL="${{ secrets.VITE_SUPABASE_URL }}" \
+            SUPABASE_KEY="${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
+            SUPABASE_SERVICE_KEY="${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
+            MONGO_URL="${{ secrets.MONGO_URL }}" \
+            MONGODB_DATABASE="eka_ai" \
+            GEMINI_API_KEY="${{ secrets.GEMINI_KEY }}" \
+            JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+            ALLOWED_ORIGINS="https://www.eka-ai.in,https://app.eka-ai.in" \
+            NODE_ENV="production" \
+            ENVIRONMENT="production" \
+            ENABLE_RATE_LIMITING="true" \
+            ENABLE_CACHING="true" \
+            ENABLE_MONITORING="true"
+      
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          cd backend
           railway up --detach
       
       - name: Verify deployment
@@ -147,7 +168,7 @@ jobs:
             --platform managed \
             --region asia-south1 \
             --allow-unauthenticated \
-            --set-env-vars="SUPABASE_URL=${{ secrets.SUPABASE_URL }},SUPABASE_KEY=${{ secrets.SUPABASE_KEY }},MONGODB_URL=${{ secrets.MONGODB_URI }},JWT_SECRET=${{ secrets.JWT_SECRET }}" \
+            --set-env-vars="SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }},SUPABASE_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }},MONGO_URL=${{ secrets.MONGO_URL }},JWT_SECRET=${{ secrets.JWT_SECRET }},GEMINI_API_KEY=${{ secrets.GEMINI_KEY }}" \
             --memory 512Mi \
             --max-instances 10 \
             --quiet
