@@ -25,6 +25,19 @@ JWT_SECRET = os.getenv("JWT_SECRET")
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRY_HOURS = 24
 
+# Validate JWT_SECRET on module load
+if not JWT_SECRET:
+    raise ValueError(
+        "🔴 CRITICAL: JWT_SECRET environment variable is not set! "
+        "Generate one with: openssl rand -hex 32"
+    )
+
+if len(JWT_SECRET) < 32:
+    raise ValueError(
+        "🔴 CRITICAL: JWT_SECRET must be at least 32 characters long! "
+        "Generate a secure one with: openssl rand -hex 32"
+    )
+
 # Database
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY")

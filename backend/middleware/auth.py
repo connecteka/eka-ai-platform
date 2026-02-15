@@ -1,13 +1,16 @@
 """
-JWT Authentication Middleware for EKA-AI Platform
+JWT Authentication Middleware for EKA-AI Platform (FastAPI Version)
 Implements RBAC for protected endpoints
 """
 
 from functools import wraps
-from flask import request, g, jsonify
+from fastapi import Request, HTTPException, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import jwt
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
+
+security = HTTPBearer()
 
 def get_jwt_secret():
     secret = os.getenv('JWT_SECRET')
@@ -15,61 +18,59 @@ def get_jwt_secret():
         raise ValueError("JWT_SECRET environment variable not set")
     return secret
 
-def require_auth(allowed_roles=None):
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     """
-    Authentication decorator with optional role-based access control.
+    Validate JWT token and return current user.
+    Usage: 
+        @router.get("/protected")
+        async def protected_endpoint(user: dict = Depends(get_current_user)):
+            ...
+    """
+    token = credentials.credentials
     
-    Usage:
-        @require_auth()  # Any authenticated user
-        @require_auth(allowed_roles=['OWNER', 'MANAGER'])  # Specific roles only
+    try:
+        payload = jwt.decode(
+            token, 
+            get_jwt_secret(), 
+            algorithms=['HS256'],
+            options={"require": ["sub", "role", "workshop_id", "exp", "iat"]}
+        )
+        
+        return {
+            'user_id': payload['sub'],
+            'role': payload['role'],
+            'workshop_id': payload['workshop_id'],
+            'email': payload.get('email')
+        }
+        
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expired")
+    except jwt.InvalidTokenError as e:
+        raise HTTPException(status_code=401, detail=f"Invalid token: {str(e)}")
+    except ValueError as e:
+        raise HTTPException(status_code=500, detail="Server configuration error")
+
+def require_roles(allowed_roles: list):
     """
-    def decorator(f):
-        @wraps(f)
-        def decorated(*args, **kwargs):
-            # Extract token from Authorization header
-            auth_header = request.headers.get('Authorization', '')
-            if not auth_header.startswith('Bearer '):
-                return jsonify({'error': 'Authentication required', 'code': 'NO_TOKEN'}), 401
-            
-            token = auth_header.replace('Bearer ', '')
-            if not token:
-                return jsonify({'error': 'Authentication required', 'code': 'EMPTY_TOKEN'}), 401
-            
-            try:
-                # Decode and validate token
-                payload = jwt.decode(
-                    token, 
-                    get_jwt_secret(), 
-                    algorithms=['HS256'],
-                    options={"require": ["sub", "role", "workshop_id", "exp", "iat"]}
-                )
-                
-                # Store user context in Flask g object
-                g.user_id = payload['sub']
-                g.user_role = payload['role']
-                g.workshop_id = payload['workshop_id']
-                g.user_email = payload.get('email')
-                g.token_exp = payload['exp']
-                
-                # Role-based access control
-                if allowed_roles and payload['role'] not in allowed_roles:
-                    return jsonify({
-                        'error': 'Insufficient privileges',
-                        'code': 'FORBIDDEN',
-                        'required_roles': allowed_roles,
-                        'user_role': payload['role']
-                    }), 403
-                
-            except jwt.ExpiredSignatureError:
-                return jsonify({'error': 'Token expired', 'code': 'TOKEN_EXPIRED'}), 401
-            except jwt.InvalidTokenError as e:
-                return jsonify({'error': 'Invalid token', 'code': 'INVALID_TOKEN', 'detail': str(e)}), 401
-            except ValueError as e:
-                return jsonify({'error': 'Server configuration error', 'code': 'CONFIG_ERROR'}), 500
-            
-            return f(*args, **kwargs)
-        return decorated
-    return decorator
+    Dependency factory for role-based access control.
+    Usage:
+        @router.get("/admin-only")
+        async def admin_endpoint(
+            user: dict = Depends(require_roles(['OWNER', 'MANAGER']))
+        ):
+            ...
+    """
+    async def role_checker(credentials: HTTPAuthorizationCredentials = Depends(security)):
+        user = await get_current_user(credentials)
+        
+        if user['role'] not in allowed_roles:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Insufficient privileges. Required: {allowed_roles}"
+            )
+        return user
+    
+    return role_checker
 
 
 def generate_token(user_id: str, role: str, workshop_id: str, email: str = None, expiry_hours: int = 24) -> str:
@@ -86,8 +87,6 @@ def generate_token(user_id: str, role: str, workshop_id: str, email: str = None,
     Returns:
         JWT token string
     """
-    from datetime import timedelta
-    
     now = datetime.now(timezone.utc)
     exp_time = now + timedelta(hours=expiry_hours)
     
@@ -103,34 +102,18 @@ def generate_token(user_id: str, role: str, workshop_id: str, email: str = None,
     return jwt.encode(payload, get_jwt_secret(), algorithm='HS256')
 
 
-def get_current_user():
-    """
-    Get the current authenticated user from Flask g object.
-    Must be called within a request context after @require_auth.
-    
-    Returns:
-        dict with user_id, role, workshop_id, email
-    """
-    return {
-        'user_id': getattr(g, 'user_id', None),
-        'role': getattr(g, 'user_role', None),
-        'workshop_id': getattr(g, 'workshop_id', None),
-        'email': getattr(g, 'user_email', None)
-    }
-
-
-def workshop_isolation_check(entity_workshop_id: str) -> bool:
+def workshop_isolation_check(current_workshop_id: str, entity_workshop_id: str) -> bool:
     """
     Verify that the current user has access to the specified workshop's data.
     Prevents cross-tenant data access.
     
     Args:
+        current_workshop_id: Current user's workshop ID
         entity_workshop_id: Workshop ID of the entity being accessed
     
     Returns:
         True if access is allowed, False otherwise
     """
-    current_workshop = getattr(g, 'workshop_id', None)
-    if not current_workshop:
+    if not current_workshop_id:
         return False
-    return current_workshop == entity_workshop_id
+    return current_workshop_id == entity_workshop_id

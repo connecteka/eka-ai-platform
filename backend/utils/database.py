@@ -10,8 +10,19 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # MongoDB Configuration
-MONGO_URL = os.environ.get("MONGO_URL", "mongodb://localhost:27017")
+MONGO_URL = os.environ.get("MONGO_URL")
 DB_NAME = os.environ.get("DB_NAME", "eka_ai_db")
+
+# Validate MongoDB URL in production
+if not MONGO_URL:
+    import os
+    if os.getenv("NODE_ENV") == "production" or os.getenv("ENVIRONMENT") == "production":
+        raise ValueError(
+            "🔴 CRITICAL: MONGO_URL environment variable is not set in production! "
+            "Please set your MongoDB Atlas connection string."
+        )
+    # Fallback for development only
+    MONGO_URL = "mongodb://localhost:27017"
 
 # Initialize MongoDB client
 client = MongoClient(MONGO_URL)

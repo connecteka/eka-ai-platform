@@ -4,20 +4,22 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Validate environment variables
+// Validate environment variables - fail fast in production
 if (!supabaseUrl) {
-  console.error('⚠️ VITE_SUPABASE_URL is missing! Check your .env file.');
+  throw new Error(
+    '🔴 CRITICAL: VITE_SUPABASE_URL is missing! ' +
+    'Please set it in your environment variables.'
+  );
 }
 if (!supabaseAnonKey) {
-  console.error('⚠️ VITE_SUPABASE_ANON_KEY is missing! Check your .env file.');
+  throw new Error(
+    '🔴 CRITICAL: VITE_SUPABASE_ANON_KEY is missing! ' +
+    'Please set it in your environment variables.'
+  );
 }
 
 // Create a single supabase client for interacting with your database
-// Use fallback values to prevent null errors
-export const supabase = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseAnonKey || 'placeholder-key'
-);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Helper to get the current user's JWT token for backend requests
 export const getAuthToken = async () => {
