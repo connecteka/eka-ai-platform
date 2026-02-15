@@ -1,12 +1,12 @@
 # Railway Configuration for EKA-AI Platform
 # Deploy: https://railway.app
+# Supports: Supabase + MongoDB + All Features
 
 [build]
 builder = "nixpacks"
-buildCommand = "cd backend && pip install -r requirements.txt"
 
 [deploy]
-startCommand = "cd backend && gunicorn main_enterprise:app -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT --workers 4 --threads 2 --timeout 120"
+startCommand = "cd backend && gunicorn wsgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT --workers 4 --threads 2 --timeout 120 --max-requests 1000 --max-requests-jitter 50"
 healthcheckPath = "/api/health"
 healthcheckTimeout = 30
 restartPolicyType = "on_failure"
@@ -15,9 +15,8 @@ restartPolicyMaxRetries = 3
 [env]
 PYTHON_VERSION = "3.11"
 NODE_ENV = "production"
+ENVIRONMENT = "production"
 ENABLE_RATE_LIMITING = "true"
 ENABLE_CACHING = "true"
 ENABLE_MONITORING = "true"
 ENABLE_SECURITY_HARDENING = "true"
-DB_POOL_SIZE = "20"
-DB_MAX_OVERFLOW = "30"
