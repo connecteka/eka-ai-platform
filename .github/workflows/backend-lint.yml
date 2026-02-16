@@ -1,0 +1,33 @@
+name: Backend Lint and Format Check
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-lint.yml'
+
+jobs:
+  lint-and-format-backend:
+    name: Run Black & Ruff
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: 'backend/requirements.txt'
+
+      - name: Install dependencies
+        run: pip install black ruff
+
+      - name: Run Black (Format Check)
+        run: black --check backend/
+
+      - name: Run Ruff (Linter)
+        run: ruff check backend/
