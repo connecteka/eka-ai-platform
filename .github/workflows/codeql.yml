@@ -61,6 +61,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    # Install WeasyPrint system dependencies for Python analysis
+    - name: Install PDF Generation Dependencies
+      if: matrix.language == 'python'
+      run: sudo apt-get update && sudo apt-get install -y libpango-1.0-0 libpangoft2-1.0-0
+
     # Add any setup steps before running the `github/codeql-action/init` action.
     # This includes steps like installing compilers or runtimes (`actions/setup-node`
     # or others). This is typically only required for manual builds.
