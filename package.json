@@ -40,7 +40,6 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
-    "cra-template": "1.2.0",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.6.0",
     "input-otp": "^1.4.2",
@@ -53,7 +52,6 @@
     "react-joyride": "^2.9.3",
     "react-resizable-panels": "^3.0.1",
     "react-router-dom": "^7.13.0",
-    "react-scripts": "5.0.1",
     "recharts": "^3.7.0",
     "sonner": "^2.0.3",
     "tailwind-merge": "^3.4.0",
@@ -66,7 +64,9 @@
     "start": "vite --host 0.0.0.0 --port 3000",
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "serve": "npx serve -s dist",
+    "verify-build": "node verify-build.js"
   },
   "browserslist": {
     "production": [
@@ -81,8 +81,6 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@craco/craco": "^7.1.0",
     "@eslint/js": "9.23.0",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^25.2.3",
@@ -96,6 +94,7 @@
     "eslint-plugin-react-hooks": "5.2.0",
     "globals": "15.15.0",
     "postcss": "^8.5.6",
+    "serve": "^14.2.3",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3"
   },
