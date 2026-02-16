@@ -10,7 +10,10 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from dotenv import load_dotenv
+import os
 
 # Load environment variables
 load_dotenv()
@@ -79,20 +82,31 @@ app.include_router(dashboard.router)
 app.include_router(notifications.router)
 app.include_router(voice.router)
 
+# ==================== STATIC FILES (React Frontend) ====================
+dist_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'dist')
+if os.path.exists(dist_path):
+    app.mount("/assets", StaticFiles(directory=os.path.join(dist_path, 'assets')), name="assets")
+    
+    @app.get("/{full_path:path}")
+    async def serve_react(full_path: str):
+        """Serve React app for all non-API routes."""
+        # Skip API routes
+        if full_path.startswith(('api/', 'health')):
+            return {"status": "EKA-AI Backend is running", "path": full_path}
+        
+        index_path = os.path.join(dist_path, 'index.html')
+        if os.path.exists(index_path):
+            return FileResponse(index_path)
+        return {"status": "Frontend not built", "dist_path": dist_path}
+else:
+    @app.get("/{full_path:path}")
+    async def no_frontend(full_path: str):
+        """API-only mode when frontend is not built."""
+        if full_path.startswith(('api/', 'health')):
+            return {"status": "EKA-AI Backend is running", "path": full_path}
+        return {"status": "EKA-AI API Server", "message": "Frontend not built"}
 
 # ==================== ROOT & HEALTH ENDPOINTS ====================
-
-@app.get("/")
-def read_root():
-    """Root endpoint - API status."""
-    return {
-        "status": "EKA-AI Backend is running",
-        "version": "3.0.0",
-        "database": "MongoDB",
-        "ai_enabled": EMERGENT_LLM_KEY is not None,
-        "architecture": "Modular APIRouter"
-    }
-
 
 @app.get("/api/health")
 def health_check():
