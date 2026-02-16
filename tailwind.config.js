@@ -7,16 +7,21 @@ export default {
   theme: {
     extend: {
       colors: {
-        'brand-orange': '#F45D3D',
-        'background': '#0D0D0D',
-        'background-alt': '#1B1B1D',
-        'text-primary': '#FFFFFF',
-        'text-secondary': '#E5E5E5',
-        'border': '#333333',
+        'brand-orange': '#F98906',
+        'brand-hover': '#E07A00',
+        'background': '#FFF5E6',
+        'background-alt': '#FFFBF5',
+        'text-primary': '#1A1A1A',
+        'text-secondary': '#2C1A0E',
+        'text-muted': '#5C4A3D',
+        'border': '#1A1A1A',
+        'border-light': 'rgba(26, 26, 26, 0.15)',
+        'surface': '#FFFFFF',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        heading: ['Outfit', 'sans-serif'],
+        display: ['Playfair Display', 'Georgia', 'Times New Roman', 'serif'],
+        serif: ['Source Serif 4', 'Georgia', 'Times New Roman', 'serif'],
+        mono: ['JetBrains Mono', 'Fira Code', 'Consolas', 'monospace'],
       },
       borderWidth: {
         DEFAULT: '1px',

@@ -1,7 +1,17 @@
 import axios from 'axios';
 
+// Get base URL and ensure /api prefix
+const getBaseUrl = () => {
+  const baseUrl = import.meta.env.VITE_API_URL || '';
+  // If baseUrl exists and doesn't end with /api, add it
+  if (baseUrl && !baseUrl.endsWith('/api')) {
+    return `${baseUrl}/api`;
+  }
+  return baseUrl || '/api';
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: getBaseUrl(),
   headers: {
     'Content-Type': 'application/json',
   },

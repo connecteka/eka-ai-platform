@@ -24,7 +24,12 @@ const meta: Meta<typeof Badge> = {
       control: 'select',
       options: ['sm', 'md', 'lg'],
     },
-
+    dot: {
+      control: 'boolean',
+    },
+    pulse: {
+      control: 'boolean',
+    },
   },
 };
 
@@ -79,13 +84,23 @@ export const Sizes: Story = {
   ),
 };
 
-// With icon
-export const WithIcon: Story = {
+// With dot
+export const WithDot: Story = {
   render: () => (
     <div className="flex flex-wrap gap-2">
-      <Badge variant="green" icon={<span className="w-2 h-2 rounded-full bg-green-500" />}>Online</Badge>
-      <Badge variant="yellow" icon={<span className="w-2 h-2 rounded-full bg-yellow-500" />}>Pending</Badge>
-      <Badge variant="red" icon={<span className="w-2 h-2 rounded-full bg-red-500" />}>Offline</Badge>
+      <Badge variant="success" dot>Online</Badge>
+      <Badge variant="warning" dot>Pending</Badge>
+      <Badge variant="error" dot>Offline</Badge>
+    </div>
+  ),
+};
+
+// With pulsing dot
+export const WithPulsingDot: Story = {
+  render: () => (
+    <div className="flex flex-wrap gap-2">
+      <Badge variant="success" dot pulse>Live</Badge>
+      <Badge variant="warning" dot pulse>Processing</Badge>
     </div>
   ),
 };
@@ -134,7 +149,7 @@ export const ComplexExample: Story = {
       </div>
       <div className="flex items-center justify-between">
         <span className="text-gray-300">AI Status:</span>
-        <Badge variant="green" icon={<span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />}>Analyzing</Badge>
+        <Badge variant="success" dot pulse>Analyzing</Badge>
       </div>
     </div>
   ),

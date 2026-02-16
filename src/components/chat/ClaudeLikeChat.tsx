@@ -414,6 +414,7 @@ const ClaudeLikeChat: React.FC = () => {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Ask about vehicle diagnostics, job cards, or automotive services..."
+                data-testid="chat-input"
                 className="w-full bg-transparent text-text-primary placeholder-text-secondary/50 px-3 py-2 outline-none resize-none text-sm leading-relaxed"
                 rows={1}
                 style={{ maxHeight: '200px' }}
@@ -462,6 +463,7 @@ const ClaudeLikeChat: React.FC = () => {
                 <button
                   onClick={handleSend}
                   disabled={!input.trim() || isLoading}
+                  data-testid="send-message-btn"
                   className={`p-2 rounded-lg transition-all ${
                     input.trim() && !isLoading
                       ? 'bg-brand-orange hover:bg-[#e54d2d] text-white'

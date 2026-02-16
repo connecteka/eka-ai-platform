@@ -1,182 +1,183 @@
----
-description: >-
-  AI-powered automobile workshop management software for job cards, GST
-  invoices, vehicle records, and customer notifications.
----
+# EKA-AI Platform
 
-# 🚗 EKA-AI Platform
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/eka-ai-platform)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-### Governed automobile intelligence
+> **Governed Automobile Intelligence Platform** for automobile workshops and fleet management.
 
-EKA-AI is the operating system for Go4Garage workshops.
+## 🚗 Overview
 
-It is not a generic chatbot.
+EKA-AI is India's first governed AI platform for the automobile industry. It provides intelligent solutions for:
 
-It is governed AI for safety and audit-grade finance.
+- 🔧 **Job Card Management** - Digital job cards with AI-powered diagnostics
+- 📊 **Fleet Management** - MG Fleet tracking and maintenance
+- 💰 **GST Invoicing** - Automated invoice generation with PDF export
+- 🤖 **AI Diagnostics** - Vehicle diagnostic assistance using Gemini AI
+- 🔐 **Customer Approvals** - Digital approval workflow for estimates
 
-### Start here
+## 📚 Documentation
 
-* [Getting Started](/broken/spaces/TVzkJlkx3M2vwS6FA0Xx/pages/NimTlNUwUIHe88XOY1uE)
-* [Executive Overview](introduction/executive-overview.md)
-* [Workshop Onboarding & Catalog Setup](getting-started/workshop-onboarding-and-catalog-setup.md)
-* [How to Chat with EKA-AI](the-ai-assistant/how-to-chat-with-eka-ai.md)
-* [Vision & Philosophy: Governed Intelligence](introduction/vision-and-philosophy-governed-intelligence.md)
-* [The "4-Gate" Safety System (The Constitution)](introduction/the-4-gate-safety-system-the-constitution.md)
-* [Governance Constitution (Platform Law)](introduction/governance-constitution-platform-law.md)
-* [Architecture & Tech Stack](introduction/architecture-and-tech-stack/)
+Complete documentation is available via **GitBook**:
 
-### Why "governed" AI
+👉 **[View Documentation](https://docs.eka-ai.in)** *(Update with your actual GitBook URL)*
 
-Automotive mistakes cost money. They can also be unsafe.
+Or browse the documentation locally:
+- [Getting Started](./getting-started/)
+- [Introduction](./introduction/)
+- [Core Modules](./core-modules/)
+- [MG Fleet & Finance](./mg-fleet-and-finance/)
+- [Legal & Compliance](./legal-and-compliance/)
 
-Generic AI guesses. It also drifts out of scope.
+## 🏗️ Architecture
 
-EKA-AI is constrained by a constitution.
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│   React Frontend│────▶│  FastAPI Backend│────▶│  MongoDB Atlas  │
+│   (Vite + TS)   │     │  (Python 3.11)  │     │  (Database)     │
+└─────────────────┘     └────────┬────────┘     └─────────────────┘
+                                 │
+                    ┌────────────┼────────────┐
+                    ▼            ▼            ▼
+            ┌──────────┐  ┌──────────┐  ┌──────────┐
+            │  Redis   │  │Supabase  │  │  Gemini  │
+            │ (Cache)  │  │ (Auth)   │  │   AI     │
+            └──────────┘  └──────────┘  └──────────┘
+```
 
-> **Promise:** No guessed prices. No non-automotive advice. No bypassed approvals.
+## 🚀 Quick Start
 
-### Platform law (non-negotiable)
+### Prerequisites
+- Node.js 20+
+- Python 3.11+
+- MongoDB Atlas account
+- Supabase account
+- Redis (optional, for caching)
 
-These rules are enforced by platform code.
-
-{% include ".gitbook/includes/platform-law-non-negotiable-rules.md" %}
-
-### The 4-gate safety system
-
-Every request passes the Governance Engine (`ai_governance.py`).
-
-#### 1) Domain gate
-
-EKA-AI rejects non-automotive queries.
-
-* Allowed: "Why is the engine overheating?"
-* Blocked: "What is the capital of France?"
-
-#### 2) Confidence gate
-
-EKA-AI enforces a **0.90 (90%)** confidence threshold.
-
-If confidence is lower, it asks targeted questions.
-
-#### 3) Context gate
-
-EKA-AI requires vehicle context before guidance.
-
-Provide brand, model, year, and fuel type.
-
-When available, job card history is also used.
-
-#### 4) Permission gate (RBAC)
-
-Actions are permissioned, not just suggested.
-
-Typical split:
-
-* **Technician**: diagnostics and checklist updates
-* **Owner**: catalog changes and invoice approvals
-
-### Core capabilities
-
-* Mega job card
-  * 17 sections, evidence, approvals, and signatures.
-* MG fleet engine
-  * Deterministic billing using `MAX(assured, actual)`.
-* GST invoicing
-  * IGST vs CGST/SGST logic and compliant PDFs.
-* PDI and artifacts
-  * Mobile-first inspections with photo evidence.
-
-### Technical foundation
-
-* Frontend: React 19 + TypeScript
-* Backend: FastAPI
-* Data: MongoDB (job cards) + PostgreSQL/Supabase (auth and finance)
-
-{% hint style="info" %}
-EKA-AI can provide ranges and estimates only. Final prices must come from `parts_catalog` and `labor_catalog`.
-{% endhint %}
-
----
-
-## 🚀 Production Deployment
-
-### Scale Target: 200,000 Customers | 12,000 Concurrent Users | 500 QPS Peak
-
-| Component | Technology | Cost/Month |
-|-----------|-----------|------------|
-| **Backend** | Railway.app (Auto-scaling) | ~$150 |
-| **Database** | Supabase + MongoDB Atlas M10 | ~$60 |
-| **Total** | | **~$210** |
-
-**Savings: 74% vs Kubernetes ($800/month)**
-
-### Quick Deploy
+### Installation
 
 ```bash
-# 1. Setup MongoDB Atlas
-# Create M10 cluster at mongodb.com → Copy connection string
+# Clone the repository
+git clone https://github.com/connecteka/eka-ai-platform.git
+cd eka-ai-platform
 
-# 2. Setup Railway
-# railway.app → New Project → GitHub repo → Add Redis
+# Install frontend dependencies
+npm install
 
-# 3. Configure Environment Variables
-# See: DEPLOY_RAILWAY_FINAL.md
+# Install backend dependencies
+pip install -r backend/requirements.txt
 
-# 4. Deploy
-railway up
+# Set up environment variables
+cp .env.example .env
+# Edit .env with your credentials
+
+# Run development server
+npm run dev
 ```
 
-### Architecture
+### Environment Variables
 
-```
-┌─────────────────────────────────────┐
-│         Railway.app                 │
-│    Auto-scaling 10-100 instances    │
-└─────────────┬───────────────────────┘
-              │
-    ┌─────────┴──────────┐
-    │                    │
-┌───▼──────┐     ┌──────▼─────┐
-│ Supabase │     │ MongoDB    │
-│ (Postgre)│     │ Atlas      │
-└──────────┘     └────────────┘
-       │                │
-       └────────────────┘
-              │
-        ┌─────▼──────┐
-        │   Redis    │
-        │  (Cache)   │
-        └────────────┘
+Create a `.env` file with:
+
+```env
+# Frontend
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_API_BASE_URL=http://localhost:8001
+
+# Backend
+MONGO_URL=mongodb+srv://user:pass@cluster.mongodb.net/eka_ai
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_KEY=your-service-key
+JWT_SECRET=your-jwt-secret
+GEMINI_API_KEY=your-gemini-key
+REDIS_URL=redis://localhost:6379
 ```
 
-### Features Implemented
+## 🐳 Docker Deployment
 
-| Feature | File | Purpose |
-|---------|------|---------|
-| Connection Pooling | `backend/config/database_pool.py` | 20+30 connections |
-| MongoDB Pooling | `backend/config/mongodb_pool.py` | 50 connections |
-| Redis Caching | `backend/middleware/cache.py` | <200ms responses |
-| Rate Limiting | `backend/middleware/rate_limiter.py` | 1000 req/hour |
-| Health Monitoring | `backend/monitoring/health_check.py` | Full system status |
-| Load Testing | `tests/load/k6/*.js` | 12K concurrent test |
+```bash
+# Build the image
+docker build -t eka-ai-platform .
 
-### Documentation
+# Run the container
+docker run -p 8001:8001 --env-file .env eka-ai-platform
+```
 
-* **[DEPLOY_RAILWAY_FINAL.md](DEPLOY_RAILWAY_FINAL.md)** - Complete deployment guide
-* **[RAILWAY_DEPLOYMENT_STATUS.md](RAILWAY_DEPLOYMENT_STATUS.md)** - Current status
+## ☁️ Railway Deployment
+
+1. Fork this repository
+2. Create a new project on [Railway](https://railway.app)
+3. Connect your GitHub repository
+4. Add the required environment variables
+5. Deploy!
+
+## 📝 Features
+
+### Job Cards
+- Create and manage digital job cards
+- Track vehicle service history
+- AI-powered diagnostic suggestions
+- Customer approval workflow
+- Digital signatures
+
+### Invoicing
+- GST-compliant invoice generation
+- Automatic tax calculations (CGST/SGST/IGST)
+- PDF generation with WeasyPrint
+- Payment integration (PayU)
+
+### Fleet Management
+- MG Fleet vehicle tracking
+- Service scheduling
+- Recall management
+- PDI (Pre-Delivery Inspection) checklists
+
+### AI Integration
+- Vehicle diagnostic assistance
+- Natural language queries
+- Gemini AI-powered recommendations
+
+## 🛠️ Tech Stack
+
+**Frontend:**
+- React 19
+- TypeScript
+- Vite
+- Tailwind CSS
+- Radix UI
+- React Router v7
+
+**Backend:**
+- FastAPI
+- Python 3.11
+- MongoDB (Motor)
+- Supabase
+- Redis
+- WeasyPrint (PDF)
+
+**Infrastructure:**
+- Railway (Hosting)
+- MongoDB Atlas (Database)
+- Supabase (Auth/Storage)
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👥 Team
+
+Developed by **Go4Garage Private Limited**
 
 ---
 
-— EKA-AI, Go4Garage Intelligence
-
-<details>
-
-<summary>For developers</summary>
-
-* Start here: [Developer handbook](developers-and-api/developer-handbook.md)
-* Streaming chat: [API Reference (`/api/chat/stream`)](developers-and-api/api-and-integrations/api-reference-api-chat-stream.md)
-* Webhooks: [Webhooks & Integrations](developers-and-api/api-and-integrations/webhooks-and-integrations.md)
-* Security: [Security Standards (ISO 27001)](developers-and-api/security/security-standards-iso-27001.md)
-
-</details>
-# Deployment check Mon Feb 16 00:47:47 UTC 2026
+<p align="center">
+  Made with ❤️ for automobile workshops across India
+</p>

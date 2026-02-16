@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, FileText, Clock, AlertCircle, CheckCircle } from 'lucide-react';
+import { Plus, FileText, Clock, AlertCircle, CheckCircle, RefreshCw } from 'lucide-react';
 import JobCardTable from '../components/features/job-cards/JobCardTable';
 import Button from '../components/shared/Button';
 import Modal from '../components/shared/Modal';
@@ -18,6 +18,7 @@ export default function JobCardsPage() {
   const [jobCards, setJobCards] = useState<JobCard[]>([]);
   const [stats, setStats] = useState<JobCardStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showNewModal, setShowNewModal] = useState(false);
   
   // New job card form state
@@ -39,10 +40,15 @@ export default function JobCardsPage() {
   const fetchJobCards = async () => {
     try {
       setLoading(true);
-      const data = await jobCardService.listJobCards({ limit: 50 });
-      setJobCards(data.job_cards);
-    } catch (error) {
-      console.error('Error fetching job cards:', error);
+      setError(null);
+      const response = await jobCardService.listJobCards({ limit: 50 });
+      // Handle both response formats - ensure we always get an array
+      const cards = response?.job_cards || response?.data || response || [];
+      setJobCards(Array.isArray(cards) ? cards : []);
+    } catch (err: any) {
+      console.error('Error fetching job cards:', err);
+      setError(err?.message || 'Failed to load job cards. Please try again.');
+      setJobCards([]);
     } finally {
       setLoading(false);
     }
@@ -50,10 +56,21 @@ export default function JobCardsPage() {
 
   const fetchStats = async () => {
     try {
-      const data = await jobCardService.getJobCardStats();
-      setStats(data);
+      const response = await jobCardService.getJobCardStats();
+      // Handle response format - stats might be in 'data' or directly
+      const statsData = response?.data || response || {};
+      setStats({
+        total: statsData.total || 0,
+        pending: statsData.pending || 0,
+        in_progress: statsData.in_progress || 0,
+        completed: statsData.completed || 0,
+        cancelled: statsData.cancelled || 0,
+        active: statsData.active || 0,
+        by_status: statsData.by_status || {}
+      });
     } catch (error) {
       console.error('Error fetching stats:', error);
+      setStats({ total: 0, pending: 0, in_progress: 0, completed: 0, cancelled: 0, active: 0, by_status: {} });
     }
   };
 
@@ -86,11 +103,11 @@ export default function JobCardsPage() {
   };
 
   const handleViewJobCard = (jobCard: JobCard) => {
-    navigate(`/job-cards/${jobCard.id}`);
+    navigate(`/app/job-cards/${jobCard.id}`);
   };
 
   const handleEditJobCard = (jobCard: JobCard) => {
-    navigate(`/job-cards/${jobCard.id}/edit`);
+    navigate(`/app/job-cards/${jobCard.id}/edit`);
   };
 
   const handleDeleteJobCard = async (jobCard: JobCard) => {
@@ -144,6 +161,7 @@ export default function JobCardsPage() {
           variant="primary"
           leftIcon={<Plus className="w-4 h-4" />}
           onClick={() => setShowNewModal(true)}
+          data-testid="new-job-card-btn"
         >
           New Job Card
         </Button>
@@ -206,15 +224,39 @@ export default function JobCardsPage() {
         </div>
       )}
 
+      {/* Error State */}
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-6 mb-8" data-testid="job-cards-error">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center">
+              <AlertCircle className="w-6 h-6 text-red-400" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-medium text-red-400">Failed to load job cards</h3>
+              <p className="text-sm text-gray-400 mt-1">{error}</p>
+            </div>
+            <Button
+              variant="secondary"
+              onClick={() => { fetchJobCards(); fetchStats(); }}
+              leftIcon={<RefreshCw className="w-4 h-4" />}
+            >
+              Retry
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Job Cards Table */}
-      <JobCardTable
-        jobCards={jobCards}
-        onView={handleViewJobCard}
-        onEdit={handleEditJobCard}
-        onDelete={handleDeleteJobCard}
-        onTransition={handleTransition}
-        isLoading={loading}
-      />
+      <div data-testid="job-cards-table">
+        <JobCardTable
+          jobCards={jobCards}
+          onView={handleViewJobCard}
+          onEdit={handleEditJobCard}
+          onDelete={handleDeleteJobCard}
+          onTransition={handleTransition}
+          isLoading={loading}
+        />
+      </div>
 
       {/* New Job Card Modal */}
       <Modal

@@ -85,6 +85,7 @@ const JobCardTable: React.FC<JobCardTableProps> = ({
 
   // Apply filters
   const filteredJobCards = useMemo(() => {
+    if (!jobCards || !Array.isArray(jobCards)) return [];
     return jobCards.filter(job => {
       // Search filter
       const searchLower = searchQuery.toLowerCase();
@@ -149,7 +150,7 @@ const JobCardTable: React.FC<JobCardTableProps> = ({
   return (
     <div className="space-y-4">
       {/* Filters Bar */}
-      <div className="bg-white/5 rounded-xl p-4">
+      <div className="bg-white/5 rounded-xl p-4" data-testid="job-cards-filter">
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Search */}
           <div className="flex-1 relative">
@@ -160,6 +161,7 @@ const JobCardTable: React.FC<JobCardTableProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 bg-black/30 border border-white/10 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:border-orange-500/50 text-sm"
+              data-testid="job-cards-search"
             />
           </div>
 
@@ -249,7 +251,9 @@ const JobCardTable: React.FC<JobCardTableProps> = ({
                 filteredJobCards.map((job) => (
                   <tr 
                     key={job.id}
-                    className="hover:bg-white/5 transition-colors group"
+                    onClick={() => onView(job)}
+                    className="hover:bg-white/5 transition-colors group cursor-pointer"
+                    data-testid={`job-card-row-${job.id}`}
                   >
                     {/* Vehicle & Customer */}
                     <td className="px-4 py-4">
@@ -258,8 +262,8 @@ const JobCardTable: React.FC<JobCardTableProps> = ({
                           <Car className="w-5 h-5 text-orange-400" />
                         </div>
                         <div className="min-w-0">
-                          <p className="font-medium text-white truncate">
-                            {job.registration_number || 'N/A'}
+                          <p className="font-medium text-white truncate group-hover:text-orange-400 transition-colors">
+                            {job.registration_number || (job as any).vehicle_registration || 'N/A'}
                           </p>
                           <p className="text-sm text-gray-400 truncate">
                             {job.customer_name || 'Unknown Customer'}
@@ -298,7 +302,7 @@ const JobCardTable: React.FC<JobCardTableProps> = ({
                     </td>
 
                     {/* Quick Actions - State Transitions */}
-                    <td className="px-4 py-4">
+                    <td className="px-4 py-4" onClick={(e) => e.stopPropagation()}>
                       <div className="flex flex-wrap gap-1.5">
                         {getAvailableTransitions(job.status).slice(0, 2).map((transition) => (
                           <button
@@ -324,12 +328,13 @@ const JobCardTable: React.FC<JobCardTableProps> = ({
                     </td>
 
                     {/* Actions */}
-                    <td className="px-4 py-4">
+                    <td className="px-4 py-4" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => onView(job)}
                           className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                           title="View details"
+                          data-testid={`view-job-${job.id}`}
                         >
                           <Eye className="w-4 h-4" />
                         </button>
@@ -337,6 +342,7 @@ const JobCardTable: React.FC<JobCardTableProps> = ({
                           onClick={() => onEdit(job)}
                           className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                           title="Edit"
+                          data-testid={`edit-job-${job.id}`}
                         >
                           <Edit className="w-4 h-4" />
                         </button>
@@ -344,6 +350,7 @@ const JobCardTable: React.FC<JobCardTableProps> = ({
                           onClick={() => handleDeleteClick(job)}
                           className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
                           title="Delete"
+                          data-testid={`delete-job-${job.id}`}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
