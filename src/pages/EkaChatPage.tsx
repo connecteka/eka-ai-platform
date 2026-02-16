@@ -7,6 +7,7 @@ import { useJobCard }    from '../hooks/useJobCard';
 import ChatMessage       from '../components/ChatMessage';
 import ChatInput         from '../components/ChatInput';
 import type {
+  SubscriptionInfo,
   Message, VehicleContext, JobStatus,
   IntelligenceMode, OperatingMode, JobCardLifecycleStatus
 } from '../types';
@@ -21,19 +22,6 @@ const MASCOT_URL = "https://customer-assets.emergentagent.com/job_c888b364-381d-
    ═══════════════════════════════════════════════════════════════════════════ */
 const FREE_DAILY_LIMIT = 5;
 
-// Get user's subscription tier from localStorage (mock until backend integration)
-const getUserSubscription = () => {
-  const user = localStorage.getItem('user');
-  if (user) {
-    const parsed = JSON.parse(user);
-    return parsed.subscriptionTier || 'free';
-  }
-  return 'free';
-};
-
-const isProUser = () => {
-  return getUserSubscription() !== 'free';
-};
 
 /* ─── Suggestion chips ───────────────────────────────────── */
 const CHIPS = [
@@ -44,12 +32,12 @@ const CHIPS = [
 ] as const;
 
 /* ─── Welcome (empty state) ─────────────────────────────── */
-const Welcome: React.FC<{ onChip: (p: string) => void; usageCount: number; limitReached: boolean }> = ({ 
-  onChip, usageCount, limitReached 
+const Welcome: React.FC<{ onChip: (p: string) => void; subscription: SubscriptionInfo | null }> = ({ 
+  onChip, subscription 
 }) => {
   const navigate = useNavigate();
-  const remaining = Math.max(0, FREE_DAILY_LIMIT - usageCount);
-  const pro = isProUser();
+  const pro = subscription?.unlimited ?? false;
+  const limitReached = !pro && (subscription?.remaining ?? FREE_DAILY_LIMIT) <= 0;
   
   return (
     <div className="flex flex-col items-center justify-center min-h-[55vh] px-4 text-center">
@@ -71,7 +59,7 @@ const Welcome: React.FC<{ onChip: (p: string) => void; usageCount: number; limit
       </p>
       
       {/* Usage indicator - Claude-like style */}
-      {!pro && (
+      {!pro && subscription && (
         <div className={`mb-8 flex items-center gap-3 px-4 py-3 rounded-2xl border ${
           limitReached 
             ? 'bg-red-50 border-red-200' 
@@ -83,9 +71,9 @@ const Welcome: React.FC<{ onChip: (p: string) => void; usageCount: number; limit
               {Array.from({ length: FREE_DAILY_LIMIT }).map((_, i) => (
                 <div 
                   key={i}
-                  className={cn(
+                  className={cn( // i is 0-indexed, used_today is 1-indexed
                     'w-2 h-5 rounded-full transition-all duration-300',
-                    i < usageCount 
+                    i < subscription.used_today
                       ? limitReached ? 'bg-red-500' : 'bg-[#F98906]'
                       : 'bg-gray-300'
                   )}
@@ -102,7 +90,7 @@ const Welcome: React.FC<{ onChip: (p: string) => void; usageCount: number; limit
                   Daily limit reached
                 </span>
               ) : (
-                <>{remaining} of {FREE_DAILY_LIMIT} free queries left today</>
+                <>{subscription.remaining} of {FREE_DAILY_LIMIT} free queries left today</>
               )}
             </span>
           </div>
@@ -127,7 +115,7 @@ const Welcome: React.FC<{ onChip: (p: string) => void; usageCount: number; limit
         {CHIPS.map(c => {
           const Icon = c.icon;
           const isProFeature = 'isPro' in c && c.isPro;
-          const disabled = limitReached && !isProUser();
+          const disabled = limitReached && !pro;
           
           return (
             <button
@@ -340,21 +328,13 @@ const EkaChatPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [vehicle,   setVehicle]   = useState<VehicleContext>(EMPTY_VEHICLE);
   const [status,    setStatus]    = useState<JobStatus>('CREATED');
-  const [usageCount, setUsageCount] = useState(() => {
-    const stored = localStorage.getItem('eka_daily_usage_v2');
-    if (stored) {
-      const { count, date } = JSON.parse(stored);
-      const today = new Date().toDateString();
-      if (date === today) return count;
-    }
-    return 0;
-  });
+  const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
   const [showLimitModal, setShowLimitModal] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   /* Check if user is Pro */
-  const pro = isProUser();
-  const limitReached = !pro && usageCount >= FREE_DAILY_LIMIT;
+  const pro = subscription?.unlimited ?? false;
+  const limitReached = !pro && (subscription?.remaining ?? FREE_DAILY_LIMIT) <= 0;
 
   /* Get intelligenceMode from AppShell via outlet context */
   const outlet = useOutletContext<{ intelligenceMode: IntelligenceMode } | null>();
@@ -363,27 +343,35 @@ const EkaChatPage: React.FC = () => {
   /* Job card hook for initialising cards when AI triggers it */
   const [, jobCardActions] = useJobCard();
 
+  /* Fetch subscription status from backend on load */
+  useEffect(() => {
+    const fetchSubscription = async () => {
+      try {
+        // This should be replaced with a proper API client call
+        const response = await fetch('/api/chat/subscription');
+        if (response.ok) {
+          const data = await response.json();
+          setSubscription(data.subscription);
+        }
+      } catch (error) {
+        console.error("Failed to fetch subscription status:", error);
+      }
+    };
+    fetchSubscription();
+  }, []);
+
   /* Auto-scroll to latest message */
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
 
   /* Update usage count in localStorage */
-  const incrementUsage = useCallback(() => {
-    const newCount = usageCount + 1;
-    setUsageCount(newCount);
-    localStorage.setItem('eka_daily_usage_v2', JSON.stringify({
-      count: newCount,
-      date: new Date().toDateString()
-    }));
-  }, [usageCount]);
-
   /* Send handler */
   const send = useCallback(async (text: string) => {
     if (!text.trim() || isLoading) return;
 
     // Check usage limit (like Claude)
-    if (!pro && usageCount >= FREE_DAILY_LIMIT) {
+    if (limitReached) {
       setShowLimitModal(true);
       return;
     }
@@ -396,11 +384,6 @@ const EkaChatPage: React.FC = () => {
     };
     setMessages(prev => [...prev, userMsg]);
     setIsLoading(true);
-    
-    // Increment usage for free users
-    if (!pro) {
-      incrementUsage();
-    }
 
     /* Build Gemini history (excluding the just-added user message) */
     const history = messages.map(m => ({
@@ -436,6 +419,11 @@ const EkaChatPage: React.FC = () => {
 
       setMessages(prev => [...prev, aiMsg]);
 
+      // Update subscription state from backend response
+      if (res?.subscription) {
+        setSubscription(res.subscription);
+      }
+
       if (res?.job_status_update) setStatus(res.job_status_update);
 
       /* If AI signals a new vehicle, init the job card */
@@ -458,7 +446,7 @@ const EkaChatPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [messages, isLoading, vehicle, status, mode, jobCardActions, usageCount, incrementUsage, pro]);
+  }, [messages, isLoading, vehicle, status, mode, jobCardActions, limitReached, pro]);
 
   return (
     <div className="flex flex-col h-full bg-[#FAFAFA]" data-testid="eka-chat-page">
@@ -470,9 +458,8 @@ const EkaChatPage: React.FC = () => {
           {/* Welcome screen when no messages */}
           {messages.length === 0 && (
             <Welcome 
-              onChip={send} 
-              usageCount={usageCount} 
-              limitReached={limitReached}
+              onChip={send}
+              subscription={subscription}
             />
           )}
 
@@ -499,7 +486,7 @@ const EkaChatPage: React.FC = () => {
         <div className="border-t border-gray-200 bg-white px-4 pt-3 pb-5">
           <div className="max-w-3xl mx-auto w-full">
             {/* Show limit blocker if free tier exceeded, otherwise show input */}
-            {limitReached ? (
+            {limitReached && !pro ? (
               <LimitReachedBlocker />
             ) : (
               <ChatInput onSend={send} isLoading={isLoading} />
@@ -507,7 +494,7 @@ const EkaChatPage: React.FC = () => {
             <p className="text-center text-[10px] text-gray-400 mt-2 font-mono">
               {pro 
                 ? "eka-aı Pro — Unlimited queries • Always verify with a qualified technician"
-                : `${FREE_DAILY_LIMIT - usageCount} of ${FREE_DAILY_LIMIT} free queries remaining today • Upgrade for unlimited access`
+                : `${subscription?.remaining ?? FREE_DAILY_LIMIT} of ${FREE_DAILY_LIMIT} free queries remaining today • Upgrade for unlimited access`
               }
             </p>
           </div>

@@ -195,12 +195,11 @@ def check_chat_limit(func):
     Records usage if allowed.
     """
     @wraps(func)
-    async def wrapper(*args, **kwargs):
+    async def wrapper(request: Request, *args, **kwargs):
         # Find request in args/kwargs
-        request = kwargs.get('request')
-        if not request and args:
+        if not isinstance(request, Request) and args:
             for arg in args:
-                if hasattr(arg, 'headers'):
+                if isinstance(arg, Request):
                     request = arg
                     break
         
@@ -229,8 +228,8 @@ def check_chat_limit(func):
             increment_usage(user_id, "chat_query")
         
         # Add usage info to kwargs for response
-        kwargs['current_user_id'] = user_id
-        kwargs['usage_info'] = {"used": used + 1, "limit": limit}
+        request.state.user_id = user_id
+        request.state.usage_info = {"used": used, "limit": limit}
         
         return await func(*args, **kwargs)
     return wrapper
