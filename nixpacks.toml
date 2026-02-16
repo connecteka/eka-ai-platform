@@ -1,8 +1,14 @@
 [phases.setup]
-nixPkgs = ["python311", "gcc"]
+nixPkgs = ["python311", "gcc", "libpq"]
+
+[phases.install]
+cmds = ["cd backend && pip install -r requirements.txt"]
 
 [phases.build]
-cmds = ["pip install -r backend/requirements.txt"]
+cmds = ["echo 'Build complete'"]
 
 [phases.setup.env]
 PYTHON_VERSION = "3.11"
+
+[start]
+cmd = "cd backend && gunicorn wsgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
