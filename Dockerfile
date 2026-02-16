@@ -1,4 +1,5 @@
 # EKA-AI Production Dockerfile (Fixed for WeasyPrint)
+# CACHE_BUST: 2026-02-16T10:35:00 - Force fresh build
 FROM node:20-alpine AS frontend-builder
 WORKDIR /app
 
