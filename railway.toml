@@ -5,9 +5,8 @@
 builder = "dockerfile"
 
 [deploy]
-# Dockerfile already sets the CMD, so no startCommand needed
-# But Railway needs to know the port
-port = 8001
+# Override to use Railway's PORT environment variable
+startCommand = "gunicorn wsgi:application -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT --timeout 120 --keep-alive 5 --max-requests 1000 --max-requests-jitter 50"
 healthcheckPath = "/health"
 healthcheckTimeout = 30
 restartPolicyType = "on_failure"
@@ -17,3 +16,4 @@ restartPolicyMaxRetries = 3
 PYTHON_VERSION = "3.11"
 NODE_ENV = "production"
 ENVIRONMENT = "production"
+PORT = "8001"

@@ -28,10 +28,13 @@ COPY backend/ ./backend/
 COPY --from=frontend-builder /app/dist ./dist
 
 WORKDIR /app/backend
+
+# Use PORT from environment (Railway sets this)
+ENV PORT=8001
 EXPOSE 8001
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8001/api/health || exit 1
+    CMD curl -f http://localhost:${PORT}/health || exit 1
 
-# Use Uvicorn worker for FastAPI (not Flask)
-CMD ["gunicorn", "wsgi:application", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8001", "--timeout", "120", "--keep-alive", "5", "--max-requests", "1000", "--max-requests-jitter", "50"]
+# Use Uvicorn worker for FastAPI - Use PORT env var
+CMD gunicorn wsgi:application -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:${PORT} --timeout 120 --keep-alive 5 --max-requests 1000 --max-requests-jitter 50
