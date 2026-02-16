@@ -74,4 +74,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:${PORT}/health || exit 1
 
 # Use startup script that verifies build before starting
-CMD ["../start.sh"]
+CMD sh ../start.sh
