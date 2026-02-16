@@ -15,7 +15,7 @@ COPY components.json ./
 COPY public/ ./public/
 
 # 3. Build the frontend
-RUN yarn build && echo "=== Build complete ===" && ls -la /app/dist/ && echo "=== index.html exists? ===" && cat /app/dist/index.html | head -5
+RUN yarn build
 
 # --- Python Build Stage ---
 # This stage installs build-time and runtime system dependencies, then Python packages.
@@ -57,7 +57,6 @@ COPY --from=python-builder /usr/local/lib/python3.11/site-packages/ /usr/local/l
 # Copy backend code
 COPY backend/ ./backend/
 COPY --from=frontend-builder /app/dist ./dist
-RUN echo "=== Verifying dist in final stage ===" && ls -la /app/dist/ && ls -la /app/dist/assets/ | head -10
 
 # Switch to the non-root user
 USER appuser
