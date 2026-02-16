@@ -12,7 +12,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Trash2,
-  MoreHorizontal,
   Zap
 } from 'lucide-react';
 import { clsx } from 'clsx';
@@ -38,7 +37,6 @@ interface NavItem {
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
-// Navigation items
 const navItems: NavItem[] = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/app/dashboard', badge: null },
   { icon: Wrench, label: 'Job Cards', path: '/app/job-cards', badge: 3 },
@@ -47,14 +45,11 @@ const navItems: NavItem[] = [
   { icon: FileText, label: 'Invoices', path: '/app/invoices', badge: null },
 ];
 
-// Helper to group chats by date
 const groupChatsByDate = (chats: ChatSession[]): Record<string, ChatSession[]> => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
-  
   const weekAgo = new Date(today);
   weekAgo.setDate(weekAgo.getDate() - 7);
 
@@ -68,16 +63,10 @@ const groupChatsByDate = (chats: ChatSession[]): Record<string, ChatSession[]> =
   chats.forEach(chat => {
     const chatDate = new Date(chat.updated_at);
     chatDate.setHours(0, 0, 0, 0);
-
-    if (chatDate.getTime() === today.getTime()) {
-      groups['Today'].push(chat);
-    } else if (chatDate.getTime() === yesterday.getTime()) {
-      groups['Yesterday'].push(chat);
-    } else if (chatDate >= weekAgo) {
-      groups['This Week'].push(chat);
-    } else {
-      groups['Older'].push(chat);
-    }
+    if (chatDate.getTime() === today.getTime()) groups['Today'].push(chat);
+    else if (chatDate.getTime() === yesterday.getTime()) groups['Yesterday'].push(chat);
+    else if (chatDate >= weekAgo) groups['This Week'].push(chat);
+    else groups['Older'].push(chat);
   });
 
   return groups;
@@ -90,7 +79,6 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
   const [hoveredSession, setHoveredSession] = useState<string | null>(null);
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
 
-  // Get user from localStorage
   const user = React.useMemo(() => {
     try {
       const stored = localStorage.getItem('user');
@@ -100,7 +88,6 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
     }
   }, []);
 
-  // Fetch chat sessions
   useEffect(() => {
     const fetchSessions = async () => {
       try {
@@ -113,14 +100,11 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
         console.error('Error fetching sessions:', error);
       }
     };
-
     fetchSessions();
-    // Refresh every 30 seconds
     const interval = setInterval(fetchSessions, 30000);
     return () => clearInterval(interval);
   }, []);
 
-  // Create new chat session
   const handleNewChat = async () => {
     try {
       const response = await fetch(`${API_URL}/api/chat/sessions`, {
@@ -128,12 +112,10 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title: 'New Conversation' })
       });
-      
       if (response.ok) {
         const data = await response.json();
         setActiveSessionId(data.session_id);
         navigate(`/chat?session=${data.session_id}`);
-        // Refresh sessions list
         const refreshResponse = await fetch(`${API_URL}/api/chat/sessions`);
         if (refreshResponse.ok) {
           const refreshData = await refreshResponse.json();
@@ -146,13 +128,10 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
     }
   };
 
-  // Delete chat session
   const handleDeleteSession = async (sessionId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     try {
-      await fetch(`${API_URL}/api/chat/sessions/${sessionId}`, {
-        method: 'DELETE'
-      });
+      await fetch(`${API_URL}/api/chat/sessions/${sessionId}`, { method: 'DELETE' });
       setSessions(prev => prev.filter(s => s.session_id !== sessionId));
       if (activeSessionId === sessionId) {
         setActiveSessionId(null);
@@ -163,7 +142,6 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
     }
   };
 
-  // Load a chat session
   const handleLoadSession = (session: ChatSession) => {
     setActiveSessionId(session.session_id);
     navigate(`/chat?session=${session.session_id}`);
@@ -174,7 +152,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
   return (
     <aside 
       className={clsx(
-        "h-full bg-background-alt border-r border-border flex flex-col transition-all duration-300 relative",
+        "h-full bg-white border-r border-stone-200 flex flex-col transition-all duration-300 relative",
         collapsed ? "w-16" : "w-64"
       )}
       data-testid="sidebar"
@@ -182,80 +160,80 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
       {/* Toggle Button */}
       <button
         onClick={onToggle}
-        className="absolute -right-3 top-6 z-10 w-6 h-6 bg-surface border border-border rounded-full flex items-center justify-center hover:bg-background-alt transition-colors"
+        className="absolute -right-3 top-6 z-10 w-6 h-6 bg-white border border-stone-200 rounded-full flex items-center justify-center shadow-sm hover:shadow-md hover:border-stone-300 transition-all"
         data-testid="sidebar-toggle"
       >
         {collapsed ? (
-          <ChevronRight className="w-3.5 h-3.5 text-text-secondary" />
+          <ChevronRight className="w-3.5 h-3.5 text-stone-500" />
         ) : (
-          <ChevronLeft className="w-3.5 h-3.5 text-text-secondary" />
+          <ChevronLeft className="w-3.5 h-3.5 text-stone-500" />
         )}
       </button>
 
-      {/* Logo Section */}
+      {/* Logo */}
       <div className={clsx(
-        "p-4 border-b border-border",
-        collapsed && "flex justify-center"
+        "h-14 flex items-center border-b border-stone-100 px-4",
+        collapsed && "justify-center px-0"
       )}>
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-brand-orange flex items-center justify-center flex-shrink-0">
-            <span className="text-sm font-bold text-white">E</span>
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center flex-shrink-0">
+            <span className="text-sm font-bold text-white font-sans">E</span>
           </div>
           {!collapsed && (
-            <span className="text-lg font-bold text-text-primary">
-              EKA<span className="text-brand-orange">AI</span>
+            <span className="text-base font-semibold text-stone-900 font-sans tracking-tight">
+              EKA<span className="text-amber-600">AI</span>
             </span>
           )}
         </div>
       </div>
 
-      {/* New Chat Button */}
-      <div className={clsx("p-3", collapsed && "flex justify-center")}>
+      {/* New Chat */}
+      <div className={clsx("px-3 pt-3 pb-1", collapsed && "flex justify-center px-2")}>
         <button
           onClick={handleNewChat}
           className={clsx(
-            "flex items-center gap-2 py-2.5 rounded-lg bg-surface border border-border hover:border-brand-orange/50 transition-colors",
-            collapsed ? "w-10 justify-center" : "w-full px-3"
+            "flex items-center gap-2 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 hover:border-stone-300 transition-all text-stone-700",
+            collapsed ? "w-10 h-10 justify-center" : "w-full px-3 py-2"
           )}
           data-testid="new-chat-btn"
           title={collapsed ? "New Chat" : undefined}
         >
-          <Plus className="w-4 h-4 text-text-secondary" />
+          <Plus className="w-4 h-4" />
           {!collapsed && (
-            <span className="text-sm font-medium text-text-primary">New Chat</span>
+            <span className="text-sm font-medium">New Chat</span>
           )}
         </button>
       </div>
 
-      {/* Chat Navigation Link */}
+      {/* AI Chat Nav Link */}
       {!collapsed && (
-        <div className="px-2">
+        <div className="px-2 pt-1">
           <button
             onClick={() => navigate('/chat')}
             className={clsx(
-              "flex items-center gap-3 w-full px-3 py-2 rounded-lg transition-colors",
+              "flex items-center gap-3 w-full px-3 py-2 rounded-lg transition-all text-sm font-medium",
               location.pathname === '/chat' || location.pathname.includes('/chat')
-                ? "bg-brand-orange/10 text-brand-orange border-l-2 border-brand-orange"
-                : "text-text-secondary hover:bg-surface hover:text-text-primary"
+                ? "bg-amber-50 text-amber-700 border-l-[3px] border-amber-500"
+                : "text-stone-600 hover:bg-stone-50 hover:text-stone-900"
             )}
             data-testid="nav-chat"
           >
-            <MessageSquare className="w-5 h-5 flex-shrink-0" />
-            <span className="text-sm font-medium">AI Chat</span>
+            <MessageSquare className="w-[18px] h-[18px] flex-shrink-0" />
+            <span>AI Chat</span>
           </button>
         </div>
       )}
 
-      {/* Recent Chats Section */}
+      {/* Recent Chats */}
       {!collapsed && (
         <div className="flex-1 overflow-y-auto px-2 py-1">
           {Object.entries(groupedSessions).map(([group, chats]) => (
             chats.length > 0 && (
-              <div key={group} className="mb-3">
-                <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+              <div key={group} className="mb-2">
+                <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-stone-400">
                   {group}
                 </p>
-                <div className="space-y-0.5">
+                <div className="flex flex-col gap-px">
                   {chats.slice(0, 10).map((session) => (
                     <div
                       key={session.session_id}
@@ -263,24 +241,24 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
                       onMouseEnter={() => setHoveredSession(session.session_id)}
                       onMouseLeave={() => setHoveredSession(null)}
                       className={clsx(
-                        "group flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-colors",
+                        "group flex items-center gap-2 px-3 py-1.5 rounded-md cursor-pointer transition-all",
                         activeSessionId === session.session_id
-                          ? "bg-brand-orange/10 border-l-2 border-brand-orange"
-                          : "hover:bg-surface"
+                          ? "bg-amber-50 text-amber-700"
+                          : "text-stone-500 hover:bg-stone-50 hover:text-stone-700"
                       )}
                       data-testid={`chat-session-${session.session_id}`}
                     >
-                      <MessageSquare className="w-4 h-4 text-text-muted flex-shrink-0" />
-                      <span className="flex-1 text-sm text-text-secondary truncate group-hover:text-text-primary">
+                      <MessageSquare className="w-3.5 h-3.5 flex-shrink-0 opacity-50" />
+                      <span className="flex-1 text-[13px] truncate">
                         {session.title || 'New Conversation'}
                       </span>
                       {hoveredSession === session.session_id && (
                         <button
                           onClick={(e) => handleDeleteSession(session.session_id, e)}
-                          className="p-1 rounded hover:bg-red-500/20 transition-colors"
+                          className="p-1 rounded hover:bg-red-50 transition-colors"
                           data-testid={`delete-session-${session.session_id}`}
                         >
-                          <Trash2 className="w-3.5 h-3.5 text-red-400" />
+                          <Trash2 className="w-3 h-3 text-red-400" />
                         </button>
                       )}
                     </div>
@@ -291,22 +269,21 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
           ))}
 
           {sessions.length === 0 && (
-            <div className="text-center py-6">
-              <MessageSquare className="w-8 h-8 text-text-muted mx-auto mb-2 opacity-40" />
-              <p className="text-xs text-text-muted">No conversations yet</p>
+            <div className="text-center py-8">
+              <MessageSquare className="w-6 h-6 text-stone-300 mx-auto mb-2" />
+              <p className="text-xs text-stone-400">No conversations yet</p>
             </div>
           )}
         </div>
       )}
 
-      {/* Navigation Section */}
-      <nav className={clsx("p-2 border-t border-border", collapsed && "flex flex-col items-center")} data-testid="sidebar-nav">
+      {/* Navigation */}
+      <nav className={clsx("px-2 py-2 border-t border-stone-100", collapsed && "flex flex-col items-center")} data-testid="sidebar-nav">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path || 
             (item.path !== '/app/dashboard' && location.pathname.startsWith(item.path));
           
-          // Special test IDs for tour targets
           const testId = item.label === 'Job Cards' ? 'nav-job-cards' : 
                         item.label === 'Dashboard' ? 'nav-dashboard' :
                         `nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`;
@@ -317,27 +294,30 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
               onClick={() => navigate(item.path)}
               title={collapsed ? item.label : undefined}
               className={clsx(
-                "flex items-center gap-3 rounded-lg transition-colors relative",
-                collapsed ? "w-10 h-10 justify-center my-0.5" : "w-full px-3 py-2 my-0.5",
+                "flex items-center gap-3 rounded-lg transition-all relative",
+                collapsed ? "w-10 h-10 justify-center my-px" : "w-full px-3 py-2 my-px",
                 isActive
-                  ? "bg-brand-orange/10 text-brand-orange border-l-2 border-brand-orange"
-                  : "text-text-secondary hover:bg-surface hover:text-text-primary"
+                  ? "bg-amber-50 text-amber-700 font-medium"
+                  : "text-stone-500 hover:bg-stone-50 hover:text-stone-800"
               )}
               data-testid={testId}
             >
-              <Icon className="w-5 h-5 flex-shrink-0" />
+              {isActive && !collapsed && (
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-amber-500 rounded-r-full" />
+              )}
+              <Icon className="w-[18px] h-[18px] flex-shrink-0" />
               {!collapsed && (
                 <>
-                  <span className="text-sm font-medium">{item.label}</span>
+                  <span className="text-sm">{item.label}</span>
                   {item.badge && (
-                    <span className="ml-auto px-1.5 py-0.5 text-[10px] font-bold bg-brand-orange text-white rounded-full">
+                    <span className="ml-auto min-w-[18px] h-[18px] px-1 text-[10px] font-semibold bg-amber-500 text-white rounded-full flex items-center justify-center">
                       {item.badge}
                     </span>
                   )}
                 </>
               )}
               {collapsed && item.badge && (
-                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 text-[9px] font-bold bg-brand-orange text-white rounded-full flex items-center justify-center">
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 text-[9px] font-bold bg-amber-500 text-white rounded-full flex items-center justify-center">
                   {item.badge}
                 </span>
               )}
@@ -346,18 +326,18 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
         })}
       </nav>
 
-      {/* Upgrade CTA - Only when expanded */}
+      {/* Upgrade CTA */}
       {!collapsed && (
-        <div className="p-3 border-t border-border">
-          <div className="bg-gradient-to-br from-brand-orange/10 to-transparent border border-brand-orange/20 rounded-xl p-3">
-            <div className="flex items-center gap-2 mb-1.5">
-              <Zap className="w-4 h-4 text-brand-orange" />
-              <span className="text-xs font-semibold text-text-primary">Pro Plan</span>
+        <div className="px-3 pb-2">
+          <div className="bg-amber-50 border border-amber-200/60 rounded-xl p-3">
+            <div className="flex items-center gap-2 mb-1">
+              <Zap className="w-4 h-4 text-amber-600" />
+              <span className="text-xs font-semibold text-stone-800">Pro Plan</span>
             </div>
-            <p className="text-[10px] text-text-muted mb-2">Unlock unlimited AI diagnostics</p>
+            <p className="text-[11px] text-stone-500 mb-2.5 leading-relaxed">Unlock unlimited AI diagnostics</p>
             <button 
               onClick={() => navigate('/pricing')}
-              className="w-full py-1.5 text-xs font-medium text-brand-orange bg-brand-orange/10 rounded-lg hover:bg-brand-orange/20 transition-colors"
+              className="w-full py-1.5 text-xs font-medium text-white bg-amber-500 rounded-lg hover:bg-amber-600 transition-colors"
               data-testid="upgrade-btn"
             >
               Upgrade
@@ -366,38 +346,36 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onToggle }) => {
         </div>
       )}
 
-      {/* User Section */}
+      {/* Settings + User */}
       <div className={clsx(
-        "p-3 border-t border-border",
+        "px-2 py-2 border-t border-stone-100",
         collapsed && "flex flex-col items-center"
       )}>
-        {/* Settings */}
         <button 
           onClick={() => navigate('/app/settings')}
           title={collapsed ? "Settings" : undefined}
           className={clsx(
-            "flex items-center gap-3 rounded-lg text-text-secondary hover:bg-surface hover:text-text-primary transition-colors",
+            "flex items-center gap-3 rounded-lg text-stone-500 hover:bg-stone-50 hover:text-stone-800 transition-all",
             collapsed ? "w-10 h-10 justify-center" : "w-full px-3 py-2"
           )}
           data-testid="nav-settings"
         >
-          <Settings className="w-5 h-5" />
+          <Settings className="w-[18px] h-[18px]" />
           {!collapsed && <span className="text-sm font-medium">Settings</span>}
         </button>
 
-        {/* User Info */}
         {!collapsed && user && (
           <div className="flex items-center gap-3 px-3 py-2 mt-1" data-testid="user-profile">
-            <div className="w-8 h-8 rounded-full bg-brand-orange/20 border border-brand-orange/30 flex items-center justify-center flex-shrink-0">
-              <span className="text-xs font-medium text-brand-orange">
+            <div className="w-8 h-8 rounded-full bg-amber-100 border border-amber-200 flex items-center justify-center flex-shrink-0">
+              <span className="text-xs font-semibold text-amber-700">
                 {user.email?.[0]?.toUpperCase() || user.name?.[0]?.toUpperCase() || 'U'}
               </span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-text-primary truncate">
+              <p className="text-sm font-medium text-stone-800 truncate">
                 {user.name || user.email?.split('@')[0] || 'User'}
               </p>
-              <p className="text-[10px] text-text-muted truncate">{user.email || ''}</p>
+              <p className="text-[11px] text-stone-400 truncate">{user.email || ''}</p>
             </div>
           </div>
         )}
