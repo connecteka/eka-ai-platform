@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: eka-ai-platform
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 8001
+      - key: NODE_ENV
+        value: production
+    healthCheckPath: /health
