@@ -2,10 +2,11 @@
 nixPkgs = ["nodejs_20"]
 
 [phases.install]
-cmds = ["rm -rf dist && npm install --legacy-peer-deps --no-cache"]
+cmds = ["npm ci --legacy-peer-deps --no-cache"]
 
 [phases.build]
 cmds = ["rm -rf node_modules/.cache && npm run build"]
+env = { "NODE_ENV" = "development" }
 
 [start]
 cmd = "npx serve -s dist -l $PORT"
