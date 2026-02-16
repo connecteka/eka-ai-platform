@@ -83,28 +83,27 @@ app.include_router(notifications.router)
 app.include_router(voice.router)
 
 # ==================== STATIC FILES (React Frontend) ====================
-dist_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'dist')
-if os.path.exists(dist_path):
-    app.mount("/assets", StaticFiles(directory=os.path.join(dist_path, 'assets')), name="assets")
-    
-    @app.get("/{full_path:path}")
-    async def serve_react(full_path: str):
-        """Serve React app for all non-API routes."""
-        # Skip API routes
-        if full_path.startswith(('api/', 'health')):
-            return {"status": "EKA-AI Backend is running", "path": full_path}
-        
-        index_path = os.path.join(dist_path, 'index.html')
-        if os.path.exists(index_path):
-            return FileResponse(index_path)
-        return {"status": "Frontend not built", "dist_path": dist_path}
-else:
-    @app.get("/{full_path:path}")
-    async def no_frontend(full_path: str):
-        """API-only mode when frontend is not built."""
-        if full_path.startswith(('api/', 'health')):
-            return {"status": "EKA-AI Backend is running", "path": full_path}
-        return {"status": "EKA-AI API Server", "message": "Frontend not built"}
+# DISABLED: Frontend is served separately by Railway (nixpacks)
+# dist_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'dist')
+# if os.path.exists(dist_path):
+#     app.mount("/assets", StaticFiles(directory=os.path.join(dist_path, 'assets')), name="assets")
+#     
+#     @app.get("/{full_path:path}")
+#     async def serve_react(full_path: str):
+#         """Serve React app for all non-API routes."""
+#         if full_path.startswith(('api/', 'health')):
+#             return {"status": "EKA-AI Backend is running", "path": full_path}
+#         index_path = os.path.join(dist_path, 'index.html')
+#         if os.path.exists(index_path):
+#             return FileResponse(index_path)
+#         return {"status": "Frontend not built", "dist_path": dist_path}
+
+@app.get("/{full_path:path}")
+async def api_only(full_path: str):
+    """API-only mode - Frontend served by Railway."""
+    if full_path.startswith(('api/', 'health')):
+        return {"status": "EKA-AI Backend is running", "path": full_path}
+    return {"status": "EKA-AI API Server", "message": "Frontend served separately by Railway"}
 
 # ==================== ROOT & HEALTH ENDPOINTS ====================
 
