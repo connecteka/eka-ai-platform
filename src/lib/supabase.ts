@@ -1,28 +1,31 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 // These environment variables must be set in your .env file
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Validate environment variables - fail fast in production
-if (!supabaseUrl) {
-  throw new Error(
-    '🔴 CRITICAL: VITE_SUPABASE_URL is missing! ' +
-    'Please set it in your environment variables.'
-  );
-}
-if (!supabaseAnonKey) {
-  throw new Error(
-    '🔴 CRITICAL: VITE_SUPABASE_ANON_KEY is missing! ' +
-    'Please set it in your environment variables.'
-  );
-}
+// Check if Supabase is configured
+export const isSupabaseConfigured = !!(supabaseUrl && supabaseAnonKey);
 
 // Create a single supabase client for interacting with your database
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Returns null if env vars are missing (graceful degradation)
+export const supabase: SupabaseClient | null = isSupabaseConfigured
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
+
+// Log warning in development if env vars are missing
+if (!isSupabaseConfigured) {
+  console.warn(
+    '⚠️  Supabase not configured. Auth features will be disabled.\n' +
+    'Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your .env file.'
+  );
+}
 
 // Helper to get the current user's JWT token for backend requests
 export const getAuthToken = async () => {
+  if (!supabase) {
+    return null;
+  }
   try {
     const { data } = await supabase.auth.getSession();
     return data.session?.access_token || null;
