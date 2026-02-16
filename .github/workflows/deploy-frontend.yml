@@ -20,33 +20,38 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.11.0'
+          node-version: '20'
           cache: 'yarn'
-      
-      - name: Check versions
-        run: node --version && npm --version
       
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       
       - name: Run tests
-        run: npm run test:run || echo "Tests completed"
+        run: yarn test:run
+
+      - name: Create .env file
+        run: |
+          echo "NODE_ENV=production" > .env.production
+          echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" >> .env.production
+          echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" >> .env.production
+          echo "VITE_API_URL=${{ secrets.BACKEND_URL || 'https://eka-ai-backend-xyz-uc.a.run.app' }}" >> .env.production
       
       - name: Build application
         run: yarn build
-        env:
-          NODE_ENV: production
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          VITE_API_URL: ${{ secrets.BACKEND_URL || 'https://eka-ai-backend-xyz-uc.a.run.app' }}
-      
-      - name: Install Firebase CLI
-        run: npm install -g firebase-tools@13.0.0
       
       - name: Deploy to Firebase Hosting
-        run: firebase deploy --only hosting --token "${{ secrets.FIREBASE_TOKEN }}" --project eka-ai-c9d24
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_EKA_AI_C9D24 }}' # Recommended over FIREBASE_TOKEN
+          channelId: live
+          projectId: eka-ai-c9d24
       
       - name: Verify Deployment
         run: |
           sleep 10
-          curl -f https://eka-ai-c9d24.web.app | grep -q "EKA" && echo "✅ Frontend deployed successfully" || echo "⚠️ Verification warning"
+          curl --fail --silent --show-error https://eka-ai-c9d24.web.app | grep -q "EKA"
+        
+      - name: Post-verification success message
+        if: success()
+        run: echo "✅ Frontend deployed and verified successfully at https://eka-ai-c9d24.web.app"
