@@ -84,7 +84,13 @@ app.include_router(voice.router)
 
 # ==================== STATIC FILES (React Frontend) ====================
 dist_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'dist')
+print(f"[DEBUG] Looking for dist at: {dist_path}")
+print(f"[DEBUG] dist exists: {os.path.exists(dist_path)}")
 if os.path.exists(dist_path):
+    print(f"[DEBUG] dist contents: {os.listdir(dist_path)}")
+    assets_path = os.path.join(dist_path, 'assets')
+    if os.path.exists(assets_path):
+        print(f"[DEBUG] assets contents: {os.listdir(assets_path)[:5]}...")
     app.mount("/assets", StaticFiles(directory=os.path.join(dist_path, 'assets')), name="assets")
     
     @app.get("/{full_path:path}")
