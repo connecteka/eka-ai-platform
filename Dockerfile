@@ -1,5 +1,5 @@
 # EKA-AI Production Dockerfile (Fixed for WeasyPrint)
-# CACHE_BUST: 2026-02-16T11:00:00 - Force fresh build v2
+# CACHE_BUST: 2026-02-16T11:30:00 - Force fresh build v3 - Added startup verification
 FROM node:20-alpine AS frontend-builder
 WORKDIR /app
 
@@ -54,9 +54,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # 4. Copy installed Python packages from the builder stage
 COPY --from=python-builder /usr/local/lib/python3.11/site-packages/ /usr/local/lib/python3.11/site-packages/
 
-# Copy backend code
+# Copy backend code and startup script
 COPY backend/ ./backend/
+COPY scripts/start.sh ./start.sh
 COPY --from=frontend-builder /app/dist ./dist
+
+# Make startup script executable
+RUN chmod +x ./start.sh
 
 # Switch to the non-root user
 USER appuser
@@ -69,5 +73,5 @@ EXPOSE 8001
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:${PORT}/health || exit 1
 
-# Use Uvicorn worker for FastAPI - Use PORT env var
-CMD gunicorn wsgi:application -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:${PORT} --timeout 120 --keep-alive 5 --max-requests 1000 --max-requests-jitter 50
+# Use startup script that verifies build before starting
+CMD ["../start.sh"]
