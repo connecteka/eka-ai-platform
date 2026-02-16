@@ -23,11 +23,21 @@ from utils.database import (
 
 # Job Card Manager Integration
 from services.job_card_manager import JobCardManager, JobStatus
+import os
+from supabase import create_client, Client
 
 router = APIRouter(prefix="/api/job-cards", tags=["Job Cards"])
 
-# Initialize Job Card Manager
-job_card_manager = JobCardManager()
+# Initialize Job Card Manager with Supabase client
+supabase_url = os.getenv("SUPABASE_URL")
+supabase_key = os.getenv("SUPABASE_KEY")
+job_card_manager = None
+if supabase_url and supabase_key:
+    try:
+        supabase_client: Client = create_client(supabase_url, supabase_key)
+        job_card_manager = JobCardManager(supabase_client)
+    except Exception as e:
+        print(f"Warning: Could not initialize JobCardManager: {e}")
 
 
 def generate_job_card_number():
