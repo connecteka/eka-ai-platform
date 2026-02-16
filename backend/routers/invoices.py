@@ -5,6 +5,7 @@ Handles invoice CRUD, PDF generation, and email delivery with InvoiceManager.
 import io
 import uuid
 import base64
+import os
 from datetime import datetime, timezone
 from typing import Optional
 
@@ -12,6 +13,7 @@ from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import StreamingResponse
 from bson import ObjectId
 from pydantic import BaseModel, EmailStr
+from supabase import create_client, Client
 
 from models.schemas import InvoiceCreate
 from utils.database import invoices_collection, serialize_doc, serialize_docs, job_cards_collection
@@ -22,8 +24,16 @@ from services.invoice_manager import InvoiceManager, InvoiceStatus
 
 router = APIRouter(prefix="/api/invoices", tags=["Invoices"])
 
-# Initialize Invoice Manager
-invoice_manager = InvoiceManager()
+# Initialize Invoice Manager with Supabase client
+supabase_url = os.environ.get("SUPABASE_URL")
+supabase_key = os.environ.get("SUPABASE_KEY")
+invoice_manager = None
+if supabase_url and supabase_key:
+    try:
+        supabase_client: Client = create_client(supabase_url, supabase_key)
+        invoice_manager = InvoiceManager(supabase_client)
+    except Exception as e:
+        print(f"Warning: Could not initialize InvoiceManager: {e}")
 
 
 class EmailInvoiceRequest(BaseModel):
