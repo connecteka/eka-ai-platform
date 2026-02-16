@@ -1,6 +1,7 @@
 {
   "name": "eka-ai-platform",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "dependencies": {
     "@google/genai": "^1.41.0",
