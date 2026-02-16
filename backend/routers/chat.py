@@ -1,6 +1,6 @@
 """
 AI Chat routes for EKA-AI Backend.
-Handles AI chat endpoints and session management with AI Governance.
+Handles AI chat endpoints and session management with AI Governance and Subscription enforcement.
 """
 import os
 import re
@@ -10,7 +10,7 @@ import asyncio
 from datetime import datetime, timezone
 from typing import Optional, Dict, Any
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Request, Cookie
 from fastapi.responses import StreamingResponse, JSONResponse
 
 from models.schemas import ChatRequest, ChatStreamRequest, ChatSessionCreate, ChatMessageSave
@@ -19,6 +19,12 @@ from utils.database import chat_sessions_collection, serialize_doc, serialize_do
 # AI Governance Integration
 from services.ai_governance import AIGovernance, UserRole
 
+# Subscription Enforcement
+from utils.subscription import (
+    check_chat_limit, get_subscription_info, get_current_user_id,
+    get_user_tier, TIER_PRO_AI, TIER_ELITE, require_subscription
+)
+
 router = APIRouter(prefix="/api/chat", tags=["AI Chat"])
 
 # Initialize AI Governance
@@ -26,12 +32,57 @@ governance = AIGovernance()
 
 EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
 
-EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
+
+@router.get("/subscription")
+async def get_user_subscription(request: Request, session_token: Optional[str] = Cookie(None)):
+    """Get current user's subscription info and usage."""
+    user_id = get_current_user_id(request, session_token)
+    info = get_subscription_info(user_id)
+    return {"success": True, "subscription": info}
 
 
 @router.post("")
-async def chat_with_ai(request: ChatRequest):
-    """Main AI chat endpoint using Emergent LLM integration with AI Governance."""
+async def chat_with_ai(request: ChatRequest, http_request: Request, session_token: Optional[str] = Cookie(None)):
+    """
+    Main AI chat endpoint using Emergent LLM integration with AI Governance and Subscription enforcement.
+    Free tier: 5 queries/day
+    """
+    user_id = get_current_user_id(http_request, session_token)
+    
+    # Check subscription/usage limits (like Claude)
+    allowed, used, limit = True, 0, -1
+    if user_id:
+        from utils.subscription import check_usage_limit
+        allowed, used, limit = check_usage_limit(user_id)
+    
+    if not allowed:
+        return JSONResponse(
+            status_code=429,
+            content={
+                "response_content": {
+                    "visual_text": f"⏸️ **Daily Limit Reached**\n\nYou've used all {limit} free queries for today.\n\n**Upgrade to Pro AI Access for ₹299/month:**\n• Unlimited automobile questions\n• Vehicle history memory\n• Predictive maintenance hints\n\n[Upgrade Now](/pricing)",
+                    "audio_text": "Daily limit reached. Upgrade to Pro for unlimited queries."
+                },
+                "job_status_update": request.status,
+                "ui_triggers": {
+                    "theme_color": "#F98906",
+                    "brand_identity": "LIMIT_REACHED",
+                    "show_orange_border": False,
+                    "show_upgrade_prompt": True
+                },
+                "subscription": {
+                    "tier": "free",
+                    "used_today": used,
+                    "daily_limit": limit,
+                    "upgrade_url": "/pricing"
+                }
+            }
+        )
+    
+    # Record usage for non-unlimited users
+    if user_id and limit != -1:
+        from utils.subscription import increment_usage
+        increment_usage(user_id, "chat_query")
     
     # Extract user message for governance check
     user_text = ""
@@ -40,12 +91,15 @@ async def chat_with_ai(request: ChatRequest):
         if last_msg.role == "user" and last_msg.parts:
             user_text = last_msg.parts[0].get("text", "")
     
+    # Get user tier for governance
+    tier = get_user_tier(user_id) if user_id else "free"
+    
     # AI Governance Check - 4-Layer Safety System
     user_context = {
-        "user_id": getattr(request, 'user_id', 'anonymous'),
+        "user_id": user_id or "anonymous",
         "role": UserRole.TECHNICIAN,  # Default role, should come from auth
         "workshop_id": getattr(request, 'workshop_id', None),
-        "subscription_tier": "FREE"  # Should come from user profile
+        "subscription_tier": tier
     }
     
     decision = governance.evaluate_query(
@@ -105,6 +159,9 @@ async def chat_with_ai(request: ChatRequest):
     try:
         from emergentintegrations.llm.chat import LlmChat, UserMessage
         
+        # Check if user has Pro AI Access for advanced features
+        has_pro = tier in [TIER_PRO_AI, TIER_ELITE]
+        
         system_prompt = f"""You are EKA-AI, an expert automobile intelligence assistant for Go4Garage. 
 
 Your expertise includes:
@@ -126,6 +183,8 @@ Guidelines:
 Current context:
 - Operating mode: {"Workshop" if request.operating_mode == 1 else "MG Fleet" if request.operating_mode == 2 else "General"}
 - Intelligence mode: {request.intelligence_mode}
+- User tier: {tier}
+{"- Pro AI Access: Enabled with vehicle history memory" if has_pro else "- Free tier: Basic Q&A only"}
 """
         
         if request.context:
@@ -149,7 +208,7 @@ Vehicle Context:
         user_message = UserMessage(text=user_text)
         response_text = await chat.send_message(user_message)
         
-        reg_pattern = r'([A-Z]{2}[\s-]?\d{1,2}[\s-]?[A-Z]{0,2}[\s-]?\d{1,4})'
+        reg_pattern = r'([A-Z]{{2}}[\s-]?\d{{1,2}}[\s-]?[A-Z]{{0,2}}[\s-]?\d{{1,4}})'
         show_orange_border = bool(re.search(reg_pattern, user_text, re.IGNORECASE))
         
         new_status = request.status
@@ -160,7 +219,7 @@ Vehicle Context:
         elif "approv" in user_text.lower():
             new_status = "CUSTOMER_APPROVAL"
         
-        return {
+        response = {
             "response_content": {
                 "visual_text": response_text,
                 "audio_text": response_text[:200] if response_text else ""
@@ -172,6 +231,22 @@ Vehicle Context:
                 "show_orange_border": show_orange_border
             }
         }
+        
+        # Include subscription info for free tier users
+        if not has_pro and limit != -1:
+            remaining = max(0, limit - used - 1)
+            response["subscription"] = {
+                "tier": tier,
+                "used_today": used + 1,
+                "daily_limit": limit,
+                "remaining": remaining,
+                "upgrade_url": "/pricing"
+            }
+            # Add remaining indicator to response text for free users
+            if remaining <= 2:
+                response["response_content"]["visual_text"] += f"\n\n---\n💡 **{remaining} queries remaining today.** [Upgrade to Pro](/pricing) for unlimited access."
+        
+        return response
         
     except Exception as e:
         print(f"AI Chat Error: {str(e)}")
@@ -186,8 +261,34 @@ Vehicle Context:
 
 
 @router.post("/stream")
-async def chat_stream(request: ChatStreamRequest):
-    """SSE streaming endpoint for AI chat responses."""
+async def chat_stream(request: ChatStreamRequest, http_request: Request, session_token: Optional[str] = Cookie(None)):
+    """
+    SSE streaming endpoint for AI chat responses.
+    Enforces subscription limits like the main chat endpoint.
+    """
+    user_id = get_current_user_id(http_request, session_token)
+    
+    # Check subscription/usage limits
+    allowed, used, limit = True, 0, -1
+    if user_id:
+        from utils.subscription import check_usage_limit
+        allowed, used, limit = check_usage_limit(user_id)
+    
+    if not allowed:
+        async def limit_exceeded_stream():
+            yield f"data: {json.dumps({'type': 'limit_reached', 'used': used, 'limit': limit, 'upgrade_url': '/pricing'})}\n\n"
+            yield f"data: {json.dumps({'type': 'done', 'limit_reached': True})}\n\n"
+        
+        return StreamingResponse(
+            limit_exceeded_stream(),
+            media_type="text/event-stream",
+            headers={"Cache-Control": "no-cache", "Connection": "keep-alive"}
+        )
+    
+    # Record usage for non-unlimited users
+    if user_id and limit != -1:
+        from utils.subscription import increment_usage
+        increment_usage(user_id, "chat_query")
     
     async def generate_stream():
         if not EMERGENT_LLM_KEY:
@@ -227,10 +328,23 @@ Be professional yet friendly. Provide accurate automotive advice with cost estim
                     buffer = ""
                     await asyncio.sleep(0.05)
             
-            reg_pattern = r'([A-Z]{2}[\s-]?\d{1,2}[\s-]?[A-Z]{0,2}[\s-]?\d{1,4})'
+            reg_pattern = r'([A-Z]{{2}}[\s-]?\d{{1,2}}[\s-]?[A-Z]{{0,2}}[\s-]?\d{{1,4}})'
             show_orange_border = bool(re.search(reg_pattern, request.message, re.IGNORECASE))
             
-            yield f"data: {json.dumps({'type': 'done', 'full_text': response_text, 'show_orange_border': show_orange_border})}\n\n"
+            # Include remaining queries info for free users
+            remaining_info = {}
+            if limit != -1:
+                remaining = max(0, limit - used - 1)
+                remaining_info = {
+                    "subscription": {
+                        "tier": "free",
+                        "used_today": used + 1,
+                        "daily_limit": limit,
+                        "remaining": remaining
+                    }
+                }
+            
+            yield f"data: {json.dumps({'type': 'done', 'full_text': response_text, 'show_orange_border': show_orange_border, **remaining_info})}\n\n"
             
         except Exception as e:
             print(f"SSE Chat Error: {str(e)}")

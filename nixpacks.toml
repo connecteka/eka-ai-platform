@@ -1,4 +1,4 @@
-# CACHE BUST: 2026-02-16-T17:00:00 - COMPLETE WIPE
+# CACHE BUST: 2026-02-16-T17:30:00 - NEW UI DEPLOYMENT WITH PRICING & SUBSCRIPTION
 [phases.setup]
 nixPkgs = ["nodejs_20"]
 
@@ -6,7 +6,7 @@ nixPkgs = ["nodejs_20"]
 cmds = ["rm -rf dist node_modules/.cache && npm ci --legacy-peer-deps --no-cache"]
 
 [phases.build]
-cmds = ["rm -rf dist && NODE_ENV=production npm run build && ls -la dist/"]
+cmds = ["rm -rf dist && NODE_ENV=production npm run build && echo '=== BUILD OUTPUT ===' && ls -la dist/"]
 
 [start]
 cmd = "npx serve -s dist -l $PORT --no-cache"

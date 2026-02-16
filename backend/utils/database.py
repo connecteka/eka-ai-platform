@@ -46,6 +46,7 @@ job_card_notes_collection = db["job_card_notes"]
 job_card_timeline_collection = db["job_card_timeline"]
 signatures_collection = db["signatures"]
 notifications_collection = db["notifications"]
+usage_tracking_collection = db["usage_tracking"]
 
 
 def serialize_doc(doc: dict) -> dict:

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useOutletContext, useNavigate } from 'react-router-dom';
-import { Wrench, ClipboardList, FileText, Truck, Sparkles, Lock } from 'lucide-react';
+import { Wrench, ClipboardList, FileText, Truck, Sparkles, Lock, AlertCircle } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { geminiService } from '../services/geminiService';
 import { useJobCard }    from '../hooks/useJobCard';
@@ -14,8 +14,26 @@ import type {
 /* Mascot URL */
 const MASCOT_URL = "https://customer-assets.emergentagent.com/job_c888b364-381d-411f-9fb8-91dd9dd39bee/artifacts/0nsgjm67_MASCOT.jpg";
 
-/* Usage limits - Free tier */
-const FREE_DAILY_LIMIT = 10;
+/* ═══════════════════════════════════════════════════════════════════════════
+   USAGE LIMITS - FREE TIER (Like Claude)
+   Free: 5 queries per day
+   Pro: Unlimited
+   ═══════════════════════════════════════════════════════════════════════════ */
+const FREE_DAILY_LIMIT = 5;
+
+// Get user's subscription tier from localStorage (mock until backend integration)
+const getUserSubscription = () => {
+  const user = localStorage.getItem('user');
+  if (user) {
+    const parsed = JSON.parse(user);
+    return parsed.subscriptionTier || 'free';
+  }
+  return 'free';
+};
+
+const isProUser = () => {
+  return getUserSubscription() !== 'free';
+};
 
 /* ─── Suggestion chips ───────────────────────────────────── */
 const CHIPS = [
@@ -26,9 +44,12 @@ const CHIPS = [
 ] as const;
 
 /* ─── Welcome (empty state) ─────────────────────────────── */
-const Welcome: React.FC<{ onChip: (p: string) => void; usageCount: number }> = ({ onChip, usageCount }) => {
+const Welcome: React.FC<{ onChip: (p: string) => void; usageCount: number; limitReached: boolean }> = ({ 
+  onChip, usageCount, limitReached 
+}) => {
   const navigate = useNavigate();
-  const remaining = FREE_DAILY_LIMIT - usageCount;
+  const remaining = Math.max(0, FREE_DAILY_LIMIT - usageCount);
+  const pro = isProUser();
   
   return (
     <div className="flex flex-col items-center justify-center min-h-[55vh] px-4 text-center">
@@ -49,60 +70,91 @@ const Welcome: React.FC<{ onChip: (p: string) => void; usageCount: number }> = (
         Diagnose vehicle issues, create job cards, generate GST invoices, or review fleet contracts.
       </p>
       
-      {/* Usage indicator */}
-      <div className="mb-8 flex items-center gap-3 px-4 py-2 rounded-full bg-gray-100 border border-gray-200">
-        <div className="flex items-center gap-1.5">
-          <div className="flex gap-0.5">
-            {[...Array(FREE_DAILY_LIMIT)].map((_, i) => (
-              <div 
-                key={i}
-                className={cn(
-                  'w-1.5 h-4 rounded-full transition-colors',
-                  i < usageCount ? 'bg-[#F98906]' : 'bg-gray-300'
-                )}
-              />
-            ))}
+      {/* Usage indicator - Claude-like style */}
+      {!pro && (
+        <div className={`mb-8 flex items-center gap-3 px-4 py-3 rounded-2xl border ${
+          limitReached 
+            ? 'bg-red-50 border-red-200' 
+            : 'bg-gray-50 border-gray-200'
+        }`}>
+          <div className="flex items-center gap-2">
+            {/* Visual dots - Claude style */}
+            <div className="flex gap-1">
+              {Array.from({ length: FREE_DAILY_LIMIT }).map((_, i) => (
+                <div 
+                  key={i}
+                  className={cn(
+                    'w-2 h-5 rounded-full transition-all duration-300',
+                    i < usageCount 
+                      ? limitReached ? 'bg-red-500' : 'bg-[#F98906]'
+                      : 'bg-gray-300'
+                  )}
+                />
+              ))}
+            </div>
+            <span className={cn(
+              "text-xs font-medium ml-2",
+              limitReached ? 'text-red-600' : 'text-gray-600'
+            )}>
+              {limitReached ? (
+                <span className="flex items-center gap-1">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  Daily limit reached
+                </span>
+              ) : (
+                <>{remaining} of {FREE_DAILY_LIMIT} free queries left today</>
+              )}
+            </span>
           </div>
-          <span className="text-xs text-gray-600 ml-2">
-            {remaining > 0 ? (
-              <>{remaining} queries left today</>
-            ) : (
-              <span className="text-red-500">Daily limit reached</span>
-            )}
-          </span>
+          <button 
+            onClick={() => navigate('/pricing')}
+            className="text-[10px] font-bold text-[#F98906] hover:underline flex items-center gap-1 px-2 py-1 rounded-full bg-[#F98906]/10"
+          >
+            <Sparkles className="w-3 h-3" />
+            Upgrade to Pro
+          </button>
         </div>
-        <button 
-          onClick={() => navigate('/pricing')}
-          className="text-[10px] font-semibold text-[#F98906] hover:underline flex items-center gap-1"
-        >
-          <Sparkles className="w-3 h-3" />
-          Upgrade
-        </button>
-      </div>
+      )}
+      
+      {pro && (
+        <div className="mb-8 flex items-center gap-2 px-4 py-2 rounded-full bg-[#F98906]/10 border border-[#F98906]/20">
+          <Sparkles className="w-4 h-4 text-[#F98906]" />
+          <span className="text-xs font-medium text-[#F98906]">Pro — Unlimited queries</span>
+        </div>
+      )}
       
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg">
         {CHIPS.map(c => {
           const Icon = c.icon;
-          const isPro = 'isPro' in c && c.isPro;
+          const isProFeature = 'isPro' in c && c.isPro;
+          const disabled = limitReached && !isProUser();
+          
           return (
             <button
               key={c.label}
-              onClick={() => isPro ? navigate('/pricing') : onChip(c.prompt)}
+              onClick={() => {
+                if (disabled) return;
+                if (isProFeature) navigate('/pricing');
+                else onChip(c.prompt);
+              }}
+              disabled={disabled}
               className={cn(
                 "flex items-center gap-3 p-3 sm:p-4 rounded-xl text-left transition-all group border",
-                isPro 
-                  ? "bg-gray-50 border-gray-200 hover:border-[#F98906]/40"
-                  : "bg-white border-gray-200 hover:border-[#F98906]/40 hover:shadow-md"
+                disabled 
+                  ? "opacity-50 cursor-not-allowed bg-gray-100 border-gray-200"
+                  : isProFeature 
+                    ? "bg-gray-50 border-gray-200 hover:border-[#F98906]/40"
+                    : "bg-white border-gray-200 hover:border-[#F98906]/40 hover:shadow-md"
               )}
             >
-              <Icon className={cn("w-4 h-4 flex-shrink-0", isPro ? "text-gray-400" : "text-[#F98906]")} />
+              <Icon className={cn("w-4 h-4 flex-shrink-0", isProFeature || disabled ? "text-gray-400" : "text-[#F98906]")} />
               <span className={cn(
                 "text-[12px] sm:text-[13px] leading-snug transition-colors flex-1",
-                isPro ? "text-gray-400" : "text-gray-600 group-hover:text-gray-800"
+                isProFeature || disabled ? "text-gray-400" : "text-gray-600 group-hover:text-gray-800"
               )}>
                 {c.label}
               </span>
-              {isPro && (
+              {isProFeature && (
                 <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#F98906]/10 text-[#F98906] text-[9px] font-bold flex-shrink-0">
                   <Lock className="w-2.5 h-2.5" />
                   PRO
@@ -148,22 +200,25 @@ const Thinking: React.FC = () => (
 const UsageLimitModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const navigate = useNavigate();
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl p-6 max-w-md mx-4 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl p-8 max-w-md mx-4 shadow-2xl">
         <div className="text-center">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#F98906]/10 flex items-center justify-center">
-            <Sparkles className="w-8 h-8 text-[#F98906]" />
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-[#F98906] to-[#E07A00] flex items-center justify-center">
+            <Sparkles className="w-8 h-8 text-white" />
           </div>
-          <h3 className="text-xl font-bold text-gray-800 mb-2" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+          <h3 className="text-xl font-bold text-gray-900 mb-2" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
             Daily Limit Reached
           </h3>
-          <p className="text-gray-600 text-sm mb-6">
-            You've used all {FREE_DAILY_LIMIT} free queries for today. Upgrade to Pro for unlimited AI diagnostics.
+          <p className="text-gray-600 text-sm mb-2">
+            You've used all <span className="font-bold text-[#F98906]">{FREE_DAILY_LIMIT}</span> free queries for today.
+          </p>
+          <p className="text-gray-500 text-xs mb-6">
+            Upgrade to Pro AI Access for ₹299/month and get unlimited queries, vehicle history memory, and predictive maintenance hints.
           </p>
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors text-sm font-medium"
+              className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors text-sm font-medium"
             >
               Maybe Later
             </button>
@@ -172,11 +227,36 @@ const UsageLimitModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
               className="flex-1 px-4 py-2.5 rounded-lg bg-[#F98906] text-white hover:bg-[#E07A00] transition-colors text-sm font-bold flex items-center justify-center gap-2"
             >
               <Sparkles className="w-4 h-4" />
-              View Plans
+              Upgrade to Pro
             </button>
           </div>
         </div>
       </div>
+    </div>
+  );
+};
+
+/* ─── Limit reached input blocker ────────────────────────── */
+const LimitReachedBlocker: React.FC = () => {
+  const navigate = useNavigate();
+  return (
+    <div className="w-full px-4 py-4 bg-red-50 border border-red-200 rounded-xl flex items-center justify-between gap-4">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+          <AlertCircle className="w-5 h-5 text-red-500" />
+        </div>
+        <div>
+          <p className="text-sm font-medium text-red-900">Daily limit reached</p>
+          <p className="text-xs text-red-600">You've used all {FREE_DAILY_LIMIT} free queries for today.</p>
+        </div>
+      </div>
+      <button
+        onClick={() => navigate('/pricing')}
+        className="px-4 py-2 rounded-lg bg-[#F98906] text-white text-sm font-bold hover:bg-[#E07A00] transition-colors flex items-center gap-2 flex-shrink-0"
+      >
+        <Sparkles className="w-4 h-4" />
+        Upgrade
+      </button>
     </div>
   );
 };
@@ -261,7 +341,7 @@ const EkaChatPage: React.FC = () => {
   const [vehicle,   setVehicle]   = useState<VehicleContext>(EMPTY_VEHICLE);
   const [status,    setStatus]    = useState<JobStatus>('CREATED');
   const [usageCount, setUsageCount] = useState(() => {
-    const stored = localStorage.getItem('eka_daily_usage');
+    const stored = localStorage.getItem('eka_daily_usage_v2');
     if (stored) {
       const { count, date } = JSON.parse(stored);
       const today = new Date().toDateString();
@@ -271,6 +351,10 @@ const EkaChatPage: React.FC = () => {
   });
   const [showLimitModal, setShowLimitModal] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  /* Check if user is Pro */
+  const pro = isProUser();
+  const limitReached = !pro && usageCount >= FREE_DAILY_LIMIT;
 
   /* Get intelligenceMode from AppShell via outlet context */
   const outlet = useOutletContext<{ intelligenceMode: IntelligenceMode } | null>();
@@ -288,7 +372,7 @@ const EkaChatPage: React.FC = () => {
   const incrementUsage = useCallback(() => {
     const newCount = usageCount + 1;
     setUsageCount(newCount);
-    localStorage.setItem('eka_daily_usage', JSON.stringify({
+    localStorage.setItem('eka_daily_usage_v2', JSON.stringify({
       count: newCount,
       date: new Date().toDateString()
     }));
@@ -298,8 +382,8 @@ const EkaChatPage: React.FC = () => {
   const send = useCallback(async (text: string) => {
     if (!text.trim() || isLoading) return;
 
-    // Check usage limit (mock - will be enforced on backend in production)
-    if (usageCount >= FREE_DAILY_LIMIT) {
+    // Check usage limit (like Claude)
+    if (!pro && usageCount >= FREE_DAILY_LIMIT) {
       setShowLimitModal(true);
       return;
     }
@@ -312,7 +396,11 @@ const EkaChatPage: React.FC = () => {
     };
     setMessages(prev => [...prev, userMsg]);
     setIsLoading(true);
-    incrementUsage();
+    
+    // Increment usage for free users
+    if (!pro) {
+      incrementUsage();
+    }
 
     /* Build Gemini history (excluding the just-added user message) */
     const history = messages.map(m => ({
@@ -370,7 +458,7 @@ const EkaChatPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [messages, isLoading, vehicle, status, mode, jobCardActions, usageCount, incrementUsage]);
+  }, [messages, isLoading, vehicle, status, mode, jobCardActions, usageCount, incrementUsage, pro]);
 
   return (
     <div className="flex flex-col h-full bg-[#FAFAFA]" data-testid="eka-chat-page">
@@ -380,9 +468,15 @@ const EkaChatPage: React.FC = () => {
         <div className="max-w-3xl mx-auto w-full px-4 py-6">
 
           {/* Welcome screen when no messages */}
-          {messages.length === 0 && <Welcome onChip={send} usageCount={usageCount} />}
+          {messages.length === 0 && (
+            <Welcome 
+              onChip={send} 
+              usageCount={usageCount} 
+              limitReached={limitReached}
+            />
+          )}
 
-          {/* Message list — ChatMessage is imported unchanged */}
+          {/* Message list */}
           <div className="space-y-6">
             {messages.map(m => (
               <ChatMessage
@@ -404,10 +498,17 @@ const EkaChatPage: React.FC = () => {
         <VehicleBar ctx={vehicle} onClear={() => setVehicle(EMPTY_VEHICLE)} />
         <div className="border-t border-gray-200 bg-white px-4 pt-3 pb-5">
           <div className="max-w-3xl mx-auto w-full">
-            {/* ChatInput is imported unchanged */}
-            <ChatInput onSend={send} isLoading={isLoading} />
+            {/* Show limit blocker if free tier exceeded, otherwise show input */}
+            {limitReached ? (
+              <LimitReachedBlocker />
+            ) : (
+              <ChatInput onSend={send} isLoading={isLoading} />
+            )}
             <p className="text-center text-[10px] text-gray-400 mt-2 font-mono">
-              eka-aı can make mistakes. Always verify diagnostics with a qualified technician.
+              {pro 
+                ? "eka-aı Pro — Unlimited queries • Always verify with a qualified technician"
+                : `${FREE_DAILY_LIMIT - usageCount} of ${FREE_DAILY_LIMIT} free queries remaining today • Upgrade for unlimited access`
+              }
             </p>
           </div>
         </div>
