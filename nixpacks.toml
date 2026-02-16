@@ -5,8 +5,7 @@ nixPkgs = ["nodejs_20"]
 cmds = ["npm ci --legacy-peer-deps --no-cache"]
 
 [phases.build]
-cmds = ["rm -rf node_modules/.cache && npm run build"]
-env = { "NODE_ENV" = "development" }
+cmds = ["rm -rf node_modules/.cache dist && NODE_ENV=production npm run build"]
 
 [start]
-cmd = "npx serve -s dist -l $PORT"
+cmd = "npx serve -s dist -l $PORT --no-cache"
