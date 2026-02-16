@@ -3,58 +3,43 @@ import React from 'react';
 const testimonials = [
   {
     quote:
-      'EKA-AI has completely transformed how we manage job cards. The AI diagnostics save us hours every day.',
+      'This platform has transformed our business. We are more efficient and profitable than ever before.',
     author: 'Rajesh Kumar',
-    title: 'Owner, Kumar Motors, Delhi',
-    avatar: 'https://ui-avatars.com/api/?name=Rajesh+Kumar&background=F98906&color=fff&size=150',
+    title: 'Owner, Kumar Motors',
+    avatar: 'https://ui-avatars.com/api/?name=Rajesh+Kumar&background=f97316&color=fff&size=150',
   },
   {
     quote:
-      'GST invoice generation is seamless. The platform pays for itself just by reducing billing errors.',
+      'The best tool we have ever used. It is intuitive, powerful, and has all the features we need.',
     author: 'Priya Sharma',
-    title: 'Manager, Sharma Auto Care, Mumbai',
-    avatar: 'https://ui-avatars.com/api/?name=Priya+Sharma&background=F98906&color=fff&size=150',
+    title: 'Manager, Sharma Auto Care',
+    avatar: 'https://ui-avatars.com/api/?name=Priya+Sharma&background=0ea5e9&color=fff&size=150',
   },
   {
     quote:
-      'Customer approval workflow is a game-changer. Our customers love the transparency and professionalism.',
+      'I was skeptical at first, but this platform has exceeded all my expectations. Highly recommended!',
     author: 'Amit Patel',
-    title: 'Workshop Owner, Ahmedabad',
-    avatar: 'https://ui-avatars.com/api/?name=Amit+Patel&background=F98906&color=fff&size=150',
+    title: 'Workshop Owner',
+    avatar: 'https://ui-avatars.com/api/?name=Amit+Patel&background=10b981&color=fff&size=150',
   },
 ];
 
 const Testimonials: React.FC = () => {
   return (
-    <section className="py-20" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+    <section className="bg-background-alt py-20">
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold font-display" style={{ color: 'var(--text-primary)' }}>
-            Trusted by Workshops Across India
+          <h2 className="text-3xl font-bold font-heading">
+            What our customers are saying
           </h2>
-          <p className="mt-2 text-lg" style={{ color: 'var(--text-secondary)' }}>
-            Real stories from real workshop owners who transformed their business with EKA-AI.
+          <p className="mt-2 text-lg text-text-secondary">
+            Real stories from real workshop owners.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
-            <div 
-              key={index} 
-              className="p-8 rounded-xl border"
-              style={{ 
-                backgroundColor: 'var(--surface)',
-                borderColor: 'var(--border-light)',
-                boxShadow: 'var(--shadow-sm)'
-              }}
-            >
-              <div className="mb-6">
-                <svg className="w-8 h-8 opacity-25" fill="currentColor" viewBox="0 0 24 24" style={{ color: 'var(--eka-orange)' }}>
-                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                </svg>
-              </div>
-              <p className="mb-6 text-pretty" style={{ color: 'var(--text-secondary)' }}>
-                {testimonial.quote}
-              </p>
+            <div key={index} className="bg-background p-8 rounded-lg shadow-md">
+              <p className="text-text-secondary mb-6">"{testimonial.quote}"</p>
               <div className="flex items-center">
                 <img
                   src={testimonial.avatar}
@@ -62,12 +47,8 @@ const Testimonials: React.FC = () => {
                   className="w-12 h-12 rounded-full mr-4"
                 />
                 <div>
-                  <p className="font-bold" style={{ color: 'var(--text-primary)' }}>
-                    {testimonial.author}
-                  </p>
-                  <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-                    {testimonial.title}
-                  </p>
+                  <p className="font-bold text-text-primary">{testimonial.author}</p>
+                  <p className="text-sm text-text-secondary">{testimonial.title}</p>
                 </div>
               </div>
             </div>

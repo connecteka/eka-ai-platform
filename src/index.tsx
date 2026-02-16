@@ -1,11 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import { AuthProvider } from './context/AuthContext';
+import * as Sentry from '@sentry/react';
 import './index.css';
 import App from './App';
 
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+if (import.meta.env.PROD) {
+  Sentry.init({
+    dsn: import.meta.env.VITE_SENTRY_DSN || '',
+    environment: 'production',
+    tracesSampleRate: 1.0,
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0,
+  });
+}
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -15,10 +22,6 @@ if (!rootElement) {
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </GoogleOAuthProvider>
+    <App />
   </React.StrictMode>
 );

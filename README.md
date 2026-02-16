@@ -1,183 +1,70 @@
-# EKA-AI Platform
+# Getting Started with Create React App
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/eka-ai-platform)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-> **Governed Automobile Intelligence Platform** for automobile workshops and fleet management.
+## Available Scripts
 
-## 🚗 Overview
+In the project directory, you can run:
 
-EKA-AI is India's first governed AI platform for the automobile industry. It provides intelligent solutions for:
+### `npm start`
 
-- 🔧 **Job Card Management** - Digital job cards with AI-powered diagnostics
-- 📊 **Fleet Management** - MG Fleet tracking and maintenance
-- 💰 **GST Invoicing** - Automated invoice generation with PDF export
-- 🤖 **AI Diagnostics** - Vehicle diagnostic assistance using Gemini AI
-- 🔐 **Customer Approvals** - Digital approval workflow for estimates
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-## 📚 Documentation
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
 
-Complete documentation is available via **GitBook**:
+### `npm test`
 
-👉 **[View Documentation](https://docs.eka-ai.in)** *(Update with your actual GitBook URL)*
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-Or browse the documentation locally:
-- [Getting Started](./getting-started/)
-- [Introduction](./introduction/)
-- [Core Modules](./core-modules/)
-- [MG Fleet & Finance](./mg-fleet-and-finance/)
-- [Legal & Compliance](./legal-and-compliance/)
+### `npm run build`
 
-## 🏗️ Architecture
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│   React Frontend│────▶│  FastAPI Backend│────▶│  MongoDB Atlas  │
-│   (Vite + TS)   │     │  (Python 3.11)  │     │  (Database)     │
-└─────────────────┘     └────────┬────────┘     └─────────────────┘
-                                 │
-                    ┌────────────┼────────────┐
-                    ▼            ▼            ▼
-            ┌──────────┐  ┌──────────┐  ┌──────────┐
-            │  Redis   │  │Supabase  │  │  Gemini  │
-            │ (Cache)  │  │ (Auth)   │  │   AI     │
-            └──────────┘  └──────────┘  └──────────┘
-```
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-## 🚀 Quick Start
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### Prerequisites
-- Node.js 20+
-- Python 3.11+
-- MongoDB Atlas account
-- Supabase account
-- Redis (optional, for caching)
+### `npm run eject`
 
-### Installation
+**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-```bash
-# Clone the repository
-git clone https://github.com/connecteka/eka-ai-platform.git
-cd eka-ai-platform
+If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-# Install frontend dependencies
-npm install
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-# Install backend dependencies
-pip install -r backend/requirements.txt
+You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-# Set up environment variables
-cp .env.example .env
-# Edit .env with your credentials
+## Learn More
 
-# Run development server
-npm run dev
-```
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-### Environment Variables
+To learn React, check out the [React documentation](https://reactjs.org/).
 
-Create a `.env` file with:
+### Code Splitting
 
-```env
-# Frontend
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
-VITE_API_BASE_URL=http://localhost:8001
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-# Backend
-MONGO_URL=mongodb+srv://user:pass@cluster.mongodb.net/eka_ai
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_KEY=your-service-key
-JWT_SECRET=your-jwt-secret
-GEMINI_API_KEY=your-gemini-key
-REDIS_URL=redis://localhost:6379
-```
+### Analyzing the Bundle Size
 
-## 🐳 Docker Deployment
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-```bash
-# Build the image
-docker build -t eka-ai-platform .
+### Making a Progressive Web App
 
-# Run the container
-docker run -p 8001:8001 --env-file .env eka-ai-platform
-```
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-## ☁️ Railway Deployment
+### Advanced Configuration
 
-1. Fork this repository
-2. Create a new project on [Railway](https://railway.app)
-3. Connect your GitHub repository
-4. Add the required environment variables
-5. Deploy!
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
-## 📝 Features
+### Deployment
 
-### Job Cards
-- Create and manage digital job cards
-- Track vehicle service history
-- AI-powered diagnostic suggestions
-- Customer approval workflow
-- Digital signatures
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
-### Invoicing
-- GST-compliant invoice generation
-- Automatic tax calculations (CGST/SGST/IGST)
-- PDF generation with WeasyPrint
-- Payment integration (PayU)
+### `npm run build` fails to minify
 
-### Fleet Management
-- MG Fleet vehicle tracking
-- Service scheduling
-- Recall management
-- PDI (Pre-Delivery Inspection) checklists
-
-### AI Integration
-- Vehicle diagnostic assistance
-- Natural language queries
-- Gemini AI-powered recommendations
-
-## 🛠️ Tech Stack
-
-**Frontend:**
-- React 19
-- TypeScript
-- Vite
-- Tailwind CSS
-- Radix UI
-- React Router v7
-
-**Backend:**
-- FastAPI
-- Python 3.11
-- MongoDB (Motor)
-- Supabase
-- Redis
-- WeasyPrint (PDF)
-
-**Infrastructure:**
-- Railway (Hosting)
-- MongoDB Atlas (Database)
-- Supabase (Auth/Storage)
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 👥 Team
-
-Developed by **Go4Garage Private Limited**
-
----
-
-<p align="center">
-  Made with ❤️ for automobile workshops across India
-</p>
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

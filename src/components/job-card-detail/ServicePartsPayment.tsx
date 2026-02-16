@@ -220,7 +220,6 @@ export const CostPaymentSection: React.FC<CostPaymentSectionProps> = ({ payment 
               <div key={idx} style={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                padding: '12px 0',
                 borderBottom: item.isGrandTotal ? 'none' : `1px solid ${styles.gray100}`,
                 background: item.isGrandTotal ? styles.ekaOrangeLight : 'transparent',
                 margin: item.isGrandTotal ? '12px -16px -16px' : 0,

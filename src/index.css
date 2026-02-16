@@ -1,71 +1,289 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-@theme inline {
-  /* Fonts */
-  --font-sans: "Inter", "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
-  --font-heading: "Outfit", "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Outfit", "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
-  --font-mono: "JetBrains Mono", "Fira Code", Consolas, monospace;
+/* ═══════════════════════════════════════════════════════════════════════════
+   EKA-AI DESIGN TOKEN SYSTEM — GO4GARAGE (FINAL LAUNCH VERSION)
+   Elegant Serif Typography + Warm Cream Background + Amber Accents
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-  /* Brand colors */
-  --color-brand-orange: #F98906;
-  --color-brand-hover: #E07A00;
-
-  /* Core backgrounds */
-  --color-background: #0f1117;
-  --color-background-alt: #191b24;
-  --color-surface: #1e2030;
-
-  /* Text colors */
-  --color-text-primary: #f0f0f0;
-  --color-text-secondary: #a1a1aa;
-  --color-text-muted: #6b7280;
-
-  /* Border */
-  --color-border: rgba(255, 255, 255, 0.1);
-  --color-border-light: rgba(255, 255, 255, 0.05);
-
-  /* Chart colors */
-  --color-chart-1: #F98906;
-  --color-chart-2: #3b82f6;
-  --color-chart-3: #10b981;
-  --color-chart-4: #8b5cf6;
-  --color-chart-5: #ef4444;
-
-  /* Radius */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
+:root {
+  /* ═══ PRIMARY BRAND — EKA-AI ═══ */
+  --eka-orange: #F98906;
+  --eka-orange-hover: #E07A00;
+  --eka-orange-active: #C76D00;
+  --eka-orange-light: #FFF5E6;
+  --eka-orange-super-light: #FFFBF5;
+  --eka-orange-border: #1A1A1A;
+  
+  /* ═══ BACKGROUND & SURFACE ═══ */
+  --bg-primary: #FFF5E6;
+  --bg-secondary: #FFFBF5;
+  --bg-card: #FFFFFF;
+  --bg-dark: #1A1A1A;
+  
+  /* ═══ TEXT COLORS ═══ */
+  --text-primary: #1A1A1A;
+  --text-secondary: #2C1A0E;
+  --text-muted: #5C4A3D;
+  --text-on-primary: #1A1A1A;
+  --text-light: #FFFFFF;
+  
+  /* ═══ BORDER COLORS ═══ */
+  --border-primary: #1A1A1A;
+  --border-secondary: #2C1A0E;
+  --border-light: rgba(26, 26, 26, 0.15);
+  
+  /* ═══ PARENT BRAND — Go4Garage ═══ */
+  --g4g-purple: #5B2D8E;
+  --g4g-purple-hover: #4A2375;
+  --g4g-purple-light: #F3EDF8;
+  --g4g-purple-border: rgba(91, 45, 142, 0.2);
+  --g4g-green: #3CB44B;
+  --g4g-green-light: #ECFDF5;
+  
+  /* ═══ NEUTRAL SCALE ═══ */
+  --white: #FFFFFF;
+  --off-white: #FFF5E6;
+  --gray-50: #FFFBF5;
+  --gray-100: #FFF5E6;
+  --gray-200: #E8DDD0;
+  --gray-300: #D4C4B5;
+  --gray-400: #9C8B7A;
+  --gray-500: #5C4A3D;
+  --gray-600: #3D3029;
+  --gray-700: #2C1A0E;
+  --gray-800: #1A1A1A;
+  --gray-900: #0D0D0D;
+  
+  /* ═══ SEMANTIC ═══ */
+  --success: #16A34A;
+  --success-light: #ECFDF5;
+  --success-border: #16A34A;
+  --error: #DC2626;
+  --error-light: #FEF2F2;
+  --error-border: #DC2626;
+  --warning: #F98906;
+  --warning-light: #FFF5E6;
+  --warning-border: #F98906;
+  --info: #2563EB;
+  --info-light: #EFF6FF;
+  --info-border: #2563EB;
+  
+  /* ═══ SHADOWS ═══ */
+  --shadow-xs: 0 1px 2px rgba(26, 26, 26, 0.06);
+  --shadow-sm: 0 1px 3px rgba(26, 26, 26, 0.08), 0 1px 2px rgba(26, 26, 26, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(26, 26, 26, 0.08), 0 2px 4px -1px rgba(26, 26, 26, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(26, 26, 26, 0.1), 0 4px 6px -2px rgba(26, 26, 26, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(26, 26, 26, 0.1), 0 10px 10px -5px rgba(26, 26, 26, 0.04);
+  --shadow-orange: 0 4px 14px rgba(249, 137, 6, 0.25);
+  --shadow-orange-lg: 0 8px 24px rgba(249, 137, 6, 0.3);
+  --shadow-purple: 0 4px 14px rgba(91, 45, 142, 0.2);
+  --shadow-inner: inset 0 2px 4px rgba(26, 26, 26, 0.06);
+  
+  /* ═══ BORDER RADIUS ═══ */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-full: 9999px;
+  
+  /* ═══ SPACING ═══ */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  
+  /* ═══ TYPOGRAPHY — Elegant Serif ═══ */
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-primary: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  
+  --text-xs: 11px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-md: 15px;
+  --text-lg: 16px;
+  --text-xl: 18px;
+  --text-2xl: 20px;
+  --text-3xl: 24px;
+  --text-4xl: 28px;
+  --text-5xl: 32px;
+  
+  /* ═══ Z-INDEX ═══ */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal-backdrop: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+  --z-tooltip: 600;
+  
+  /* ═══ TRANSITIONS ═══ */
+  --transition-fast: 150ms ease;
+  --transition-normal: 200ms ease;
+  --transition-slow: 300ms ease;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   BASE STYLES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 * {
-  border-color: var(--color-border);
+  box-sizing: border-box;
 }
 
 body {
-  background-color: var(--color-background);
-  color: var(--color-text-primary);
-  font-family: var(--font-sans);
+  font-family: var(--font-primary);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@keyframes pulse-orange {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(249, 137, 6, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(249, 137, 6, 0);
+  }
+}
+
+@keyframes pulse-dot {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-pulse-orange {
+  animation: pulse-orange 2s infinite;
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.4s ease-out forwards;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 2s linear infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PRINT STYLES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  .print-break-before {
+    page-break-before: always;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LEGACY THEME SUPPORT (for other pages)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@theme {
+  --color-brand-orange: #F98906;
+  --color-background: #FFF5E6;
+  --color-background-alt: #FFFBF5;
+  --color-text-primary: #1A1A1A;
+  --color-text-secondary: #2C1A0E;
+  --color-border: #1A1A1A;
+  --color-surface: #FFFFFF;
+  --color-text-muted: #5C4A3D;
+  --color-brand-hover: #E07A00;
+
+  --font-family-sans: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-family-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
+}
+
+/* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--gray-100);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #374151;
-  border-radius: 3px;
+  background: var(--gray-300);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #4b5563;
+  background: var(--gray-400);
 }

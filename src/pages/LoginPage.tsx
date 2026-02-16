@@ -4,7 +4,7 @@ import { Loader2, Mail, Eye, EyeOff, Play, ChevronLeft, ChevronRight, Shield, Lo
 import { useGoogleLogin } from '@react-oauth/google';
 import DemoModal from '../components/DemoModal';
 
-// Feature slides for the carousel
+// Feature slides for the carousel with animated preview content
 const FEATURE_SLIDES = [
   {
     id: 'ai-chat',
@@ -12,9 +12,9 @@ const FEATURE_SLIDES = [
     subtitle: 'Intelligent Diagnostics',
     description: 'Get instant vehicle diagnostics and repair recommendations powered by advanced AI technology.',
     features: ['Natural language queries', 'Real-time diagnostics', 'Repair suggestions', 'Cost estimates'],
-    videoUrl: '/demos/ai-chat-demo.webm',
-    demoId: 'ai-chat',
-    accentColor: '#F45D3D'
+    demoId: 'chat',
+    accentColor: '#F98906',
+    previewType: 'chat'
   },
   {
     id: 'job-cards',
@@ -22,9 +22,9 @@ const FEATURE_SLIDES = [
     subtitle: 'Complete Workflow',
     description: 'Seamless transition from job creation to GST-compliant invoicing with automatic calculations.',
     features: ['One-click job card creation', 'Real-time status tracking', 'Auto GST calculation', 'Digital invoice delivery'],
-    videoUrl: '/demos/job-card-demo.webm',
-    demoId: 'job-cards',
-    accentColor: '#F45D3D'
+    demoId: 'jobcard',
+    accentColor: '#F98906',
+    previewType: 'jobcard'
   },
   {
     id: 'pdi',
@@ -32,9 +32,9 @@ const FEATURE_SLIDES = [
     subtitle: 'Pre-Delivery Inspection',
     description: 'Streamlined digital PDI workflow with AI-powered checklist verification and instant reporting.',
     features: ['120+ point inspection checklist', 'Photo & video documentation', 'Digital signatures', 'Instant PDF reports'],
-    videoUrl: '/demos/pdi-demo.webm',
     demoId: 'pdi',
-    accentColor: '#F45D3D'
+    accentColor: '#F98906',
+    previewType: 'pdi'
   },
   {
     id: 'fleet',
@@ -42,9 +42,9 @@ const FEATURE_SLIDES = [
     subtitle: 'Enterprise Solutions',
     description: 'Comprehensive fleet tracking and management for dealerships and service centers.',
     features: ['Multi-vehicle tracking', 'Service scheduling', 'Performance analytics', 'Cost optimization'],
-    videoUrl: '/demos/fleet-demo.webm',
-    demoId: 'fleet',
-    accentColor: '#F45D3D'
+    demoId: 'mg',
+    accentColor: '#F98906',
+    previewType: 'fleet'
   },
   {
     id: 'invoicing',
@@ -52,9 +52,9 @@ const FEATURE_SLIDES = [
     subtitle: 'GST Compliant',
     description: 'Automatic GST calculations, digital delivery, and complete payment tracking.',
     features: ['Auto tax calculation', 'Email delivery', 'Payment tracking', 'Report generation'],
-    videoUrl: '/demos/invoice-demo.webm',
-    demoId: 'invoicing',
-    accentColor: '#F45D3D'
+    demoId: 'jobcard',
+    accentColor: '#F98906',
+    previewType: 'invoice'
   },
   {
     id: 'analytics',
@@ -62,11 +62,196 @@ const FEATURE_SLIDES = [
     subtitle: 'Data-Driven Insights',
     description: 'Real-time dashboards and reports to track your workshop performance.',
     features: ['Revenue tracking', 'Customer insights', 'Service analytics', 'Growth metrics'],
-    videoUrl: '/demos/analytics-demo.webm',
-    demoId: 'analytics',
-    accentColor: '#F45D3D'
+    demoId: 'brand',
+    accentColor: '#F98906',
+    previewType: 'analytics'
   }
 ];
+
+// Animated Preview Components for each feature
+const AnimatedPreview: React.FC<{ type: string }> = ({ type }) => {
+  const [frame, setFrame] = useState(0);
+  
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setFrame(f => (f + 1) % 100);
+    }, 100);
+    return () => clearInterval(timer);
+  }, []);
+
+  switch (type) {
+    case 'chat':
+      return (
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1A1A1C] to-[#0D0D0F] p-4 overflow-hidden">
+          <div className="h-8 bg-white/5 rounded-lg mb-3 flex items-center px-3">
+            <div className="w-6 h-6 rounded-full bg-[#F98906]/30" />
+            <span className="ml-2 text-xs text-white/50">eka-aı Assistant</span>
+          </div>
+          <div className="space-y-3">
+            <div className="flex justify-end">
+              <div className="bg-[#F98906]/20 rounded-2xl rounded-br-sm px-4 py-2 max-w-[80%]">
+                <p className="text-xs text-white/80">Engine warning light on Swift 2020</p>
+              </div>
+            </div>
+            <div className="flex">
+              <div className="bg-white/10 rounded-2xl rounded-bl-sm px-4 py-2 max-w-[85%]">
+                <p className="text-xs text-white/60 mb-2">🔍 Analyzing your vehicle...</p>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 text-[10px]">
+                    <span className="w-2 h-2 bg-red-500 rounded-full" />
+                    <span className="text-white/70">O2 Sensor (65%) - ₹3,500</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-[10px]">
+                    <span className="w-2 h-2 bg-yellow-500 rounded-full" />
+                    <span className="text-white/70">MAF Sensor (25%) - ₹2,500</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="absolute bottom-4 left-4 right-4 h-10 bg-white/5 rounded-xl flex items-center px-3">
+            <span className="text-xs text-white/30 flex items-center">
+              <span className="animate-pulse">|</span> Type your question...
+            </span>
+          </div>
+        </div>
+      );
+      
+    case 'jobcard':
+      return (
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1A1A1C] to-[#0D0D0F] p-4 overflow-hidden">
+          <div className="flex gap-2 mb-3">
+            {['Total: 24', 'Active: 8', 'Done: 12'].map((s, i) => (
+              <div key={s} className={`flex-1 p-2 rounded-lg ${i === Math.floor(frame / 30) % 3 ? 'bg-[#F98906]/20 border border-[#F98906]/50' : 'bg-white/5'}`}>
+                <p className="text-[10px] text-white/60">{s.split(':')[0]}</p>
+                <p className="text-lg font-bold text-white">{s.split(':')[1]}</p>
+              </div>
+            ))}
+          </div>
+          <div className="space-y-2">
+            {[
+              { id: 'JC-0891', status: 'In Progress', color: '#F98906' },
+              { id: 'JC-0890', status: 'Completed', color: '#22C55E' },
+              { id: 'JC-0889', status: 'Pending', color: '#EAB308' },
+            ].map((j, i) => (
+              <div key={j.id} className={`p-2 rounded-lg bg-white/5 flex items-center justify-between ${i === Math.floor(frame / 25) % 3 ? 'ring-1 ring-[#F98906]/50' : ''}`}>
+                <div>
+                  <p className="text-xs text-white font-mono">{j.id}</p>
+                  <p className="text-[10px] text-white/50">Swift • Rahul</p>
+                </div>
+                <span className="px-2 py-0.5 rounded text-[10px]" style={{ backgroundColor: `${j.color}20`, color: j.color }}>{j.status}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+      
+    case 'pdi':
+      const progress = (frame % 50) * 2;
+      return (
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1A1A1C] to-[#0D0D0F] p-4 overflow-hidden">
+          <div className="flex justify-between items-center mb-3">
+            <p className="text-xs text-white font-medium">PDI Checklist</p>
+            <div className="flex items-center gap-2">
+              <div className="w-20 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                <div className="h-full bg-[#F98906] rounded-full transition-all" style={{ width: `${progress}%` }} />
+              </div>
+              <span className="text-[10px] text-[#F98906]">{progress}%</span>
+            </div>
+          </div>
+          <div className="space-y-2">
+            {['Exterior Check', 'Interior Check', 'Engine Bay', 'Electrical'].map((item, i) => (
+              <div key={item} className="flex items-center gap-2 p-2 rounded-lg bg-white/5">
+                <div className={`w-4 h-4 rounded border ${progress > (i + 1) * 20 ? 'bg-[#F98906] border-[#F98906]' : 'border-white/30'} flex items-center justify-center`}>
+                  {progress > (i + 1) * 20 && <span className="text-[10px] text-white">✓</span>}
+                </div>
+                <span className="text-xs text-white/70">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+      
+    case 'fleet':
+      return (
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1A1A1C] to-[#0D0D0F] p-4 overflow-hidden">
+          <p className="text-xs text-white font-medium mb-3">Fleet Overview</p>
+          <div className="grid grid-cols-3 gap-2 mb-3">
+            {['🚗 12', '🔧 3', '✅ 8'].map((v, i) => (
+              <div key={i} className="p-2 rounded-lg bg-white/5 text-center">
+                <p className="text-lg">{v.split(' ')[0]}</p>
+                <p className="text-white text-sm font-bold">{v.split(' ')[1]}</p>
+              </div>
+            ))}
+          </div>
+          <div className="space-y-1.5">
+            {['MH01AB1234 • Active', 'MH02CD5678 • Service', 'MH03EF9012 • Ready'].map((v, i) => (
+              <div key={i} className={`p-2 rounded-lg bg-white/5 text-xs ${i === Math.floor(frame / 20) % 3 ? 'border border-[#F98906]/50' : ''}`}>
+                <span className="text-white/70">{v}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+      
+    case 'invoice':
+      return (
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1A1A1C] to-[#0D0D0F] p-4 overflow-hidden">
+          <div className="bg-white/5 rounded-lg p-3 mb-3">
+            <div className="flex justify-between items-start mb-2">
+              <div>
+                <p className="text-xs text-white font-medium">INV-0024</p>
+                <p className="text-[10px] text-white/50">Swift Service</p>
+              </div>
+              <span className="px-2 py-0.5 bg-green-500/20 text-green-400 rounded text-[10px]">Paid</span>
+            </div>
+            <div className="space-y-1 text-[10px] text-white/60">
+              <div className="flex justify-between"><span>Labour</span><span>₹2,500</span></div>
+              <div className="flex justify-between"><span>Parts</span><span>₹3,200</span></div>
+              <div className="flex justify-between"><span>GST (18%)</span><span>₹1,026</span></div>
+              <div className="flex justify-between text-white font-bold pt-1 border-t border-white/10">
+                <span>Total</span><span>₹6,726</span>
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <button className="flex-1 py-2 bg-[#F98906]/20 text-[#F98906] rounded-lg text-[10px]">📧 Email</button>
+            <button className="flex-1 py-2 bg-white/5 text-white/50 rounded-lg text-[10px]">📄 PDF</button>
+          </div>
+        </div>
+      );
+      
+    case 'analytics':
+      return (
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1A1A1C] to-[#0D0D0F] p-4 overflow-hidden">
+          <p className="text-xs text-white font-medium mb-3">Revenue This Month</p>
+          <p className="text-2xl font-bold text-[#F98906] mb-3">₹2,45,000</p>
+          <div className="flex items-end gap-1 h-20 mb-3">
+            {[40, 65, 45, 80, 55, 70, 90, 60, 75].map((h, i) => (
+              <div 
+                key={i} 
+                className="flex-1 rounded-t transition-all duration-300"
+                style={{ 
+                  height: `${h + (i === Math.floor(frame / 10) % 9 ? 10 : 0)}%`,
+                  backgroundColor: i === Math.floor(frame / 10) % 9 ? '#F98906' : 'rgba(249, 137, 6, 0.3)'
+                }}
+              />
+            ))}
+          </div>
+          <div className="flex justify-between text-[10px] text-white/50">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+          </div>
+        </div>
+      );
+      
+    default:
+      return (
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+          <Play className="w-16 h-16 text-white/20" />
+        </div>
+      );
+  }
+};
 
 // Daily rotating taglines
 const TAGLINES = [
@@ -135,7 +320,7 @@ const LoginPage = () => {
         if (response.ok) {
           const user = await response.json();
           localStorage.setItem('user', JSON.stringify(user));
-          navigate('/app/dashboard', { replace: true });
+          navigate('/app/chat', { replace: true });
           return;
         }
       } catch (error) {
@@ -190,7 +375,7 @@ const LoginPage = () => {
         if (response.ok && data.token) {
           localStorage.setItem('token', data.token);
           localStorage.setItem('user', JSON.stringify(data.user));
-          navigate('/app/dashboard');
+          navigate('/app/chat');
         } else {
           setError(data.detail || 'Failed to sign in with Google');
         }
@@ -242,7 +427,7 @@ const LoginPage = () => {
       if (response.ok && data.token) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        navigate('/app/dashboard');
+        navigate('/app/chat');
       } else {
         setError(data.detail || 'Authentication failed');
       }
@@ -271,9 +456,9 @@ const LoginPage = () => {
   // Loading state
   if (checkingAuth) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-10 h-10 animate-spin text-brand-orange mx-auto mb-3" />
+          <Loader2 className="w-10 h-10 animate-spin text-[#F98906] mx-auto mb-3" />
           <p className="text-gray-400">Loading...</p>
         </div>
       </div>
@@ -281,7 +466,7 @@ const LoginPage = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background" data-testid="login-page">
+    <div className="min-h-screen flex flex-col bg-[#0D0D0D]" data-testid="login-page">
       
       {/* ═══════════════════════════════════════════════════════════════════
           FULL-WIDTH HEADER
@@ -292,11 +477,11 @@ const LoginPage = () => {
           <img 
             src={mascotUrl} 
             alt="EKA-AI" 
-            className="w-10 h-10 rounded-full object-cover border-2 border-brand-orange"
+            className="w-10 h-10 rounded-full object-cover border-2 border-[#F98906]"
           />
           <div className="flex flex-col">
-            <span className="text-xl font-bold text-white tracking-tight font-heading">
-              eka-ai
+            <span className="text-xl font-bold text-white tracking-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+              eka<span className="text-[#F98906]">-</span>a<span className="text-[#F98906]">ı</span>
             </span>
             <span className="text-[10px] text-gray-500 -mt-0.5">
               Governed Automobile Intelligence
@@ -311,7 +496,7 @@ const LoginPage = () => {
           <a href="#contact" className="text-sm text-gray-400 hover:text-white transition-colors">Contact sales</a>
           <button
             onClick={() => document.getElementById('auth-section')?.scrollIntoView({ behavior: 'smooth' })}
-            className="px-5 py-2 text-sm font-medium text-black bg-brand-orange rounded-lg hover:bg-brand-orange/90 transition-colors"
+            className="px-5 py-2 text-sm font-medium text-black bg-[#F98906] rounded-lg hover:bg-[#E07A00] transition-colors"
             data-testid="try-eka-ai-btn"
           >
             Try EKA-AI
@@ -336,13 +521,13 @@ const LoginPage = () => {
           
           {/* Tagline */}
           <div className="text-center lg:text-left mb-10 max-w-md mx-auto lg:mx-0">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight font-heading">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
               {displayedMain}
-              {isTypingMain && <span className="animate-pulse text-brand-orange">|</span>}
+              {isTypingMain && <span className="animate-pulse text-[#F98906]">|</span>}
             </h1>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold italic text-brand-orange leading-tight mt-1 font-heading">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold italic text-[#F98906] leading-tight mt-1" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
               {displayedHighlight}
-              {!isTypingMain && !typingComplete && <span className="animate-pulse text-brand-orange">|</span>}
+              {!isTypingMain && !typingComplete && <span className="animate-pulse text-[#F98906]">|</span>}
             </h2>
           </div>
 
@@ -391,7 +576,7 @@ const LoginPage = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   data-testid="name-input"
-                  className="w-full px-4 py-4 bg-[#1A1A1A] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-brand-orange transition-colors"
+                  className="w-full px-4 py-4 bg-[#1A1A1A] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#F98906] transition-colors"
                   placeholder="Your name"
                 />
               )}
@@ -405,7 +590,7 @@ const LoginPage = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   data-testid="email-input"
-                  className="w-full pl-12 pr-4 py-4 bg-[#1A1A1A] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-brand-orange transition-colors"
+                  className="w-full pl-12 pr-4 py-4 bg-[#1A1A1A] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#F98906] transition-colors"
                   placeholder="Enter your email"
                 />
               </div>
@@ -420,7 +605,7 @@ const LoginPage = () => {
                     required
                     minLength={6}
                     data-testid="password-input"
-                    className="w-full px-4 py-4 pr-12 bg-[#1A1A1A] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-brand-orange transition-colors"
+                    className="w-full px-4 py-4 pr-12 bg-[#1A1A1A] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#F98906] transition-colors"
                     placeholder={isSignUp ? 'Create a password (min 6 characters)' : 'Enter your password'}
                   />
                   <button
@@ -438,7 +623,7 @@ const LoginPage = () => {
                 type="submit"
                 disabled={isLoading}
                 data-testid="email-submit-btn"
-                className="w-full px-4 py-4 bg-brand-orange text-black font-semibold rounded-xl hover:bg-brand-orange/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full px-4 py-4 bg-[#F98906] text-black font-semibold rounded-xl hover:bg-[#E07A00] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -460,9 +645,9 @@ const LoginPage = () => {
                   className="text-sm text-gray-500 hover:text-white transition-colors"
                 >
                   {isSignUp ? (
-                    <>Already have an account? <span className="text-brand-orange font-medium">Sign in</span></>
+                    <>Already have an account? <span className="text-[#F98906] font-medium">Sign in</span></>
                   ) : (
-                    <>Don't have an account? <span className="text-brand-orange font-medium">Sign up</span></>
+                    <>Don't have an account? <span className="text-[#F98906] font-medium">Sign up</span></>
                   )}
                 </button>
               </div>
@@ -470,7 +655,7 @@ const LoginPage = () => {
 
             {/* Terms */}
             <p className="text-xs text-gray-500 text-center leading-relaxed pt-4">
-              By continuing, you agree to EKA-AI's{' '}
+              By continuing, you agree to eka-aı's{' '}
               <Link to="/legal#terms" className="underline hover:text-gray-300 transition-colors">Terms of Service</Link>
               {' '}and{' '}
               <Link to="/legal#privacy" className="underline hover:text-gray-300 transition-colors">Privacy Policy</Link>.
@@ -479,14 +664,14 @@ const LoginPage = () => {
         </div>
 
         {/* RIGHT SIDE - Feature Carousel (Desktop Only) */}
-        <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-[#1A0A00] via-background to-background flex-col relative overflow-hidden" id="features">
+        <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-[#1A0A00] via-[#0D0D0D] to-[#0D0D0D] flex-col relative overflow-hidden" id="features">
           
           {/* Decorative particles */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             {[...Array(30)].map((_, i) => (
               <div
                 key={i}
-                className="absolute w-1 h-1 rounded-full bg-brand-orange opacity-20"
+                className="absolute w-1 h-1 rounded-full bg-[#F98906] opacity-20"
                 style={{
                   left: `${Math.random() * 100}%`,
                   top: `${Math.random() * 100}%`,
@@ -501,7 +686,7 @@ const LoginPage = () => {
           <div className="flex items-center justify-between px-8 py-5">
             <span className="text-sm text-gray-500 flex items-center gap-2">
               eka-ai features
-              <span className="w-1.5 h-1.5 rounded-full bg-brand-orange animate-pulse"></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#F98906] animate-pulse"></span>
             </span>
             <span className="text-sm text-gray-500">
               {String(currentSlide + 1).padStart(2, '0')} / {String(FEATURE_SLIDES.length).padStart(2, '0')}
@@ -511,22 +696,20 @@ const LoginPage = () => {
           {/* Main Content */}
           <div className="flex-1 flex flex-col items-center justify-center px-8 relative">
             
-            {/* Video Preview Area */}
-            <div className="relative w-full max-w-md aspect-video mb-8 rounded-2xl overflow-hidden bg-white/5 shadow-2xl">
+            {/* Video Preview Area - Animated Demo */}
+            <div className="relative w-full max-w-md aspect-video mb-8 rounded-2xl overflow-hidden bg-[#0D0D0D] shadow-2xl border border-white/10">
               {/* Live Recording Badge */}
               <div className="absolute top-4 left-4 z-10 flex items-center gap-2 px-3 py-1.5 bg-red-500 rounded-full">
                 <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-                <span className="text-xs text-white font-medium">Live Recording</span>
+                <span className="text-xs text-white font-medium">Live Preview</span>
               </div>
               
-              {/* Placeholder for video/demo */}
-              <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-                <Play className="w-16 h-16 text-white/20" />
-              </div>
+              {/* Animated Preview */}
+              <AnimatedPreview type={currentFeature.previewType} />
             </div>
 
             {/* Feature Title */}
-            <h2 className="text-3xl lg:text-4xl font-bold text-white text-center mb-2 font-heading">
+            <h2 className="text-3xl lg:text-4xl font-bold text-white text-center mb-2" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
               {currentFeature.title}
             </h2>
             <p className="text-lg text-gray-400 mb-4">{currentFeature.subtitle}</p>
@@ -543,7 +726,7 @@ const LoginPage = () => {
                   key={index}
                   className="flex items-center gap-2 bg-white/5 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/10"
                 >
-                  <div className="w-2 h-2 rounded-full bg-brand-orange flex-shrink-0"></div>
+                  <div className="w-2 h-2 rounded-full bg-[#F98906] flex-shrink-0"></div>
                   <span className="text-white text-sm">{feature}</span>
                 </div>
               ))}
@@ -585,7 +768,7 @@ const LoginPage = () => {
                 aria-label={`Go to slide ${index + 1}`}
                 className={`h-2 rounded-full transition-all ${
                   index === currentSlide 
-                    ? 'w-8 bg-brand-orange' 
+                    ? 'w-8 bg-[#F98906]' 
                     : 'w-2 bg-white/30 hover:bg-white/50'
                 }`}
               />
@@ -604,7 +787,7 @@ const LoginPage = () => {
       {/* Mobile Feature Section */}
       <div className="lg:hidden w-full bg-[#0A0A0B] py-8 px-6">
         <div className="text-center">
-          <h3 className="text-xl font-bold text-white mb-2 font-heading">
+          <h3 className="text-xl font-bold text-white mb-2" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
             {currentFeature.title}
           </h3>
           <p className="text-gray-400 text-sm mb-4">{currentFeature.subtitle}</p>
@@ -616,7 +799,7 @@ const LoginPage = () => {
                 key={index}
                 onClick={() => setCurrentSlide(index)}
                 className={`h-2 rounded-full transition-all ${
-                  index === currentSlide ? 'w-6 bg-brand-orange' : 'w-2 bg-white/30'
+                  index === currentSlide ? 'w-6 bg-[#F98906]' : 'w-2 bg-white/30'
                 }`}
               />
             ))}
@@ -626,7 +809,7 @@ const LoginPage = () => {
           <div className="flex flex-wrap justify-center gap-2">
             {currentFeature.features.slice(0, 2).map((feature, index) => (
               <div key={index} className="flex items-center gap-1.5 bg-white/5 rounded-full px-3 py-1.5 text-xs text-white">
-                <span className="w-1.5 h-1.5 rounded-full bg-brand-orange"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#F98906]"></span>
                 {feature}
               </div>
             ))}
@@ -649,10 +832,10 @@ const LoginPage = () => {
                 <img 
                   src={mascotUrl} 
                   alt="EKA-AI" 
-                  className="w-8 h-8 rounded-full object-cover border border-brand-orange"
+                  className="w-8 h-8 rounded-full object-cover border border-[#F98906]"
                 />
-                <span className="text-lg font-bold text-white font-heading">
-                  eka-ai
+                <span className="text-lg font-bold text-white" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                  eka<span className="text-[#F98906]">-</span>a<span className="text-[#F98906]">ı</span>
                 </span>
               </div>
               <p className="text-sm text-gray-500 mb-4">
@@ -724,18 +907,18 @@ const LoginPage = () => {
           {/* Bottom Bar */}
           <div className="pt-6 border-t border-gray-800/50 flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-xs text-gray-600 text-center md:text-left">
-              © {new Date().getFullYear()} Go4Garage Private Limited. All rights reserved.
+              © {new Date().getFullYear()} Go4Garage Pvt. Ltd. All rights reserved.
             </p>
             
-            {/* Trust Badges */}
-            <div className="flex items-center gap-4">
+            {/* Trust Badges - hidden on mobile */}
+            <div className="hidden sm:flex items-center gap-4">
               <div className="flex items-center gap-1.5 text-xs text-gray-500">
                 <Lock className="w-3.5 h-3.5" />
                 <span>SSL Secured</span>
               </div>
               <div className="flex items-center gap-1.5 text-xs text-gray-500">
                 <Shield className="w-3.5 h-3.5" />
-                <span>GDPR Compliant</span>
+                <span>GDPR</span>
               </div>
               <div className="flex items-center gap-1.5 text-xs text-gray-500">
                 <span>ISO 27001</span>

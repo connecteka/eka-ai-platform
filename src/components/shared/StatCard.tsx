@@ -12,6 +12,22 @@ interface StatCardProps {
   onClick?: () => void;
 }
 
+/**
+ * Reusable StatCard Component
+ * 
+ * Displays a key metric with title, value, optional trend indicator,
+ * and an icon. Used in dashboard grids.
+ * 
+ * @example
+ * <StatCard 
+ *   title="Active Job Cards"
+ *   value="14"
+ *   icon={Car}
+ *   trend="+12%"
+ *   trendUp={true}
+ *   colorClass="blue"
+ * />
+ */
 const StatCard: React.FC<StatCardProps> = ({ 
   title, 
   value, 
@@ -22,14 +38,14 @@ const StatCard: React.FC<StatCardProps> = ({
   colorClass = 'orange',
   onClick
 }) => {
-  const colorStyles: Record<string, { bg: string; text: string; iconBg: string }> = {
-    blue:   { bg: 'bg-blue-50',    text: 'text-blue-700',    iconBg: 'bg-blue-100' },
-    orange: { bg: 'bg-amber-50',   text: 'text-amber-700',   iconBg: 'bg-amber-100' },
-    green:  { bg: 'bg-emerald-50', text: 'text-emerald-700', iconBg: 'bg-emerald-100' },
-    red:    { bg: 'bg-red-50',     text: 'text-red-700',     iconBg: 'bg-red-100' },
-    purple: { bg: 'bg-violet-50',  text: 'text-violet-700',  iconBg: 'bg-violet-100' },
-    amber:  { bg: 'bg-amber-50',   text: 'text-amber-700',   iconBg: 'bg-amber-100' },
-    gray:   { bg: 'bg-stone-50',   text: 'text-stone-600',   iconBg: 'bg-stone-100' },
+  const colorStyles: Record<string, { bg: string; text: string; border: string; hover: string }> = {
+    blue: { bg: 'bg-blue-500/10', text: 'text-blue-400', border: 'border-blue-500/20', hover: 'hover:border-blue-500/40' },
+    orange: { bg: 'bg-brand-orange/10', text: 'text-brand-orange', border: 'border-brand-orange/20', hover: 'hover:border-brand-orange/40' },
+    green: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/20', hover: 'hover:border-emerald-500/40' },
+    red: { bg: 'bg-red-500/10', text: 'text-red-400', border: 'border-red-500/20', hover: 'hover:border-red-500/40' },
+    purple: { bg: 'bg-purple-500/10', text: 'text-purple-400', border: 'border-purple-500/20', hover: 'hover:border-purple-500/40' },
+    amber: { bg: 'bg-amber-500/10', text: 'text-amber-400', border: 'border-amber-500/20', hover: 'hover:border-amber-500/40' },
+    gray: { bg: 'bg-gray-500/10', text: 'text-gray-400', border: 'border-gray-500/20', hover: 'hover:border-gray-500/40' },
   };
 
   const colors = colorStyles[colorClass] || colorStyles.orange;
@@ -38,31 +54,32 @@ const StatCard: React.FC<StatCardProps> = ({
     <div 
       onClick={onClick}
       className={`
-        bg-white rounded-xl p-5 
-        border border-stone-200 ${onClick ? 'cursor-pointer' : ''}
-        transition-all duration-200 hover:shadow-md hover:border-stone-300
+        bg-background-alt backdrop-blur-sm rounded-xl p-5 
+        border border-border ${onClick ? 'cursor-pointer' : ''}
+        transition-all duration-300 hover:border-border/80
+        hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20
       `}
     >
-      <div className="flex justify-between items-start mb-3">
+      <div className="flex justify-between items-start mb-4">
         <div className="flex-1 min-w-0">
-          <p className="text-stone-500 text-sm font-medium truncate">{title}</p>
-          <h3 className="text-2xl font-bold text-stone-900 mt-1">
+          <p className="text-text-secondary text-sm font-medium truncate">{title}</p>
+          <h3 className={`text-2xl font-bold text-text-primary mt-1 ${colors.text} transition-colors`}>
             {value}
           </h3>
-          {sub && <p className="text-xs text-stone-400 mt-1">{sub}</p>}
+          {sub && <p className="text-xs text-text-secondary/70 mt-1">{sub}</p>}
         </div>
-        <div className={`p-2.5 rounded-lg ${colors.iconBg} ${colors.text} flex-shrink-0 ml-3`}>
+        <div className={`p-3 rounded-lg ${colors.bg} ${colors.text} flex-shrink-0 ml-3`}>
           <Icon className="w-5 h-5" />
         </div>
       </div>
       
       {trend && (
-        <div className="flex items-center gap-2 text-xs pt-2 border-t border-stone-100">
-          <span className={`flex items-center gap-1 font-medium ${trendUp ? 'text-emerald-600' : 'text-red-500'}`}>
+        <div className="flex items-center gap-2 text-xs">
+          <span className={`flex items-center gap-1 ${trendUp ? 'text-emerald-500' : 'text-red-500'}`}>
             {trendUp ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
             {trend}
           </span>
-          <span className="text-stone-400">vs last week</span>
+          <span className="text-text-secondary/60">vs last week</span>
         </div>
       )}
     </div>

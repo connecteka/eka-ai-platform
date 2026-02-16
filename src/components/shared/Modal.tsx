@@ -12,6 +12,22 @@ interface ModalProps {
   footer?: React.ReactNode;
 }
 
+/**
+ * Reusable Modal Component
+ * 
+ * A dialog overlay for displaying focused content, forms, or requiring user action.
+ * Features keyboard accessibility (ESC to close) and focus trap.
+ * 
+ * @example
+ * <Modal 
+ *   isOpen={showModal} 
+ *   onClose={() => setShowModal(false)}
+ *   title="Create New Job Card"
+ *   footer={<button onClick={handleSubmit}>Submit</button>}
+ * >
+ *   <JobCardForm />
+ * </Modal>
+ */
 const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
@@ -22,8 +38,11 @@ const Modal: React.FC<ModalProps> = ({
   closeOnOverlayClick = true,
   footer
 }) => {
+  // Handle ESC key
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'Escape') onClose();
+    if (e.key === 'Escape') {
+      onClose();
+    }
   }, [onClose]);
 
   useEffect(() => {
@@ -31,6 +50,7 @@ const Modal: React.FC<ModalProps> = ({
       document.addEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'hidden';
     }
+    
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = '';
@@ -51,7 +71,7 @@ const Modal: React.FC<ModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-stone-900/40 backdrop-blur-sm transition-opacity"
+        className="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity"
         onClick={closeOnOverlayClick ? onClose : undefined}
       />
       
@@ -59,23 +79,24 @@ const Modal: React.FC<ModalProps> = ({
       <div 
         className={`
           relative w-full ${sizeClasses[size]} max-h-[90vh]
-          bg-white rounded-2xl shadow-xl
-          border border-stone-200
+          bg-[#1a1a1a] rounded-2xl shadow-2xl
+          border border-white/10
           flex flex-col
           transform transition-all duration-200 ease-out
+          scale-100 opacity-100
         `}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         {(title || showCloseButton) && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-stone-100">
+          <div className="flex items-center justify-between p-6 border-b border-white/10">
             {title && (
-              <h2 className="text-lg font-semibold text-stone-900">{title}</h2>
+              <h2 className="text-xl font-bold text-white">{title}</h2>
             )}
             {showCloseButton && (
               <button
                 onClick={onClose}
-                className="p-1.5 text-stone-400 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition-colors"
+                className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                 aria-label="Close modal"
               >
                 <X className="w-5 h-5" />
@@ -91,7 +112,7 @@ const Modal: React.FC<ModalProps> = ({
         
         {/* Footer */}
         {footer && (
-          <div className="px-6 py-4 border-t border-stone-100 flex justify-end gap-3">
+          <div className="p-6 border-t border-white/10 flex justify-end gap-3">
             {footer}
           </div>
         )}

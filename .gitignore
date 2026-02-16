@@ -1,84 +1,23 @@
-# Dependencies
-node_modules/
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
 /node_modules
 /.pnp
 .pnp.js
-.yarn/install-state.gz
 
-# Production builds
-/dist
-/dist-ssr
+# testing
+/coverage
+
+# production
 /build
-.next/
-/out/
-*.tsbuildinfo
 
-# Environment files
-.env
+# misc
+.DS_Store
 .env.local
-.env.*.local
-*.env
+.env.development.local
+.env.test.local
+.env.production.local
 
-# Log files
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
-logs/
-*.log
-
-# Editor directories and files
-.idea/
-.vscode/
-*.swp
-*.swo
-*~
-.DS_Store
-*.pem
-
-# Testing
-/coverage
-.nyc_output/
-
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-venv/
-.venv/
-ENV/
-env/
-
-# Database
-*.sqlite
-*.db
-*.sql
-!deploy_database.sql
-
-# Uploads and temp files
-uploads/
-temp/
-tmp/
-*.tmp
-
-# Archives
-*.zip
-*.tar.gz
-*.tar
-*.tgz
-*.pack
-
-# Cache
-.cache/
-.parcel-cache/
-.eslintcache
-.stylelintcache
-
-# Misc
-*.bak
-*.backup
-*.old
-.vercel
-.netlify
