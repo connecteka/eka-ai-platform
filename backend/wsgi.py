@@ -20,8 +20,12 @@ logger = logging.getLogger(__name__)
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 try:
+    # The 'gunicorn.pid' environment variable is set in worker processes.
+    # We log the successful load only from the main process.
+    is_gunicorn_worker = 'gunicorn.pid' in os.environ
     from server import app
-    logger.info("✅ WSGI: FastAPI application loaded successfully")
+    if not is_gunicorn_worker:
+        logger.info("✅ WSGI: FastAPI application loaded successfully")
 except Exception as e:
     logger.error(f"❌ WSGI: Failed to load FastAPI application: {e}")
     raise
