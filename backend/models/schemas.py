@@ -134,7 +134,7 @@ class InternalNoteCreate(BaseModel):
 
 
 class SignatureData(BaseModel):
-    job_card_id: str
+    job_card_id: Optional[str] = None  # Deprecated: ID is now extracted from URL path
     signature_image: str  # Base64 encoded PNG
     customer_name: str
     verified_via: str = "manual"  # manual, otp, digital
