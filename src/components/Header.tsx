@@ -17,7 +17,7 @@ const Header: React.FC = () => {
     <header className="bg-background shadow-md">
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          <div className="text-2xl font-bold text-text-primary font-heading">
+          <div className="text-2xl font-bold font-display" style={{ color: 'var(--text-primary)' }}>
             EKA-AI
           </div>
           <div className="hidden md:flex items-center space-x-6">
@@ -25,14 +25,19 @@ const Header: React.FC = () => {
               <a
                 key={link.name}
                 href={link.href}
-                className="text-text-secondary hover:text-primary transition"
+                className="transition hover:opacity-80"
+                style={{ color: 'var(--text-secondary)' }}
               >
                 {link.name}
               </a>
             ))}
             <a
               href="/login"
-              className="bg-primary text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition"
+              className="px-4 py-2 rounded-md hover:opacity-90 transition"
+              style={{ 
+                backgroundColor: 'var(--eka-orange)', 
+                color: 'white' 
+              }}
             >
               Get Started
             </a>
@@ -45,20 +50,25 @@ const Header: React.FC = () => {
         </div>
       </div>
       {isOpen && (
-        <div className="md:hidden bg-background-alt">
+        <div className="md:hidden" style={{ backgroundColor: 'var(--bg-secondary)' }}>
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
-                className="block px-3 py-2 rounded-md text-base font-medium text-text-secondary hover:text-primary hover:bg-gray-50"
+                className="block px-3 py-2 rounded-md text-base font-medium hover:opacity-75 transition"
+                style={{ color: 'var(--text-secondary)' }}
               >
                 {link.name}
               </a>
             ))}
             <a
               href="/login"
-              className="block bg-primary text-white px-3 py-2 rounded-md text-base font-medium"
+              className="block px-3 py-2 rounded-md text-base font-medium"
+              style={{ 
+                backgroundColor: 'var(--eka-orange)', 
+                color: 'white' 
+              }}
             >
               Get Started
             </a>
