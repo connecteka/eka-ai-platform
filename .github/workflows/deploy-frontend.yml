@@ -9,9 +9,30 @@ on:
       - '**.md'
   workflow_dispatch:
 
+# Concurrency control to prevent race conditions
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# OIDC Authentication Configuration
+# This workflow uses Workload Identity Federation for secure, keyless authentication with GCP.
+# 
+# SETUP INSTRUCTIONS:
+# 1. Run: bash scripts/setup-gcp-oidc.sh
+# 2. Copy the output values into the google-github-actions/auth step below
+# 3. Remove the old FIREBASE_SERVICE_ACCOUNT_EKA_AI_C9D24 secret after testing
+#
+# For detailed instructions, see: scripts/SETUP_OIDC.md
+
 jobs:
   deploy-frontend:
     runs-on: ubuntu-latest
+    
+    # Permissions required for OIDC authentication
+    permissions:
+      contents: read           # Required for actions/checkout
+      pull-requests: write     # Required for action-hosting-deploy to comment on PRs
+      id-token: write          # Required for OIDC authentication with Google Cloud
     
     steps:
       - name: Checkout code
@@ -26,6 +47,12 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       
+      # Security audit to catch known vulnerabilities
+      - name: Run Security Audit
+        run: yarn audit --level moderate || true
+        # Using '|| true' to not fail the build on moderate/low issues
+        # Critical/High issues should still be reviewed manually
+
       - name: Run tests
         run: yarn test:run
 
@@ -39,11 +66,40 @@ jobs:
       - name: Build application
         run: yarn build
       
+      # ═══════════════════════════════════════════════════════════════════════════════
+      # OIDC Authentication with Google Cloud
+      # 
+      # OPTION 1: Workload Identity Federation (Recommended - Keyless)
+      # Setup: Run `bash scripts/setup-gcp-oidc.sh` and update values below
+      # ═══════════════════════════════════════════════════════════════════════════════
+      - name: Authenticate to Google Cloud (OIDC)
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          # TODO: Update these values after running scripts/setup-gcp-oidc.sh
+          # workload_identity_provider: 'projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_NAME/providers/PROVIDER_NAME'
+          # service_account: 'SERVICE_ACCOUNT_NAME@eka-ai-c9d24.iam.gserviceaccount.com'
+          
+          # Temporary fallback: Use existing service account key (remove after OIDC setup)
+          credentials_json: ${{ secrets.GCP_SA_KEY || secrets.FIREBASE_SERVICE_ACCOUNT_EKA_AI_C9D24 }}
+
+      # ═══════════════════════════════════════════════════════════════════════════════
+      # OPTION 2: Service Account Key (Legacy - Less Secure)
+      # Uncomment below and comment out OPTION 1 if not using OIDC yet
+      # ═══════════════════════════════════════════════════════════════════════════════
+      # - name: Authenticate to Google Cloud (Service Account Key)
+      #   id: auth
+      #   uses: google-github-actions/auth@v2
+      #   with:
+      #     credentials_json: ${{ secrets.GCP_SA_KEY }}
+
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_EKA_AI_C9D24 }}' # Recommended over FIREBASE_TOKEN
+          # When using OIDC, the service account is already authenticated via the auth step
+          # The firebaseServiceAccount secret is not needed with OIDC
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_EKA_AI_C9D24 }}
           channelId: live
           projectId: eka-ai-c9d24
       
