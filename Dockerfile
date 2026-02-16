@@ -10,14 +10,13 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Install system dependencies (CRITICAL: Added Pango/Cairo for PDF generation)
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential \
     curl \
     libpango-1.0-0 \
     libpangocairo-1.0-0 \
     libpangoft2-1.0-0 \
-    libgdk-pixbuf-2.0-0 \
-    libffi-dev \
     shared-mime-info \
+    # Clean up apt-get lists to reduce image size
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
